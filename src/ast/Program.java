@@ -1,5 +1,4 @@
 package ast;
-
 import java.util.*;
 import comp.CompilationError;
 

@@ -86,32 +86,46 @@ public class Compiler {
 	 */
 	@SuppressWarnings("incomplete-switch")
 	private void metaobjectAnnotation(ArrayList<MetaobjectAnnotation> metaobjectAnnotationList) {
+
+		//Acho que falta verificar se é realmente um ID e não alguma palavra chave da gramatica
+		//Não sei se foi verificado se contem arroba no começo
 		String name = lexer.getMetaobjectName();
 		int lineNumber = lexer.getLineNumber();
 		lexer.nextToken();
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
 		boolean getNextToken = false;
+
+		/*Caso o token for um abre paranteses*/
 		if ( lexer.token == Token.LEFTPAR ) {
 			// metaobject call with parameters
 			lexer.nextToken();
+
+			/*Verifica se trata de alguma sentença pertencente ao AnnotParam*/
 			while ( lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
 					lexer.token == Token.ID ) {
 				switch ( lexer.token ) {
+				
+				/*Caso o token for um numero*/
 				case LITERALINT:
 					metaobjectParamList.add(lexer.getNumberValue());
 					break;
+				/*Caso o token for uma string*/
 				case LITERALSTRING:
 					metaobjectParamList.add(lexer.getLiteralStringValue());
 					break;
+				/*Caso o token for algum ID*/
 				case ID:
 					metaobjectParamList.add(lexer.getStringValue());
 				}
 				lexer.nextToken();
+
+				/*Caso ainda tiver mais parametros de Int, String ou ID, continua o loop*/
 				if ( lexer.token == Token.COMMA )
 					lexer.nextToken();
 				else
 					break;
 			}
+			/*Caso o token não for um fecha parenteses*/
 			if ( lexer.token != Token.RIGHTPAR )
 				error("')' expected after annotation with parameters");
 			else {
