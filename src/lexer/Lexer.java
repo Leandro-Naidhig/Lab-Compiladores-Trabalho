@@ -24,21 +24,16 @@ public class Lexer {
     static private Hashtable<String, Token> keywordsTable;
 
      // this code will be executed only once for each program execution
-	static {
-		keywordsTable = new Hashtable<String, Token>();
+	  static {
+		  keywordsTable = new Hashtable<String, Token>();
 
-		for ( Token s : Token.values() ) {
-			String kw = s.toString();
-			if ( Character.isAlphabetic(kw.charAt(0)) )
-				keywordsTable.put( s.toString(), s);
-		}
-
-
-	}
-
-
-
-
+		  for ( Token s : Token.values() ) {
+			  String kw = s.toString();
+			  if ( Character.isAlphabetic(kw.charAt(0)) ) {
+          keywordsTable.put( s.toString(), s);
+        }
+		  }
+	  }
     public void nextToken() {
         char ch;
 

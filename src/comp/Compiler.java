@@ -1,4 +1,3 @@
-
 package comp;
 
 import java.io.PrintWriter;
@@ -26,49 +25,57 @@ public class Compiler {
 		signalError.setLexer(lexer);
 
 		Program program = null;
-		lexer.nextToken();
+		next();
 		program = program(compilationErrorList);
 		return program;
 	}
 
 	private Program program(ArrayList<CompilationError> compilationErrorList) {
+		
 		ArrayList<MetaobjectAnnotation> metaobjectCallList = new ArrayList<>();
 		ArrayList<TypeCianetoClass> CianetoClassList = new ArrayList<>();
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
 		boolean thereWasAnError = false;
-		while ( lexer.token == Token.CLASS ||
+		while(lexer.token == Token.CLASS ||
 				(lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
-				lexer.token == Token.ANNOT ) {
+				lexer.token == Token.ANNOT) {
+			
 			try {
-				while ( lexer.token == Token.ANNOT ) {
+				while (lexer.token == Token.ANNOT) {
+
+					/*Chamada de funcao*/
 					metaobjectAnnotation(metaobjectCallList);
 				}
+
+				/*Chamada de função*/
 				classDec();
 			}
-			catch( CompilerError e) {
+
+			catch(CompilerError e) {
 				// if there was an exception, there is a compilation error
 				thereWasAnError = true;
-				while ( lexer.token != Token.CLASS && lexer.token != Token.EOF ) {
+				while(lexer.token != Token.CLASS && lexer.token != Token.EOF) {
 					try {
 						next();
 					}
-					catch ( RuntimeException ee ) {
+					catch (RuntimeException ee) {
 						e.printStackTrace();
 						return program;
 					}
 				}
 			}
-			catch ( RuntimeException e ) {
+			catch(RuntimeException e) {
 				e.printStackTrace();
 				thereWasAnError = true;
 			}
 
 		}
-		if ( !thereWasAnError && lexer.token != Token.EOF ) {
+		if (!thereWasAnError && lexer.token != Token.EOF) {
+			
 			try {
 				error("End of file expected");
 			}
-			catch( CompilerError e) {
+			catch(CompilerError e) {
 			}
 		}
 		return program;
@@ -91,19 +98,19 @@ public class Compiler {
 		//Não sei se foi verificado se contem arroba no começo
 		String name = lexer.getMetaobjectName();
 		int lineNumber = lexer.getLineNumber();
-		lexer.nextToken();
+		next();
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
 		boolean getNextToken = false;
 
 		/*Caso o token for um abre paranteses*/
-		if ( lexer.token == Token.LEFTPAR ) {
+		if(lexer.token == Token.LEFTPAR) {
 			// metaobject call with parameters
-			lexer.nextToken();
+			next();
 
 			/*Verifica se trata de alguma sentença pertencente ao AnnotParam*/
-			while ( lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
-					lexer.token == Token.ID ) {
-				switch ( lexer.token ) {
+			while(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
+					lexer.token == Token.ID) {
+				switch(lexer.token) {
 				
 				/*Caso o token for um numero*/
 				case LITERALINT:
@@ -117,97 +124,146 @@ public class Compiler {
 				case ID:
 					metaobjectParamList.add(lexer.getStringValue());
 				}
-				lexer.nextToken();
+
+				next();
 
 				/*Caso ainda tiver mais parametros de Int, String ou ID, continua o loop*/
-				if ( lexer.token == Token.COMMA )
-					lexer.nextToken();
-				else
+				if(lexer.token == Token.COMMA) {
+					next();
+				
+				} else {
 					break;
+				}
 			}
+
 			/*Caso o token não for um fecha parenteses*/
-			if ( lexer.token != Token.RIGHTPAR )
+			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected after annotation with parameters");
-			else {
+			
+			} else { /*Caso o token for um fecha parenteses*/
 				getNextToken = true;
 			}
 		}
-		switch ( name ) {
+
+		//????? Tenho que verificar melhor esses tratamentos de erros
+		switch(name) {
 		case "nce":
-			if ( metaobjectParamList.size() != 0 )
+			if(metaobjectParamList.size() != 0) {
 				error("Annotation 'nce' does not take parameters");
+			}
 			break;
 		case "cep":
-			if ( metaobjectParamList.size() != 3 && metaobjectParamList.size() != 4 )
+			if(metaobjectParamList.size() != 3 && metaobjectParamList.size() != 4){
 				error("Annotation 'cep' takes three or four parameters");
-			if ( !( metaobjectParamList.get(0) instanceof Integer)  ) {
-				error("The first parameter of annotation 'cep' should be an integer number");
 			}
-			else {
+			
+			if(!( metaobjectParamList.get(0) instanceof Integer)) {
+				error("The first parameter of annotation 'cep' should be an integer number");
+			
+			} else {
 				int ln = (Integer ) metaobjectParamList.get(0);
 				metaobjectParamList.set(0, ln + lineNumber);
 			}
-			if ( !( metaobjectParamList.get(1) instanceof String) ||  !( metaobjectParamList.get(2) instanceof String) )
+
+			if(!( metaobjectParamList.get(1) instanceof String) ||  !( metaobjectParamList.get(2) instanceof String)) {
 				error("The second and third parameters of annotation 'cep' should be literal strings");
-			if ( metaobjectParamList.size() >= 4 && !( metaobjectParamList.get(3) instanceof String) )
+			}
+
+			if(metaobjectParamList.size() >= 4 && !( metaobjectParamList.get(3) instanceof String)) {
 				error("The fourth parameter of annotation 'cep' should be a literal string");
+			}
+
 			break;
 		case "annot":
-			if ( metaobjectParamList.size() < 2  ) {
+			if(metaobjectParamList.size() < 2 ) {
 				error("Annotation 'annot' takes at least two parameters");
 			}
-			for ( Object p : metaobjectParamList ) {
-				if ( !(p instanceof String) ) {
+
+			for(Object p : metaobjectParamList) {
+				if(!(p instanceof String)) {
 					error("Annotation 'annot' takes only String parameters");
 				}
 			}
-			if ( ! ((String ) metaobjectParamList.get(0)).equalsIgnoreCase("check") )  {
+
+			if(!((String ) metaobjectParamList.get(0)).equalsIgnoreCase("check"))  {
 				error("Annotation 'annot' should have \"check\" as its first parameter");
 			}
+
 			break;
 		default:
 			error("Annotation '" + name + "' is illegal");
 		}
+
 		metaobjectAnnotationList.add(new MetaobjectAnnotation(name, metaobjectParamList));
-		if ( getNextToken ) lexer.nextToken();
+		
+		if(getNextToken){
+			next();
+		}
 	}
 
+	
 	private void classDec() {
-		if ( lexer.token == Token.ID && lexer.getStringValue().equals("open") ) {
-			// open class
+		
+		if(lexer.token == Token.ID && lexer.getStringValue().equals("open")) {
+			//class open
 		}
-		if ( lexer.token != Token.CLASS ) error("'class' expected");
-		lexer.nextToken();
-		if ( lexer.token != Token.ID )
+
+		/*Verifica se o token é a palavra class*/
+		if ( lexer.token != Token.CLASS ) {
+			error("'class' expected");
+		}
+
+		next();
+		
+		/*Verifica se o token é um ID */
+		if ( lexer.token != Token.ID ) {
 			error("Identifier expected");
-		String className = lexer.getStringValue();
-		lexer.nextToken();
-		if ( lexer.token == Token.EXTENDS ) {
-			lexer.nextToken();
-			if ( lexer.token != Token.ID )
-				error("Identifier expected");
-			String superclassName = lexer.getStringValue();
-
-			lexer.nextToken();
 		}
 
-		memberList();
-		if ( lexer.token != Token.END)
-			error("'end' expected");
-		lexer.nextToken();
+		/*Recupera o nome da classe */
+		String className = lexer.getStringValue();
+		next();
 
+		/*Verifica se o token é Extends */
+		if (lexer.token == Token.EXTENDS) {
+			next();
+			
+			/*Verifica se o token é um ID */
+			if (lexer.token != Token.ID) {
+				error("Identifier expected");
+			}
+			String superclassName = lexer.getStringValue();
+			next();
+		}
+
+		/*Chamada de função*/
+		memberList();
+		
+		/*Verifica se o token é um END*/
+		if(lexer.token != Token.END) {
+			error("'end' expected");
+		}
+
+		next();
 	}
 
 	private void memberList() {
-		while ( true ) {
+		while(true) {
+			
+			/*Chamada de funcao*/
 			qualifier();
-			if ( lexer.token == Token.VAR ) {
+			
+			if(lexer.token == Token.VAR) {
+				
+				/*Chamada de funcao*/
 				fieldDec();
-			}
-			else if ( lexer.token == Token.FUNC ) {
+			
+			} else if(lexer.token == Token.FUNC) {
+
+				/*Chamada de funcao*/
 				methodDec();
-			}
-			else {
+			
+			} else {
 				break;
 			}
 		}
@@ -223,35 +279,37 @@ public class Compiler {
 	}
 
 	private void check(Token shouldBe, String msg) {
-		if ( lexer.token != shouldBe ) {
+		if(lexer.token != shouldBe) {
 			error(msg);
 		}
 	}
 
 	private void methodDec() {
-		lexer.nextToken();
-		if ( lexer.token == Token.ID ) {
+		next();
+		if(lexer.token == Token.ID) {
 			// unary method
-			lexer.nextToken();
+			next();
 
-		}
-		else if ( lexer.token == Token.IDCOLON ) {
+		} else if(lexer.token == Token.IDCOLON) {
 			// keyword method. It has parameters
 
-		}
-		else {
+		} else {
 			error("An identifier or identifer: was expected after 'func'");
 		}
-		if ( lexer.token == Token.MINUS_GT ) {
+
+		if(lexer.token == Token.MINUS_GT) {
 			// method declared a return type
-			lexer.nextToken();
+			next();
 			type();
 		}
-		if ( lexer.token != Token.LEFTCURBRACKET ) {
+		if(lexer.token != Token.LEFTCURBRACKET) {
 			error("'{' expected");
 		}
 		next();
+
+		/*Chamada de funcao*/
 		statementList();
+
 		if ( lexer.token != Token.RIGHTCURBRACKET ) {
 			error("'{' expected");
 		}
@@ -260,51 +318,63 @@ public class Compiler {
 	}
 
 	private void statementList() {
-		  // only '}' is necessary in this test
-		while ( lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END ) {
+		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
 			statement();
 		}
 	}
 
 	private void statement() {
 		boolean checkSemiColon = true;
-		switch ( lexer.token ) {
+		switch(lexer.token) {
 		case IF:
+			/*Chamada de função*/
 			ifStat();
 			checkSemiColon = false;
 			break;
 		case WHILE:
+			/*Chamada de função*/
 			whileStat();
 			checkSemiColon = false;
 			break;
 		case RETURN:
+			/*Chamada de função*/
 			returnStat();
 			break;
 		case BREAK:
+			/*Chamada de função*/
 			breakStat();
 			break;
 		case SEMICOLON:
+			/*Chamada de função*/
 			next();
 			break;
 		case REPEAT:
+			/*Chamada de função*/
 			repeatStat();
 			break;
 		case VAR:
+			/*Chamada de função*/
 			localDec();
 			break;
 		case ASSERT:
+			/*Chamada de função*/
 			assertStat();
 			break;
 		default:
-			if ( lexer.token == Token.ID && lexer.getStringValue().equals("Out") ) {
+			if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
+				
+				/*Chamada de função*/
 				writeStat();
-			}
-			else {
+			
+			} else {
+
+				/*Chamada de função*/
 				expr();
 			}
 
 		}
-		if ( checkSemiColon ) {
+
+		if(checkSemiColon) {
 			check(Token.SEMICOLON, "';' expected");
 		}
 	}
@@ -312,17 +382,20 @@ public class Compiler {
 	private void localDec() {
 		next();
 		type();
+
 		check(Token.ID, "A variable name was expected");
-		while ( lexer.token == Token.ID ) {
+		
+		while(lexer.token == Token.ID) {
 			next();
-			if ( lexer.token == Token.COMMA ) {
+			if(lexer.token == Token.COMMA) {
 				next();
 			}
 			else {
 				break;
 			}
 		}
-		if ( lexer.token == Token.ASSIGN ) {
+
+		if(lexer.token == Token.ASSIGN) {
 			next();
 			// check if there is just one variable
 			expr();
@@ -332,15 +405,15 @@ public class Compiler {
 
 	private void repeatStat() {
 		next();
-		while ( lexer.token != Token.UNTIL && lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END ) {
+		while(lexer.token != Token.UNTIL && lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
 			statement();
 		}
+
 		check(Token.UNTIL, "missing keyword 'until'");
 	}
 
 	private void breakStat() {
 		next();
-
 	}
 
 	private void returnStat() {
@@ -350,12 +423,19 @@ public class Compiler {
 
 	private void whileStat() {
 		next();
+		
+		/*Chamada de funcao*/
 		expr();
+		
 		check(Token.LEFTCURBRACKET, "missing '{' after the 'while' expression");
+		
 		next();
-		while ( lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END ) {
+		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
+			
+			/*Chamada de funcao*/
 			statement();
 		}
+
 		check(Token.RIGHTCURBRACKET, "missing '}' after 'while' body");
 	}
 
@@ -364,24 +444,24 @@ public class Compiler {
 		expr();
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
-		while ( lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE ) {
+		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE) {
 			statement();
 		}
+
 		check(Token.RIGHTCURBRACKET, "'}' was expected");
-		if ( lexer.token == Token.ELSE ) {
+		
+		if (lexer.token == Token.ELSE) {
 			next();
 			check(Token.LEFTCURBRACKET, "'{' expected after 'else'");
 			next();
-			while ( lexer.token != Token.RIGHTCURBRACKET ) {
+			while(lexer.token != Token.RIGHTCURBRACKET) {
 				statement();
 			}
+
 			check(Token.RIGHTCURBRACKET, "'}' was expected");
 		}
 	}
 
-	/**
-
-	 */
 	private void writeStat() {
 		next();
 		check(Token.DOT, "a '.' was expected after 'Out'");
@@ -396,18 +476,18 @@ public class Compiler {
 	}
 
 	private void fieldDec() {
-		lexer.nextToken();
+		next();
 		type();
-		if ( lexer.token != Token.ID ) {
+		if(lexer.token != Token.ID) {
 			this.error("A field name was expected");
-		}
-		else {
-			while ( lexer.token == Token.ID  ) {
-				lexer.nextToken();
-				if ( lexer.token == Token.COMMA ) {
-					lexer.nextToken();
-				}
-				else {
+		
+		} else {
+			while(lexer.token == Token.ID ) {
+				next();
+				if(lexer.token == Token.COMMA) {
+					next();
+				
+				} else {
 					break;
 				}
 			}
@@ -416,13 +496,13 @@ public class Compiler {
 	}
 
 	private void type() {
-		if ( lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING ) {
+		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
 			next();
-		}
-		else if ( lexer.token == Token.ID ) {
+		
+		} else if(lexer.token == Token.ID) {
 			next();
-		}
-		else {
+		
+		} else {
 			this.error("A type was expected");
 		}
 
@@ -430,59 +510,64 @@ public class Compiler {
 
 
 	private void qualifier() {
-		if ( lexer.token == Token.PRIVATE ) {
+		if(lexer.token == Token.PRIVATE) {
 			next();
-		}
-		else if ( lexer.token == Token.PUBLIC ) {
+		
+		} else if(lexer.token == Token.PUBLIC) {
 			next();
-		}
-		else if ( lexer.token == Token.OVERRIDE ) {
+		
+		} else if(lexer.token == Token.OVERRIDE) {
 			next();
-			if ( lexer.token == Token.PUBLIC ) {
+			if (lexer.token == Token.PUBLIC) {
 				next();
 			}
-		}
-		else if ( lexer.token == Token.FINAL ) {
+		
+		} else if(lexer.token == Token.FINAL) {
 			next();
-			if ( lexer.token == Token.PUBLIC ) {
+			if(lexer.token == Token.PUBLIC) {
 				next();
-			}
-			else if ( lexer.token == Token.OVERRIDE ) {
+			
+			} else if(lexer.token == Token.OVERRIDE) {
 				next();
-				if ( lexer.token == Token.PUBLIC ) {
+				if(lexer.token == Token.PUBLIC) {
 					next();
 				}
 			}
 		}
 	}
-	/**
-	 * change this method to 'private'.
-	 * uncomment it
-	 * implement the methods it calls
-	 */
+
 	public Statement assertStat() {
 
-		lexer.nextToken();
+		next();
 		int lineNumber = lexer.getLineNumber();
+		
+		/*Chamada de Função*/
 		expr();
-		if ( lexer.token != Token.COMMA ) {
+		
+		/*Verifica se é o token é : */
+		if(lexer.token != Token.COMMA) {
 			this.error("',' expected after the expression of the 'assert' statement");
 		}
-		lexer.nextToken();
-		if ( lexer.token != Token.LITERALSTRING ) {
+
+		next();
+		
+		/*Verifica se é o token é uma string*/
+		if(lexer.token != Token.LITERALSTRING) {
 			this.error("A literal string expected after the ',' of the 'assert' statement");
 		}
+
 		String message = lexer.getLiteralStringValue();
 		lexer.nextToken();
-		if ( lexer.token == Token.SEMICOLON )
-			lexer.nextToken();
+		
+		/*Verifica se é o token é ; */
+		if(lexer.token == Token.SEMICOLON) {
+			next();
+		}
 
 		return null;
 	}
 
-
-
-
+	/*Tranforma um inteiro em uma expressão do tipo inteiro */
 	private LiteralInt literalInt() {
 
 		LiteralInt e = null;
@@ -491,7 +576,7 @@ public class Compiler {
 		// Integer.
 		// Method intValue returns that value as an value of type int.
 		int value = lexer.getNumberValue();
-		lexer.nextToken();
+		next();
 		return new LiteralInt(value);
 	}
 
