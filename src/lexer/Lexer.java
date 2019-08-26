@@ -335,26 +335,26 @@ public class Lexer {
 
 	public String getMetaobjectName() {
 		return metaobjectName;
-	}
+  }
+  
+  public Token get_keywords(String palavra) {
+    return keywordsTable.get(palavra);
+  }
 
     private String metaobjectName;
-          // current token
     public Token token;
     private String stringValue, literalStringValue;
     private int numberValue;
-
     private int  tokenPos;
-      //  input[lastTokenPos] is the last character of the last token found
+    
+    //  input[lastTokenPos] is the last character of the last token found
     private int lastTokenPos;
-      //  input[beforeLastTokenPos] is the last character of the token before the last
-      // token found
+    
+    //  input[beforeLastTokenPos] is the last character of the token before the last
+    // token found
     private int beforeLastTokenPos;
-
     private char []input;
-
-    // number of current line. Starts with 1
     private int lineNumber;
-
     private ErrorSignaller error;
 
 }

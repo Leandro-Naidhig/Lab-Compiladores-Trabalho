@@ -30,20 +30,28 @@ public class Compiler {
 		return program;
 	}
 
+	//Program = {Annot} ClassDec {{Annot} ClassDec}
 	private Program program(ArrayList<CompilationError> compilationErrorList) {
 		
+		//Lista de Annots e ClassDecs
 		ArrayList<MetaobjectAnnotation> metaobjectCallList = new ArrayList<>();
 		ArrayList<TypeCianetoClass> CianetoClassList = new ArrayList<>();
+
+		//Criação do objeto Program
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
+		
+		//Variavel responsável por verificar se existe algum erro na gramatica
+		//Por padrao e inicializada com false
 		boolean thereWasAnError = false;
+
+		//Se for uma classe 
 		while(lexer.token == Token.CLASS ||
-				(lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
-				lexer.token == Token.ANNOT) {
+			 (lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
+			  lexer.token == Token.ANNOT) {
 			
 			try {
 				while (lexer.token == Token.ANNOT) {
-
-					/*Chamada de funcao*/
+					//Chamada de funcao para "Annot"
 					metaobjectAnnotation(metaobjectCallList);
 				}
 
@@ -91,52 +99,66 @@ public class Compiler {
      *
 
 	 */
+
+	//Annot = "@" Id [ "(" { AnnotParam} ")"]
 	@SuppressWarnings("incomplete-switch")
 	private void metaobjectAnnotation(ArrayList<MetaobjectAnnotation> metaobjectAnnotationList) {
 
-		//Acho que falta verificar se é realmente um ID e não alguma palavra chave da gramatica
-		//Não sei se foi verificado se contem arroba no começo
 		String name = lexer.getMetaobjectName();
 		int lineNumber = lexer.getLineNumber();
+
+		//Verifica se o ID (name) é uma palavra chave
+		if(lexer.get_keywords(name) != null) {
+			error(name + " is a keyword");
+		}
+
 		next();
+
+		//Inicia uma lista de AnnotParam
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
+
+
 		boolean getNextToken = false;
 
-		/*Caso o token for um abre paranteses*/
-		if(lexer.token == Token.LEFTPAR) {
-			// metaobject call with parameters
+		//Caso o token for um abre paranteses
+		if(lexer.token != Token.LEFTPAR) {
+			error("'(' expected before ID");
+
+		} else {
+			
 			next();
 
-			/*Verifica se trata de alguma sentença pertencente ao AnnotParam*/
+			//Verifica se trata de alguma sentença pertencente ao AnnotParam
 			while(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
-					lexer.token == Token.ID) {
+				  lexer.token == Token.ID) {
 				switch(lexer.token) {
 				
-				/*Caso o token for um numero*/
+				//Caso o token for um numero
 				case LITERALINT:
 					metaobjectParamList.add(lexer.getNumberValue());
 					break;
-				/*Caso o token for uma string*/
+				//Caso o token for uma string
 				case LITERALSTRING:
 					metaobjectParamList.add(lexer.getLiteralStringValue());
 					break;
-				/*Caso o token for algum ID*/
+				//Caso o token for algum ID
 				case ID:
 					metaobjectParamList.add(lexer.getStringValue());
 				}
 
 				next();
 
-				/*Caso ainda tiver mais parametros de Int, String ou ID, continua o loop*/
+				//Caso ainda tiver mais parametros de Int, String ou ID, continua o loop
 				if(lexer.token == Token.COMMA) {
 					next();
 				
+				//Senao, para o loop
 				} else {
 					break;
 				}
 			}
 
-			/*Caso o token não for um fecha parenteses*/
+			//Caso o token não for um fecha parenteses
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected after annotation with parameters");
 			
@@ -145,13 +167,21 @@ public class Compiler {
 			}
 		}
 
-		//????? Tenho que verificar melhor esses tratamentos de erros
+		//Tratamento de erros para metaobjetos: NCE e CEP
 		switch(name) {
+
+		//Esse metaobjeto e responsavel por informar para o compilador que nao deve haver erros
+		//de compilacao no codigo-fonte, se houver, o cianeto apontara que tem uma falha
+		//Obs: Nao pode haver parametros
 		case "nce":
 			if(metaobjectParamList.size() != 0) {
 				error("Annotation 'nce' does not take parameters");
 			}
 			break;
+		
+		//Esse metaobjeto e responsavel por informar para o compilador que existe um erro do
+		//compilador no codigo-fonte
+		//Obs: Tem que haver no minimo 3 e no maximo 4 parametros, entre outros erros
 		case "cep":
 			if(metaobjectParamList.size() != 3 && metaobjectParamList.size() != 4){
 				error("Annotation 'cep' takes three or four parameters");
@@ -174,6 +204,7 @@ public class Compiler {
 			}
 
 			break;
+		
 		case "annot":
 			if(metaobjectParamList.size() < 2 ) {
 				error("Annotation 'annot' takes at least two parameters");
@@ -194,6 +225,7 @@ public class Compiler {
 			error("Annotation '" + name + "' is illegal");
 		}
 
+		//Contem uma lista de metaobjetos
 		metaobjectAnnotationList.add(new MetaobjectAnnotation(name, metaobjectParamList));
 		
 		if(getNextToken){
@@ -201,30 +233,36 @@ public class Compiler {
 		}
 	}
 
-	
+	//ClassDec =  ["open"] "class" ID ["extends" ID] MemberList "end"
 	private void classDec() {
 		
+		//Professor falta arrumar isso
 		if(lexer.token == Token.ID && lexer.getStringValue().equals("open")) {
 			//class open
 		}
 
-		/*Verifica se o token é a palavra class*/
+		//Verifica se o token é a palavra class
 		if ( lexer.token != Token.CLASS ) {
 			error("'class' expected");
 		}
 
 		next();
 		
-		/*Verifica se o token é um ID */
+		//Verifica se o token é um ID
 		if ( lexer.token != Token.ID ) {
 			error("Identifier expected");
 		}
 
-		/*Recupera o nome da classe */
+		//Recupera o nome da classe
 		String className = lexer.getStringValue();
 		next();
 
-		/*Verifica se o token é Extends */
+		//Verifica se o ID (className) é uma palavra chave
+		if(lexer.get_keywords(className) != null) {
+			error(className + " is a keyword");
+		}
+
+		//Verifica se o token é Extends
 		if (lexer.token == Token.EXTENDS) {
 			next();
 			
@@ -585,7 +623,7 @@ public class Compiler {
 		return token == Token.FALSE || token == Token.TRUE
 				|| token == Token.NOT || token == Token.SELF
 				|| token == Token.LITERALINT || token == Token.SUPER
-				|| token == Token.LEFTPAR || token == Token.NULL
+				|| token == Token.LEFTPAR || token == Token.NIL
 				|| token == Token.ID || token == Token.LITERALSTRING;
 
 	}

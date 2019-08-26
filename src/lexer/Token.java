@@ -37,6 +37,7 @@ public enum Token {
     MULT("*"),
     NEQ("!="),
     NOT("!"),
+    NIL("nil"),
     OR("||"),
     OVERRIDE("override"),
     PLUS("+"),
