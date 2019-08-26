@@ -266,11 +266,17 @@ public class Compiler {
 		if (lexer.token == Token.EXTENDS) {
 			next();
 			
-			/*Verifica se o token é um ID */
+			//Verifica se o token é um ID
 			if (lexer.token != Token.ID) {
 				error("Identifier expected");
 			}
 			String superclassName = lexer.getStringValue();
+
+			//Verifica se o ID (superclassName) é uma palavra chave
+			if(lexer.get_keywords(superclassName) != null) {
+				error(superclassName + " is a keyword");
+			}
+
 			next();
 		}
 

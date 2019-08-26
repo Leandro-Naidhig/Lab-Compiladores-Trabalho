@@ -1,4 +1,6 @@
 /**
+    Integrantes:    Leandro Naidhig 726555
+                    Gustavo Buoro Branco de Souza 726533
 
  */
 package ast;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
  * end <br>
  * </code>
  *
-   @author José
+   @author Josï¿½
 
  */
 public class MetaobjectAnnotation {
