@@ -9,19 +9,26 @@ import java.util.ArrayList;
 public class LocalDec {
 
     //Construtor da classe
-    public LocalDec(Variable var, IdList idList, Expr expr) {
-        this.var = var;
+    public LocalDec(Type tipo, IdList idList, Expr expr) {
+        this.tipo = tipo;
         this.idList = idList;
         this.expr = expr;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+        tipo.getCname();
+        idList.genC(pw);
 
+        //Caso houver uma expressao
+        if(expr != null) {
+            pw.print(" = ");
+            expr.genC(pw);
+        }
     }
 
     //Atributos da classe
-    private Variable var;
+    private Type tipo;
     private IdList idList;
     private Expr expr;
 }

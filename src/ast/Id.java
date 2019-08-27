@@ -4,23 +4,20 @@
 
  */
 package ast;
-import java.util.ArrayList;
 
-public class IdList {
+public class Id {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public Id(String name) {
+        this.name = name;
            
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        for(Id s : ids) {
-			s.genC(pw);
-		}
+        pw.print(name);
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private String name;
 }
