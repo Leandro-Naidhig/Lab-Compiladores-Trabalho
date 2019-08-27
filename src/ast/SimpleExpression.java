@@ -4,8 +4,21 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
 public class SimpleExpression {
 
+    //Construtor da classe
+    public SimpleExpression(ArrayList<SumSubExpression> arraySumSub) {
+        this.arraySumSub = arraySumSub;
+    }
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+
+    }
+
+
+    //Atributos da classe
+    private SumSubExpression arraySumSub;
 }
