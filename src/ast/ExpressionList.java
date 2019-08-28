@@ -4,24 +4,26 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 
-public class IdList {
+public class ExpressionList {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public ExpressionList(ArrayList<Expr> exprList) {
+        this.exprList = exprList;
     }
 
-    //Metodo para geracao do codigo em C
+    //Metodo para geracao do codigo em Java
     public void genC(PW pw) {
+
         int contador = 0;
 
-        for(Id s : ids) {
+        for(Expr s : exprList) {
             s.genC(pw);
             contador++;
             
-            if((ids.size()-1) != contador) {
+            if((exprList.size()-1) != contador) {
                 pw.print(", ");
             }
         }
@@ -32,5 +34,5 @@ public class IdList {
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private ArrayList<Expr> exprList;
 }

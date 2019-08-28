@@ -5,11 +5,14 @@
  */
 package ast;
 
-public class WriteStat {
+import java.util.ArrayList;
+
+public class SignalFactor {
 
     //Construtor da classe
-    public WriteStat(Expr expr) {
-        this.expr = expr;
+    public SignalFactor(String signal, Factor factor) {
+        this.signal = signal;
+        this.factor = factor;
     }
 
     //Metodo para geracao do codigo em C
@@ -21,6 +24,6 @@ public class WriteStat {
     }
 
     //Atributos da classe
-    private Expr expr;
-
+    private String signal;
+    private Factor factor;
 }

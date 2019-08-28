@@ -20,17 +20,13 @@ package ast;
 public class ClassDec {
 
     //Construtor da clase
-    public ClassDec(String name, MemberList memberList) {
-        this.name = name;
+    public ClassDec(String name1, String name2, MemberList memberList) {
+        this.name1 = name1;
+        this.name2 = name2;
         this.memberList = memberList;   
     }
-
-    //Metodo para geracao do codigo em C
-    public String getName() {
-		  return name;
-    }
     
-    //Metodo para geracao do codigo em Java
+    //Metodo para geracao do codigo em C
     public void genC(PW pw) {
     }
 
@@ -39,7 +35,8 @@ public class ClassDec {
     }
 
     //Atributos da classe
-    private String name;
+    private String name1;
+    private String name2;
     private MemberList memberList;
 
 }

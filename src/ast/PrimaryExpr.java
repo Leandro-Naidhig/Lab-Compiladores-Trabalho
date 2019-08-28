@@ -4,12 +4,14 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class WriteStat {
+public class PrimaryExpr {
 
     //Construtor da classe
-    public WriteStat(Expr expr) {
-        this.expr = expr;
+    public PrimaryExpr() {
+
+
     }
 
     //Metodo para geracao do codigo em C
@@ -19,8 +21,4 @@ public class WriteStat {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
     }
-
-    //Atributos da classe
-    private Expr expr;
-
 }

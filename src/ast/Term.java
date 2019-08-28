@@ -5,10 +5,14 @@
  */
 package ast;
 
+import java.util.ArrayList;
+
 public class Term {
 
-    public Term() {
-
+    //Construtor da classe
+    public Term(ArrayList<SignalFactor> signalFactor, ArrayList<HighOperator> highOperator) {
+        this.signalFactor = signalFactor;
+        this.highOperator = highOperator;
     }
 
     //Metodo para geracao do codigo em C
@@ -19,6 +23,6 @@ public class Term {
     public void genJava(PW pw) {
     }
 
-    private 
-    private 
+    private ArrayList<SignalFactor> signalFactor;
+    private ArrayList<HighOperator> highOperator;
 }

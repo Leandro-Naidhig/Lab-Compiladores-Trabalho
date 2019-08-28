@@ -5,8 +5,15 @@
  */
 package ast;
 
+import java.util.ArrayList;
+
 public class SumSubExpression {
 
+    //Construtor da classe
+    public SumSubExpression(ArrayList<Term> term, ArrayList<LowOperator> lowOperator){
+        this.term = term;
+        this.lowOperator = lowOperator;
+    }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
@@ -15,5 +22,9 @@ public class SumSubExpression {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
     }
+
+    //Atributos da classe
+    private ArrayList<Term> term;
+    private ArrayList<LowOperator> lowOperator
 
 }

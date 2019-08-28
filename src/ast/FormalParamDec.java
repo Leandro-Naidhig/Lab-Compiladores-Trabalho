@@ -6,22 +6,23 @@
 package ast;
 import java.util.ArrayList;
 
-public class IdList {
+public class FormalParamDec {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public FormalParamDec(ArrayList<ParamDec> paramDec) {
+        this.paramDec = paramDec;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+
         int contador = 0;
 
-        for(Id s : ids) {
+        for(ParamDec s : paramDec) {
             s.genC(pw);
             contador++;
             
-            if((ids.size()-1) != contador) {
+            if((paramDec.size()-1) != contador) {
                 pw.print(", ");
             }
         }
@@ -32,5 +33,6 @@ public class IdList {
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private ArrayList<ParamDec> paramDec;
+
 }

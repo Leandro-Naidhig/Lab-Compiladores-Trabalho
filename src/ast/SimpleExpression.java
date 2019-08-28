@@ -22,5 +22,5 @@ public class SimpleExpression {
     }
 
     //Atributos da classe
-    private SumSubExpression arraySumSub;
+    private ArrayList<SumSubExpression> arraySumSub;
 }
