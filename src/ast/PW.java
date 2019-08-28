@@ -4,12 +4,11 @@
 
  */
 package ast;
-
 import java.io.PrintWriter;
 
 public class PW {
 
-	public PW( PrintWriter out ) {
+	public PW(PrintWriter out) {
 		this.out = out;
 		currentIndent = 0;
 	}
@@ -17,6 +16,7 @@ public class PW {
 	public void add() {
 		currentIndent += step;
 	}
+
 	public void sub() {
 		if ( currentIndent < step ) {
 			System.out.println("Internal compiler error: step (" + step + ") is greater then currentIndent (" + currentIndent + ") in method sub of class PW");
@@ -24,25 +24,25 @@ public class PW {
 		currentIndent -= step;
 	}
 
-	public void set( int indent ) {
+	public void set(int indent) {
 		currentIndent = indent;
 	}
 
-	public void printIdent( String s ) {
+	public void printIdent(String s) {
 		out.print( space.substring(0, currentIndent) );
 		out.print(s);
 	}
 
-	public void printlnIdent( String s ) {
+	public void printlnIdent(String s) {
 		out.print( space.substring(0, currentIndent) );
 		out.println(s);
 	}
 
-	public void print( String s ) {
+	public void print(String s) {
 		out.print(s);
 	}
 
-	public void println( String s ) {
+	public void println(String s) {
 		out.println(s);
 	}
 
@@ -50,12 +50,9 @@ public class PW {
 		out.println("");
 	}
 
-
 	int currentIndent = 0;
 	public int step = 3;
 	private PrintWriter out;
-
-
 	static final private String space = "                                                                                                        ";
 
 }

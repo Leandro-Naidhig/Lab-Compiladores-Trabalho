@@ -4,7 +4,6 @@
 
  */
 package ast;
-import java.util.*;
 
 public class WhileStat {
 
@@ -32,6 +31,4 @@ public class WhileStat {
     //Atributos da Classe
     private StatementList statList;
     private Expr expr;
-
-
 }

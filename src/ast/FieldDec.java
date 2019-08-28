@@ -4,20 +4,21 @@
 
  */
 package ast;
-import java.util.*;
 
-public class StatementList {
+public class FieldDec {
 
-    //Construtor da classe
-    public StatementList(ArrayList<Statement> arrayStatement) {
-		this.arrayStatement = arrayStatement;
+    //Construtor da classe 
+    public FieldDec(Type type, IdList idList) {
+        this.type = type;
+        this.idList = idList;
     }
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-      for(Statement s : arrayStatement) {
-        s.genC(pw);
-      }
+        type.getName();
+        pw.print(" ");
+        idList.genC(pw);
+        pw.print(";");
     }
     
     //Metodo para geracao do codigo em Java
@@ -25,5 +26,6 @@ public class StatementList {
     }
 
     //Atributos da classe
-    private ArrayList<Statement> arrayStatement;
+    private Type type;
+    private IdList idList;
 }

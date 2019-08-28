@@ -5,8 +5,6 @@
  */
 package ast;
 
-import java.util.ArrayList;
-
 /** This class represents a metaobject annotation as <code>{@literal @}ce(...)</code> in <br>
  * <code>
  * @ce(5, "'class' expected") <br>
@@ -21,15 +19,22 @@ import java.util.ArrayList;
 
 public class ClassDec {
 
+    //Construtor da clase
     public ClassDec(String name, MemberList memberList) {
         this.name = name;
         this.memberList = memberList;   
     }
 
+    //Metodo para geracao do codigo em C
     public String getName() {
-		return name;
-	}
+		  return name;
+    }
+    
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
 
+    //Atributos da classe
     private String name;
     private MemberList memberList;
 

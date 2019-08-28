@@ -10,7 +10,6 @@ public class Id {
     //Construtor da classe
     public Id(String name) {
         this.name = name;
-           
     }
 
     //Metodo para geracao do codigo em C

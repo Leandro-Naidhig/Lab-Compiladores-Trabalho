@@ -11,7 +11,6 @@ public class IdList {
     //Construtor da classe
     public IdList(ArrayList<Id> ids) {
         this.ids = ids;
-           
     }
 
     //Metodo para geracao do codigo em C

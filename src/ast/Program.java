@@ -9,6 +9,7 @@ import comp.CompilationError;
 
 public class Program {
 
+	//Construtor da classe
 	public Program(ArrayList<TypeCianetoClass> classList, ArrayList<MetaobjectAnnotation> metaobjectCallList, 
 			       ArrayList<CompilationError> compilationErrorList) {
 		this.classList = classList;
@@ -16,17 +17,17 @@ public class Program {
 		this.compilationErrorList = compilationErrorList;
 	}
 
-
+	//Metodo responsavel pela geracao do codigo em 	Java
 	public void genJava(PW pw) {
 	}
 
+	//Metodo responsavel pela geracao do codigo em C
 	public void genC(PW pw) {
 
 		//Bibliotecas utilizadas na geração do código em C
 		pw.println("#include<malloc.h>");
 		pw.println("#include<stdlib.h>");
-		pw.println("#include<stdio.h>");
-		
+		pw.println("#include<stdio.h>");	
 	}
 	
 	//Compõe uma lista da classe TypeCianetoClass (ClassDec na gramatica)
@@ -49,7 +50,7 @@ public class Program {
 		return compilationErrorList;
 	}
 
-	//Atributos
+	//Atributos da classe
 	private ArrayList<TypeCianetoClass> classList;
 	private ArrayList<MetaobjectAnnotation> metaobjectCallList;	
 	ArrayList<CompilationError> compilationErrorList;

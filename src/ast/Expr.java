@@ -6,12 +6,20 @@
 package ast;
 
 abstract public class Expr extends Statement {
+  
+    //Metodo abstrato para geracao do codigo em C
     abstract public void genC( PW pw, boolean putParenthesis );
-	@Override
+    
+    //Meotodo para geracao do codigo em C
+    @Override
 	public void genC(PW pw) {
 		this.genC(pw, false);
-	}
+    }
+    
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
 
-      // new method: the type of the expression
+    //Metodo abstrato para retornar o tipo da expressao
     abstract public Type getType();
 }
