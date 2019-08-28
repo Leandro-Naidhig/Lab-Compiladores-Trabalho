@@ -6,18 +6,16 @@
 package ast;
 import java.util.ArrayList;
 
-public class IdList {
+public class RepeatStat {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public RepeatStat(StatementList statementList, Expr expr) {
+        this.statementList = statementList;
+        this.expr = expr;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        for(Id s : ids) {
-			s.genC(pw);
-		}
     }
 
     //Metodo para geracao do codigo em Java
@@ -25,5 +23,6 @@ public class IdList {
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private StatementList statementList;
+    private Expr expr;
 }

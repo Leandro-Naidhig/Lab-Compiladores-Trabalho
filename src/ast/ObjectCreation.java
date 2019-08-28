@@ -1,23 +1,19 @@
 /**
     Integrantes:    Leandro Naidhig 726555
                     Gustavo Buoro Branco de Souza 726533
-
+                    
  */
 package ast;
-import java.util.ArrayList;
 
-public class IdList {
+public class ObjectCreation {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public ObjectCreation(Id id) {
+      this.id = id;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        for(Id s : ids) {
-			s.genC(pw);
-		}
     }
 
     //Metodo para geracao do codigo em Java
@@ -25,5 +21,5 @@ public class IdList {
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private Id id;
 }

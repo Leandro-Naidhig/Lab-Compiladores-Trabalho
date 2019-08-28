@@ -18,6 +18,10 @@ public class LiteralBoolean extends Expr {
        pw.print( value ? "1" : "0" );
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     //Metodo para retornar o tipo
     @Override
 	public Type getType() {

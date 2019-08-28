@@ -26,7 +26,11 @@ public class WhileStat {
         }
         
         pw.printlnIdent("}");
-	}
+    }
+    
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
 
     //Atributos da Classe
     private StatementList statList;

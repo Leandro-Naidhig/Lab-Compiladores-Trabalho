@@ -31,6 +31,10 @@ public class ClassDec {
     }
     
     //Metodo para geracao do codigo em Java
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
     }
 

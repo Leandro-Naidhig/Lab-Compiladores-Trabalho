@@ -7,4 +7,12 @@ package ast;
 
 public class WriteStat {
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
 }

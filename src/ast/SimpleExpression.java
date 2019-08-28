@@ -15,9 +15,11 @@ public class SimpleExpression {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
 
     //Atributos da classe
     private SumSubExpression arraySumSub;

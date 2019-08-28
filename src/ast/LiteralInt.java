@@ -7,20 +7,30 @@ package ast;
 
 public class LiteralInt extends Expr {
     
+    //Construtor da classe
     public LiteralInt( int value ) { 
         this.value = value;
     }
     
+    //Retorna o valor
     public int getValue() {
         return value;
     }
+
+    //Metodo para geracao do codigo em C
     public void genC( PW pw, boolean putParenthesis ) {
         pw.printIdent("" + value);
     }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
     
+    //Retorna o tipo
     public Type getType() {
         return Type.intType;
     }
     
+    //Atributos da classe
     private int value;
 }

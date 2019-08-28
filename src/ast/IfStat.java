@@ -48,6 +48,10 @@ public class IfStat extends Statement {
         }
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     //Atributos da classe
     private Expr expr;
     private ArrayList<Statement> statElse;

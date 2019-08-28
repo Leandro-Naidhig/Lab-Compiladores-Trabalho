@@ -17,6 +17,10 @@ public class Id {
         pw.print(name);
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     //Atributos da classe
     private String name;
 }

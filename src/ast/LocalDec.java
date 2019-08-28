@@ -26,6 +26,10 @@ public class LocalDec {
         }
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     //Atributos da classe
     private Type tipo;
     private IdList idList;

@@ -1,7 +1,11 @@
-package ast;
-/*
- * Krakatoa Class
+/**
+    Integrantes:    Leandro Naidhig 726555
+                    Gustavo Buoro Branco de Souza 726533
+
  */
+
+package ast;
+
 public class TypeCianetoClass extends Type {
 
    public TypeCianetoClass( String name ) {
@@ -17,6 +21,6 @@ public class TypeCianetoClass extends Type {
    private TypeCianetoClass superclass;
    // private FieldList fieldList;
    // private MethodList publicMethodList, privateMethodList;
-   // métodos públicos get e set para obter e iniciar as variáveis acima,
-   // entre outros métodos
+   // mï¿½todos pï¿½blicos get e set para obter e iniciar as variï¿½veis acima,
+   // entre outros mï¿½todos
 }

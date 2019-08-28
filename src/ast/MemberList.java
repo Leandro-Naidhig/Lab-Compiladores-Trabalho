@@ -5,22 +5,23 @@
  */
 package ast;
 
-import java.util.ArrayList;
-
-/** This class represents a metaobject annotation as <code>{@literal @}ce(...)</code> in <br>
- * <code>
- * @ce(5, "'class' expected") <br>
- * clas Program <br>
- *     public void run() { } <br>
- * end <br>
- * </code>
- *
-   @author Jos�
-
- */
-
 public class MemberList {
 
-    public MemberList() {
+    //Construtor da classe
+    public MemberList(String qualifier, Member member) {
+      this.qualifier = qualifier;
+      this.member = member;
     }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
+    //Atributos da classe
+    private String qualifier;
+    private Member member;
 }

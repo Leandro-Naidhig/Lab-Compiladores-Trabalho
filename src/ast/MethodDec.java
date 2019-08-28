@@ -7,5 +7,26 @@ package ast;
 
 public class MethodDec {
 
+    //Construtor da classe 
+    public MethodDec(IdColon idColon, FormalParamDec formParDec, Type type,StatementList statementList) {
+        this.idColon = idColon;
+        this.formParDec = formParDec;
+        this.type = type;
+        this.statementList = statementList;
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
+    //Atributos da classe
+    private IdColon idColon;
+    private FormalParamDec formParDec;
+    private Type type;
+    private StatementList statementList;
 
 }

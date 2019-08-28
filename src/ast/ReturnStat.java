@@ -19,6 +19,10 @@ public class ReturnStat extends Statement {
         pw.println(";");
     }
 
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     //Atributos da classe
     private Expr expr;
 }
