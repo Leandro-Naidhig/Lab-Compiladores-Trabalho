@@ -18,7 +18,7 @@ Realização da Análise Léxica, Sintática, Semântica e Geração do Código 
 
 #### Gramática
 
-Annot ::= “@” Id [ “(” { AnnotParam } “)” ]
+Annot ::= “@” Id [ “(” { AnnotParam } “)” ]\
 AnnotParam ::= IntValue | StringValue | Id
 AssertStat ::= “assert” Expression “,” StringValue
 AssignExpr ::= Expression [ “=” Expression ]
