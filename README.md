@@ -67,7 +67,7 @@ WhileStat ::= “while” Expression “{” StatementList “}”\
 
 No diretorio [src], execute o seguinte comando no terminal:
 
-- javac */** -encoding Cp1252
+- [javac */** -encoding Cp1252]
 
 ----
 
