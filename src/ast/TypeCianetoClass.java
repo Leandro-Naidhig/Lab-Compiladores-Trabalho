@@ -8,7 +8,7 @@ package ast;
 
 public class TypeCianetoClass extends Type {
 
-   public TypeCianetoClass( String name ) {
+   public TypeCianetoClass(String name) {
       super(name);
    }
 
@@ -16,6 +16,8 @@ public class TypeCianetoClass extends Type {
    public String getCname() {
       return getName();
    }
+
+   
 
    private String name;
    private TypeCianetoClass superclass;

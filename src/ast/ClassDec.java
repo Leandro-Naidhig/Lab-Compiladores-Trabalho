@@ -32,6 +32,10 @@ public class ClassDec {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print("public class ");
+        pw.print(name1);
+        pw.print(" {");
+
     }
 
     //Atributos da classe

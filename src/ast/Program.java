@@ -19,6 +19,39 @@ public class Program {
 
 	//Metodo responsavel pela geracao do codigo em 	Java
 	public void genJava(PW pw) {
+		pw.print("package comp;");
+		pw.print("import java.util.Scanner");	
+		
+		for(TypeCianetoClass s : classList) {
+
+			if(s.getName().equals("Program")) {
+				pw.print("public class Program {");
+				pw.add();
+				pw.print("public static void main(String []args) {");
+				pw.add();
+				pw.sub();
+				pw.print("}");
+			
+			} else {
+				pw.print("public class ");
+				s.getName();
+				pw.print("} ");
+
+
+			}
+
+
+			
+		  }
+
+		  s.genC(pw);
+
+		
+
+
+			
+				new Comp().run(args);
+			}
 	}
 
 	//Metodo responsavel pela geracao do codigo em C
