@@ -508,7 +508,8 @@ public class Compiler {
 	}
 
 	//Ok
-	private void statement(ArrayList<Statement> statements) {
+	private Statement statement(ArrayList<Statement> statements) {
+
 		boolean checkSemiColon = true;
 		switch(lexer.token) {
 		case IF:
@@ -520,7 +521,7 @@ public class Compiler {
 			checkSemiColon = false;
 			break;
 		case RETURN:
-		statements.add(returnStat());
+			statements.add(returnStat());
 			break;
 		case BREAK:
 			statements.add(breakStat());
@@ -548,6 +549,36 @@ public class Compiler {
 		if(checkSemiColon) {
 			check(Token.SEMICOLON, "';' expected");
 		}
+	}
+
+	//Ok
+	private IfStat ifStat() {
+		
+		ArrayList<Statement> statIf = new ArrayList<>();
+		ArrayList<Statement> statElse = new ArrayList<>();
+
+		next();
+		Expr expressao = expr();
+		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
+		next();
+		
+		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE) {
+			statIf.add(statement(statIf));
+		}
+
+		check(Token.RIGHTCURBRACKET, "'}' was expected");
+		
+		if (lexer.token == Token.ELSE) {
+			next();
+			check(Token.LEFTCURBRACKET, "'{' expected after 'else'");
+			next();
+			while(lexer.token != Token.RIGHTCURBRACKET) {
+				statement(statElse);
+			}
+			check(Token.RIGHTCURBRACKET, "'}' was expected");
+		}
+
+		return new IfStat(expressao, statIf, statElse);
 	}
 
 	private void localDec() {
@@ -601,29 +632,6 @@ public class Compiler {
 		}
 
 		check(Token.RIGHTCURBRACKET, "missing '}' after 'while' body");
-	}
-
-	private void ifStat() {
-		next();
-		expr();
-		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
-		next();
-		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE) {
-			statement();
-		}
-
-		check(Token.RIGHTCURBRACKET, "'}' was expected");
-		
-		if (lexer.token == Token.ELSE) {
-			next();
-			check(Token.LEFTCURBRACKET, "'{' expected after 'else'");
-			next();
-			while(lexer.token != Token.RIGHTCURBRACKET) {
-				statement();
-			}
-
-			check(Token.RIGHTCURBRACKET, "'}' was expected");
-		}
 	}
 
 	private void writeStat() {
