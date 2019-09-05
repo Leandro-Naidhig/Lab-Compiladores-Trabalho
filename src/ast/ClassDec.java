@@ -25,6 +25,12 @@ public class ClassDec extends Type{
         this.name2 = name2;
         this.memberList = memberList;   
     }
+
+    public ClassDec(String name1) {
+        this.name1 = name1;   
+    }
+
+
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
