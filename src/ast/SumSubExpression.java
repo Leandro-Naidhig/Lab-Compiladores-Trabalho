@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class SumSubExpression {
 
     //Construtor da classe
-    public SumSubExpression(ArrayList<Term> term, ArrayList<LowOperator> lowOperator){
+    public SumSubExpression(ArrayList<Term> term, ArrayList<String> lowOperator){
         this.term = term;
         this.lowOperator = lowOperator;
     }
@@ -25,6 +25,6 @@ public class SumSubExpression {
 
     //Atributos da classe
     private ArrayList<Term> term;
-    private ArrayList<LowOperator> lowOperator
+    private ArrayList<String> lowOperator
 
 }

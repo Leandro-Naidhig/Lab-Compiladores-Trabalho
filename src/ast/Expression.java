@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class Expression {
+public class Expression extends Expr{
 
     //Construtor da classe
     public Expression(Expr exprLeft, String relation, Expr exprRight) {

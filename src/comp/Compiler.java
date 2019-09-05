@@ -558,7 +558,7 @@ public class Compiler {
 		ArrayList<Statement> statElse = new ArrayList<>();
 
 		next();
-		Expr expressao = expr();
+		Expr expressao = expression();
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
 		
@@ -579,6 +579,59 @@ public class Compiler {
 		}
 
 		return new IfStat(expressao, statIf, statElse);
+	}
+
+	//Ok
+	private Expr expression() {
+
+		String relation = "";
+		Expr exprLeft = simpleExpression();
+		Expr exprRight = null;
+
+		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
+		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
+			relation = lexer.getStringValue();
+			next();
+			exprRight = simpleExpression();
+		}
+
+		return new Expression(exprLeft, relation, exprRight); 
+	}
+
+	//Ok
+	private SimpleExpression simpleExpression() {
+
+		ArrayList<SumSubExpression> arraySumSub = new ArrayList<>();
+
+		arraySumSub.add(sumSubExpression());
+
+		while(lexer.token == Token.PLUSPLUS) {
+			next();
+			arraySumSub.add(sumSubExpression());
+		}
+
+		return new SimpleExpression(arraySumSub);
+	}
+
+	//Ok
+	private SumSubExpression() {
+
+		ArrayList<Term> terms = new ArrayList<>();
+		ArrayList<String> operators = new ArrayList<>();
+
+		terms.add(term());
+
+		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
+			operators.add(lexer.getStringValue());
+			terms.add(term());
+		}
+
+		return new SumSubExpression(terms, operators);
+	}
+
+	private Term term() {
+
+
 	}
 
 	private void localDec() {
@@ -643,9 +696,7 @@ public class Compiler {
 		expr();
 	}
 
-	private void expr() {
-
-	}
+	
 
 	private Type type() {
 
