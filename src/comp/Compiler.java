@@ -666,7 +666,24 @@ public class Compiler {
 
 		Expr expressao = null;
 
-		switch(lexer.token) {
+		if(lexer.token == Token.RIGHTPAR) {
+
+			expressao = expression();
+			if(lexer.token != Token.LEFTPAR) {
+				error();
+			}			
+
+		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
+			primaryExpr();
+
+		} else if(lexer.token == Token.NOT) {
+			Factor fac = factor();
+
+		} else if(lexer.token == Token.ID) {
+			
+
+		}
+
 			case RIGHTPAR:
 				expressao = expression();
 				if(lexer.token != Token.LEFTPAR) {
@@ -678,10 +695,13 @@ public class Compiler {
 				break;
 			case ID:
 				break;
-			case (SUPER || SELF):
+			case (SUPER):
 				break;
 			case IN:
 				break;
+			case NIL:
+				break;
+			
 
 
 
