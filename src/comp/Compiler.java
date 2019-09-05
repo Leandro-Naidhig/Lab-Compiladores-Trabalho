@@ -372,6 +372,8 @@ public class Compiler {
 
 	private MethodDec methodDec() {
 		
+		Type tipo = null;
+
 		if(lexer.token == Token.ID) {
 			// unary method
 			next();
@@ -387,7 +389,7 @@ public class Compiler {
 
 		if(lexer.token == Token.MINUS_GT) {
 			next();
-			Type tipo = type();
+			tipo = type();
 		}
 
 		if(lexer.token != Token.LEFTCURBRACKET) {
@@ -490,47 +492,56 @@ public class Compiler {
 		return new ParamDec(tipo, id);
 	}
 
-	private void statementList() {
-		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
-			statement();
+	//Ok
+	private StatementList statementList() {
+		
+		ArrayList<Statement> statements = new ArrayList<>();
+		
+		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
+		   || lexer.token == Token.BREAK || lexer.token == Token.SEMICOLON || lexer.token == Token.REPEAT
+		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || (
+		   lexer.token == Token.ID && lexer.getStringValue().equals("Out"))) {
+			statement(statements);
 		}
+
+		return new StatementList(statements);
 	}
 
 	//Ok
-	private void statement() {
+	private void statement(ArrayList<Statement> statements) {
 		boolean checkSemiColon = true;
 		switch(lexer.token) {
 		case IF:
-			ifStat();
+			statements.add(ifStat());
 			checkSemiColon = false;
 			break;
 		case WHILE:
-			whileStat();
+			statements.add(whileStat());
 			checkSemiColon = false;
 			break;
 		case RETURN:
-			returnStat();
+		statements.add(returnStat());
 			break;
 		case BREAK:
-			breakStat();
+			statements.add(breakStat());
 			break;
 		case SEMICOLON:
 			next();
 			break;
 		case REPEAT:
-			repeatStat();
+			statements.add(repeatStat());
 			break;
 		case VAR:
-			localDec();
+			statements.add(localDec());
 			break;
 		case ASSERT:
-			assertStat();
+			statements.add(assertStat());
 			break;
 		default:
 			if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
-				writeStat();
+				statements.add(writeStat());
 			} else {	
-				expr();
+				statements.add(expr());
 			}
 		}
 
