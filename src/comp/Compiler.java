@@ -623,12 +623,14 @@ public class Compiler {
 
 		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
 			operators.add(lexer.getStringValue());
+			next();
 			terms.add(term());
 		}
 
 		return new SumSubExpression(terms, operators);
 	}
 
+	//Ok
 	private Term term() {
 
 		ArrayList<SignalFactor> signalfactor = new ArrayList<>();
@@ -645,10 +647,45 @@ public class Compiler {
 		return new Term(signalfactor, highOperator);
 	}
 
+	//Ok
 	private SignalFactor signalFactor() {
 
+		String signal = "";
 
-		return new SignalFactor(signal, factor)
+		if(lexer.token == Token.PLUS || lexer.token == Token.MINUS) {
+			signal = lexer.getStringValue();
+		}
+
+		next();
+		Factor fac = factor();
+
+		return new SignalFactor(signal, fac);
+	}
+
+	private Factor factor() {
+
+		Expr expressao = null;
+
+		switch(lexer.token) {
+			case RIGHTPAR:
+				expressao = expression();
+				if(lexer.token != Token.LEFTPAR) {
+					error();
+				}
+				break;
+			case NOT:
+				Factor fac = factor();
+				break;
+			case ID:
+				break;
+			case (SUPER || SELF):
+				break;
+			case IN:
+				break;
+
+
+
+		return new Factor();
 	}
 
 	private void localDec() {
