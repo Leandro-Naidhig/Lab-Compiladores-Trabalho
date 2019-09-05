@@ -614,7 +614,7 @@ public class Compiler {
 	}
 
 	//Ok
-	private SumSubExpression() {
+	private SumSubExpression sumSubExpression() {
 
 		ArrayList<Term> terms = new ArrayList<>();
 		ArrayList<String> operators = new ArrayList<>();
@@ -631,7 +631,24 @@ public class Compiler {
 
 	private Term term() {
 
+		ArrayList<SignalFactor> signalfactor = new ArrayList<>();
+		ArrayList<String> highOperator = new ArrayList<>();
 
+		signalfactor.add(signalFactor());
+
+		while(lexer.token == Token.MULT || lexer.token == Token.DIV || lexer.token == Token.AND) {
+			highOperator.add(lexer.getStringValue());
+			next();
+			signalfactor.add(signalFactor());
+		}
+
+		return new Term(signalfactor, highOperator);
+	}
+
+	private SignalFactor signalFactor() {
+
+
+		return new SignalFactor(signal, factor)
 	}
 
 	private void localDec() {

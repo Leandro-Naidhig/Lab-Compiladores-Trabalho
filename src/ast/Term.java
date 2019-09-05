@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Term {
 
     //Construtor da classe
-    public Term(ArrayList<SignalFactor> signalFactor, ArrayList<HighOperator> highOperator) {
+    public Term(ArrayList<SignalFactor> signalFactor, ArrayList<String> highOperator) {
         this.signalFactor = signalFactor;
         this.highOperator = highOperator;
     }
@@ -24,5 +24,5 @@ public class Term {
     }
 
     private ArrayList<SignalFactor> signalFactor;
-    private ArrayList<HighOperator> highOperator;
+    private ArrayList<String> highOperator;
 }
