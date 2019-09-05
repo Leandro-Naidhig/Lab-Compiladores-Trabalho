@@ -17,10 +17,10 @@ package ast;
 
  */
 
-public class ClassDec {
+public class ClassDec extends Type{
 
     //Construtor da clase
-    public ClassDec(String name1, String name2, MemberList memberList) {
+    public ClassDec(String name1, ClassDec name2, MemberList memberList) {
         this.name1 = name1;
         this.name2 = name2;
         this.memberList = memberList;   
@@ -40,7 +40,7 @@ public class ClassDec {
 
     //Atributos da classe
     private String name1;
-    private String name2;
+    private ClassDec name2;
     private MemberList memberList;
 
 }

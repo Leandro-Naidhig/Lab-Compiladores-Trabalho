@@ -4,12 +4,14 @@
                     
  */
 package ast;
+import java.util.ArrayList;
 
 public class MemberList {
 
-    //Construtor da classe
-    public MemberList(String qualifier, Member member) {
+  // Construtor da classe
+    public MemberList(ArrayList<Integer> qualifierPos, ArrayList<String> qualifier, ArrayList<Member> member) {
       this.qualifier = qualifier;
+      this.qualifierPos = qualifierPos;
       this.member = member;
     }
 
@@ -22,6 +24,7 @@ public class MemberList {
     }
 
     //Atributos da classe
-    private String qualifier;
-    private Member member;
+    private ArrayList<String> qualifier;
+    private ArrayList<Integer> qualifierPos;
+    private ArrayList<Member> member;
 }

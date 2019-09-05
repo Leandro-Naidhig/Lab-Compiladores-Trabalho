@@ -10,7 +10,7 @@ import comp.CompilationError;
 public class Program {
 
 	//Construtor da classe
-	public Program(ArrayList<TypeCianetoClass> classList, ArrayList<MetaobjectAnnotation> metaobjectCallList, 
+	public Program(ArrayList<ClassDec> classList, ArrayList<MetaobjectAnnotation> metaobjectCallList, 
 			       ArrayList<CompilationError> compilationErrorList) {
 		this.classList = classList;
 		this.metaobjectCallList = metaobjectCallList;
@@ -19,10 +19,12 @@ public class Program {
 
 	//Metodo responsavel pela geracao do codigo em 	Java
 	public void genJava(PW pw) {
+
+		//Bibliotecas do Java
 		pw.print("package comp;");
-		pw.print("import java.util.Scanner");	
-		
-		for(TypeCianetoClass s : classList) {
+		pw.print("import java.util.Scanner");
+
+		for(ClassDec s : classList) {
 
 			if(s.getName().equals("Program")) {
 				pw.print("public class Program {");
@@ -36,22 +38,8 @@ public class Program {
 				pw.print("public class ");
 				s.getName();
 				pw.print("} ");
-
-
 			}
-
-
-			
-		  }
-
-		  s.genC(pw);
-
-		
-
-
-			
-				new Comp().run(args);
-			}
+		}
 	}
 
 	//Metodo responsavel pela geracao do codigo em C
@@ -64,7 +52,7 @@ public class Program {
 	}
 	
 	//Compõe uma lista da classe TypeCianetoClass (ClassDec na gramatica)
-	public ArrayList<TypeCianetoClass> getClassList() {
+	public ArrayList<ClassDec> getClassList() {
 		return classList;
 	}
 
@@ -84,7 +72,7 @@ public class Program {
 	}
 
 	//Atributos da classe
-	private ArrayList<TypeCianetoClass> classList;
+	private ArrayList<ClassDec> classList;
 	private ArrayList<MetaobjectAnnotation> metaobjectCallList;	
 	ArrayList<CompilationError> compilationErrorList;
 }

@@ -8,7 +8,7 @@ package ast;
 public class MethodDec {
 
     //Construtor da classe 
-    public MethodDec(IdColon idColon, FormalParamDec formParDec, Type type,StatementList statementList) {
+    public MethodDec(Id idColon, FormalParamDec formParDec, Type type,StatementList statementList) {
         this.idColon = idColon;
         this.formParDec = formParDec;
         this.type = type;
@@ -24,7 +24,7 @@ public class MethodDec {
     }
 
     //Atributos da classe
-    private IdColon idColon;
+    private Id idColon;
     private FormalParamDec formParDec;
     private Type type;
     private StatementList statementList;

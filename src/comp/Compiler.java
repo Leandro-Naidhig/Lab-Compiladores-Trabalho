@@ -2,13 +2,8 @@ package comp;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import ast.LiteralInt;
-import ast.MetaobjectAnnotation;
-import ast.Program;
-import ast.Statement;
-import ast.TypeCianetoClass;
-import lexer.Lexer;
-import lexer.Token;
+import ast.*;
+import lexer.*;
 
 public class Compiler {
 
@@ -35,7 +30,7 @@ public class Compiler {
 		
 		//Lista de Annots e ClassDecs
 		ArrayList<MetaobjectAnnotation> metaobjectCallList = new ArrayList<>();
-		ArrayList<TypeCianetoClass> CianetoClassList = new ArrayList<>();
+		ArrayList<ClassDec> CianetoClassList = new ArrayList<>();
 
 		//Criação do objeto Program
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
@@ -55,8 +50,21 @@ public class Compiler {
 					metaobjectAnnotation(metaobjectCallList);
 				}
 
-				/*Chamada de função*/
-				classDec();
+				//Chamada de funcao para "ClassDec"
+				classDec(CianetoClassList);
+
+				while (lexer.token == Token.ANNOT || lexer.token == Token.CLASS) {
+					
+					if(lexer.token == Token.ANNOT) {
+						
+						//Chamada de funcao para "Annot"
+						metaobjectAnnotation(metaobjectCallList);
+					} else {
+
+						//Chamada de funcao para "ClassDec"
+						classDec(CianetoClassList);
+					}
+				}
 			}
 
 			catch(CompilerError e) {
@@ -116,8 +124,6 @@ public class Compiler {
 
 		//Inicia uma lista de AnnotParam
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
-
-
 		boolean getNextToken = false;
 
 		//Caso o token for um abre paranteses
@@ -125,7 +131,7 @@ public class Compiler {
 			error("'(' expected before ID");
 
 		} else {
-			
+		
 			next();
 
 			//Verifica se trata de alguma sentença pertencente ao AnnotParam
@@ -205,6 +211,7 @@ public class Compiler {
 
 			break;
 		
+		//Verificar sua responsabilidade
 		case "annot":
 			if(metaobjectParamList.size() < 2 ) {
 				error("Annotation 'annot' takes at least two parameters");
@@ -221,6 +228,8 @@ public class Compiler {
 			}
 
 			break;
+		
+		//Caso não for nenhuma das denotações
 		default:
 			error("Annotation '" + name + "' is illegal");
 		}
@@ -234,7 +243,7 @@ public class Compiler {
 	}
 
 	//ClassDec =  ["open"] "class" ID ["extends" ID] MemberList "end"
-	private void classDec() {
+	private void classDec(ArrayList<ClassDec> CianetoClassList) {
 		
 		//Professor falta arrumar isso
 		if(lexer.token == Token.ID && lexer.getStringValue().equals("open")) {
@@ -280,8 +289,8 @@ public class Compiler {
 			next();
 		}
 
-		/*Chamada de função*/
-		memberList();
+		//Chamada de função para MemberList
+		MemberList memberlist = memberList();
 		
 		/*Verifica se o token é um END*/
 		if(lexer.token != Token.END) {
@@ -289,28 +298,82 @@ public class Compiler {
 		}
 
 		next();
+		
 	}
 
-	private void memberList() {
+	private MemberList memberList() {
+		
+		int pos = 0;
+		String first = "";
+		String second = "";
+		String third = "";
+		String qual = "";
+		ArrayList<Integer> qualifierspos = new ArrayList<>();
+		ArrayList<String> qualifiers = new ArrayList<>(); 
+		ArrayList<Member> members = new ArrayList<>();
+
 		while(true) {
+
+			FieldDec field = null;
+			MethodDec method = null;
 			
-			/*Chamada de funcao*/
-			qualifier();
+			//Verifica se o qualificador está correto de acordo com a gramatica do cianeto
+			if(lexer.token == Token.PRIVATE || lexer.token == Token.PUBLIC || 
+			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
+			   lexer.token == Token.SHARED) {
+
+				next();
+
+				//Pega o primeiro nome do qualifier
+				first = lexer.getStringValue();
+
+				//Caso houver um segundo nome para o qualifier
+				if( (first == "shared" && (!(lexer.token == Token.PRIVATE) || !(lexer.token == Token.PUBLIC))) 
+				    ||  (first == "final" && (!(lexer.token == Token.PUBLIC) || !(lexer.token == Token.OVERRIDE)))
+				    ||  (first == "Override" && !(lexer.token != Token.PUBLIC)) ) {
+
+					error("Qualifier illegal");
+			   	}
+
+			   	next();
+
+			   	//Pega o segundo nome do qualifier
+			   	second = lexer.getStringValue();
+
+			   	if(first == "" && second == "" && !(lexer.token == Token.PUBLIC)) {
+					error("Qualifier illegal");
+			   
+			   	} else if(lexer.token == Token.PUBLIC) {
+
+					third = lexer.getStringValue();
+			   	}
+				
+				String qual = first + second + third;
+				qualifiers.add(qual);
+				qualifierspos.add(pos);
+			   	pos++;
+			}
 			
 			if(lexer.token == Token.VAR) {
 				
-				/*Chamada de funcao*/
-				fieldDec();
+				//Chamada de funcao
+				field = fieldDec();
 			
 			} else if(lexer.token == Token.FUNC) {
 
 				/*Chamada de funcao*/
-				methodDec();
+				method = methodDec();
 			
 			} else {
 				break;
 			}
+
+			Member membro = new Member(field, method);
+
+			members.add(membro);
 		}
+
+		return new MemberList(qualifierspos, qualifiers, members);
 	}
 
 	private void error(String msg) {
@@ -328,8 +391,10 @@ public class Compiler {
 		}
 	}
 
-	private void methodDec() {
+	private MethodDec methodDec() {
+		
 		next();
+		
 		if(lexer.token == Token.ID) {
 			// unary method
 			next();
@@ -342,22 +407,32 @@ public class Compiler {
 		}
 
 		if(lexer.token == Token.MINUS_GT) {
-			// method declared a return type
 			next();
-			type();
+			Type Tipo = type();
+
+
+			if(lexer.token != Token.BOOLEAN || lexer.token != Token.INT || 
+			   lexer.token != Token.STRING || lexer.token != Token.ID) {
+				error("Expected type: Boolean, Int, String or ID");
+			}
 		}
+
 		if(lexer.token != Token.LEFTCURBRACKET) {
 			error("'{' expected");
 		}
+
 		next();
 
-		/*Chamada de funcao*/
+		// Chamada de funcao para "StatmentList"
 		statementList();
 
 		if ( lexer.token != Token.RIGHTCURBRACKET ) {
 			error("'{' expected");
 		}
+		
 		next();
+
+		return new MethodDec();
 
 	}
 
