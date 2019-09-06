@@ -461,15 +461,11 @@ public class Compiler {
 	private FormalParamDec formalParamDec() {
 
 		ArrayList<ParamDec> params = new ArrayList<>();
+		params.add(paramDec());
+		next();
 
-		while(true) {
-
+		while(lexer.token != Token.COMMA) {
 			params.add(paramDec());
-
-			if(lexer.token != Token.COMMA) {
-				break;
-			}
-			
 			next();
 		}
 
@@ -618,8 +614,10 @@ public class Compiler {
 
 		Expression expr = expression();
 		exprList.add(expr);
+		next();
 
 		while(lexer.token == Token.COMMA) {
+			next();
 			exprList.add(expr);
 		}
 
@@ -632,6 +630,7 @@ public class Compiler {
 		ArrayList<SumSubExpression> arraySumSub = new ArrayList<>();
 
 		arraySumSub.add(sumSubExpression());
+		next();
 
 		while(lexer.token == Token.PLUSPLUS) {
 			next();
@@ -648,6 +647,7 @@ public class Compiler {
 		ArrayList<String> operators = new ArrayList<>();
 
 		terms.add(term());
+		next();
 
 		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
 			operators.add(lexer.getStringValue());
@@ -714,11 +714,13 @@ public class Compiler {
 		return new Factor();
 	}
 
+	//Ok
 	private Factor primaryExpr() {
 
 		ArrayList<Id> ids = new ArrayList<>();
-		ArrayList<Id> idcs = new ArrayList<>();
-
+		String name = "";
+		Id id = null;
+		ExpressionList exprList = null;
 
 		switch(lexer.token) {
 			case SUPER:
@@ -728,20 +730,42 @@ public class Compiler {
 					error("An identifier or identifer: was expected after '.'");
 				} else {
 					if(lexer.token == Token.ID) {
-						String name = lexer.getStringValue();
-						Id id = new Id(name);
+						name = lexer.getStringValue();
+						id = new Id(name);
 						ids.add(id);
 						return new PrimaryExpr("super", ids, null, null, null);
 					} else if(lexer.token == Token.IDCOLON) {
-						String name = lexer.getStringValue();
-						Id id = new Id(name);
-						idcs.add(id);
-						ExpressionList exprList = 
+						name = lexer.getStringValue();
+						id = new Id(name);
+						exprList = expressionList();
+						return new PrimaryExpr("super", null, id, exprList, null);
 					}
 				}
-				
 				break;
 			case ID:
+				name = lexer.getStringValue();
+				id = new Id(name);
+				ids.add(id);
+				next();
+				if(lexer.token == Token.DOT) {
+					next();
+					if(lexer.token == Token.ID) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						ids.add(id);
+						return new PrimaryExpr(null, ids, null, null, null);	
+					
+					} else if(lexer.token == Token.IDCOLON) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						exprList = expressionList();
+						return new PrimaryExpr(null, ids, id, exprList, null);
+
+					} else {
+						error("An identifier or identifer: was expected after '.'");
+					}
+					next();
+				}
 				break;
 			case SELF:
 				break;
@@ -849,11 +873,22 @@ public class Compiler {
 	private Type type() {
 
 		Type tipo = null;
+		ClassDec class = null;
 
 		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
+			if(lexer.token == Token.INT) {
+				tipo = Type.intType;
+
+			} else if(lexer.token == Token.STRING){
+				tipo = Type.stringType;
+
+			} else {
+				tipo = Type.booleanType;
+			}
 			next();
 		
 		} else if(lexer.token == Token.ID) {
+			
 			next();
 		
 		} else {
@@ -880,12 +915,6 @@ public class Compiler {
 		}
 
 		String message = lexer.getLiteralStringValue();
-		lexer.nextToken();
-		
-		if(lexer.token == Token.SEMICOLON) {
-			next();
-		}
-
 		return new AssertStat(message, expressao);
 	}
 
