@@ -768,18 +768,28 @@ public class Compiler {
 				}
 				break;
 			case SELF:
+				next();
+				if(lexer.token == Token.DOT){
+					next();
+					if(lexer.token == Token.ID) {
+						next();
+						if(lexer.token == Token.DOT) {
+							next();
+							if() {
+
+							} else if() {
+
+							}
+						}
+					}
+				}
 				break;
 			case IN:
 				next();
-				Factor 
+				ReadExpr readexpr = readExpr();
+				return new PrimaryExpr(null, null, null, null, readexpr);
 				break;
-
-
-
 		}
-
-
-		return new PrimaryExpr(qualifier, id, idc, exprlist);
 	}
 
 	//Ok
