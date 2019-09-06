@@ -5,10 +5,10 @@
  */
 package ast;
 
-public class LocalDec {
+public class LocalDec extends Statement{
 
     //Construtor da classe
-    public LocalDec(Type tipo, IdList idList, Expr expr) {
+    public LocalDec(Type tipo, IdList idList, Expression expr) {
         this.tipo = tipo;
         this.idList = idList;
         this.expr = expr;
@@ -33,5 +33,5 @@ public class LocalDec {
     //Atributos da classe
     private Type tipo;
     private IdList idList;
-    private Expr expr;
+    private Expression expr;
 }

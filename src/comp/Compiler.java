@@ -587,7 +587,7 @@ public class Compiler {
 		Expression exprLeft = expression();
 		Expression exprRight = null;
 
-		if(lexer.token == Token.EQ) {
+		if(lexer.token == Token.ASSIGN) {
 			exprRight = expression();
 		}
 
@@ -745,28 +745,24 @@ public class Compiler {
 		return new ReadExpr(name);
 	}
 
-	private void localDec() {
-		next();
-		type();
-
-		check(Token.ID, "A variable name was expected");
+	//Ok
+	private LocalDec localDec() {
 		
-		while(lexer.token == Token.ID) {
-			next();
-			if(lexer.token == Token.COMMA) {
-				next();
-			}
-			else {
-				break;
-			}
-		}
+		Expression expressao = null;
+		next();
+		Type tipo = type();
+		check(Token.ID, "A variable name was expected");
+		IdList idlist = idList();
 
 		if(lexer.token == Token.ASSIGN) {
 			next();
-			// check if there is just one variable
-			expr();
+			expressao = expression();
+			if(expressao == null) {
+				error("expression expected after the '='");
+			}
 		}
 
+		return new LocalDec(tipo, idlist, expressao);
 	}
 
 	//Ok
@@ -817,6 +813,8 @@ public class Compiler {
 
 	private Type type() {
 
+		Type tipo = null;
+
 		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
 			next();
 		
@@ -829,12 +827,12 @@ public class Compiler {
 
 	}
 
-
+	//Ok
 	public Statement assertStat() {
 
 		next();
 		int lineNumber = lexer.getLineNumber();
-		expr();
+		Expression expressao = expression();
 		
 		if(lexer.token != Token.COMMA) {
 			this.error("',' expected after the expression of the 'assert' statement");
@@ -853,7 +851,7 @@ public class Compiler {
 			next();
 		}
 
-		return new AssertStat(message, expr);
+		return new AssertStat(message, expressao);
 	}
 
 	private LiteralInt literalInt() {
