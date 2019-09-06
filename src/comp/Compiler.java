@@ -508,38 +508,38 @@ public class Compiler {
 
 		boolean checkSemiColon = true;
 		switch(lexer.token) {
-		case IF:
-			statements.add(ifStat());
-			checkSemiColon = false;
-			break;
-		case WHILE:
-			statements.add(whileStat());
-			checkSemiColon = false;
-			break;
-		case RETURN:
-			statements.add(returnStat());
-			break;
-		case BREAK:
-			statements.add(breakStat());
-			break;
-		case SEMICOLON:
-			next();
-			break;
-		case REPEAT:
-			statements.add(repeatStat());
-			break;
-		case VAR:
-			statements.add(localDec());
-			break;
-		case ASSERT:
-			statements.add(assertStat());
-			break;
-		default:
-			if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
-				statements.add(writeStat());
-			} else {	
-				statements.add(assignExpr());
-			}
+			case IF:
+				statements.add(ifStat());
+				checkSemiColon = false;
+				break;
+			case WHILE:
+				statements.add(whileStat());
+				checkSemiColon = false;
+				break;
+			case RETURN:
+				statements.add(returnStat());
+				break;
+			case BREAK:
+				statements.add(breakStat());
+				break;
+			case SEMICOLON:
+				next();
+				break;
+			case REPEAT:
+				statements.add(repeatStat());
+				break;
+			case VAR:
+				statements.add(localDec());
+				break;
+			case ASSERT:
+				statements.add(assertStat());
+				break;
+			default:
+				if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
+					statements.add(writeStat());
+				} else {	
+					statements.add(assignExpr());
+				}
 		}
 
 		if(checkSemiColon) {
@@ -772,16 +772,39 @@ public class Compiler {
 				if(lexer.token == Token.DOT){
 					next();
 					if(lexer.token == Token.ID) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						ids.add(id);
 						next();
 						if(lexer.token == Token.DOT) {
 							next();
-							if() {
-
-							} else if() {
-
+							if(lexer.token == Token.ID) {
+								name = lexer.getStringValue();
+								id = new Id(name);
+								ids.add(id);
+								return new PrimaryExpr("self", ids, null, null, null);
+							} else if(lexer.token == Token.IDCOLON) {
+								name = lexer.getStringValue();
+								id = new Id(name);
+								exprList = expressionList();
+								return new PrimaryExpr("self", ids, id, exprList, null);			
+							} else {
+								error("An identifier or identifer: was expected after '.'");		
 							}
 						}
+
+					} else if(lexer.token == Token.IDCOLON) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						next();
+						exprList = expressionList();
+						return new PrimaryExpr("self", null, id, exprList, null);
+
+					} else {
+						error("An identifier or identifer: was expected after '.'");
 					}
+				} else {
+					return new PrimaryExpr("self", null, null, null, null);
 				}
 				break;
 			case IN:
