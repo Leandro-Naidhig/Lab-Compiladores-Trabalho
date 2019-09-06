@@ -5,10 +5,10 @@
  */
 package ast;
 
-public class RepeatStat {
+public class RepeatStat extends Statement{
 
     //Construtor da classe
-    public RepeatStat(StatementList statementList, Expr expr) {
+    public RepeatStat(StatementList statementList, Expression expr) {
         this.statementList = statementList;
         this.expr = expr;
     }
@@ -23,5 +23,5 @@ public class RepeatStat {
 
     //Atributos da classe
     private StatementList statementList;
-    private Expr expr;
+    private Expression expr;
 }

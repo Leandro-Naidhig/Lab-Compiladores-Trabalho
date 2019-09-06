@@ -8,7 +8,7 @@ package ast;
 public class ReturnStat extends Statement {
 
     //Construtor da classe
-    public ReturnStat(Expr expr) {
+    public ReturnStat(Expression expr) {
         this.expr = expr;
     }
 
@@ -24,5 +24,5 @@ public class ReturnStat extends Statement {
     }
 
     //Atributos da classe
-    private Expr expr;
+    private Expression expr;
 }

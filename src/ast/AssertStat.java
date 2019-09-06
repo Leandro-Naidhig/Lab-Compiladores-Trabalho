@@ -5,10 +5,10 @@
  */
 package ast;
 
-public class AssertStat {
+public class AssertStat extends Statement{
 
     //Construtor da classe WhileStat
-    public AssertStat(LiteralString str, Expr expr) {
+    public AssertStat(String str, Expression expr) {
         this.str = str;
         this.expr = expr;
     }
@@ -22,6 +22,6 @@ public class AssertStat {
     }
 
     //Atributos da Classe
-    private LiteralString str;
-    private Expr expr;
+    private String str;
+    private Expression expr;
 }

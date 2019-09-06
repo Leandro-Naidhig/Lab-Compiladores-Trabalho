@@ -769,21 +769,25 @@ public class Compiler {
 
 	}
 
-	private void repeatStat() {
+	//Ok
+	private RepeatStat repeatStat() {
 		next();
-		while(lexer.token != Token.UNTIL && lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
-			statement();
-		}
+		StatementList statList = statementList();
 		check(Token.UNTIL, "missing keyword 'until'");
+		Expression expressao = expression();
+		return new RepeatStat(statList, expressao);
 	}
 
+	//Ainda nao sei o que fazer aqui
 	private void breakStat() {
 		next();
 	}
 
-	private void returnStat() {
+	//Ok
+	private ReturnStat returnStat() {
 		next();
-		expr();
+		Expression expressao = expression();
+		return new ReturnStat(expressao);
 	}
 
 	//Ok
@@ -798,16 +802,18 @@ public class Compiler {
 		return new WhileStat(statList, expressao);
 	}
 
-	private void writeStat() {
+	//Ok
+	private WriteStat writeStat() {
+		
 		next();
 		check(Token.DOT, "a '.' was expected after 'Out'");
 		next();
 		check(Token.IDCOLON, "'print:' or 'println:' was expected after 'Out.'");
 		String printName = lexer.getStringValue();
-		expr();
-	}
+		Expression expressao = expression();
 
-	
+		return new WriteStat(expressao);
+	}
 
 	private Type type() {
 
@@ -823,33 +829,6 @@ public class Compiler {
 
 	}
 
-
-	private void qualifier() {
-		if(lexer.token == Token.PRIVATE) {
-			next();
-		
-		} else if(lexer.token == Token.PUBLIC) {
-			next();
-		
-		} else if(lexer.token == Token.OVERRIDE) {
-			next();
-			if (lexer.token == Token.PUBLIC) {
-				next();
-			}
-		
-		} else if(lexer.token == Token.FINAL) {
-			next();
-			if(lexer.token == Token.PUBLIC) {
-				next();
-			
-			} else if(lexer.token == Token.OVERRIDE) {
-				next();
-				if(lexer.token == Token.PUBLIC) {
-					next();
-				}
-			}
-		}
-	}
 
 	public Statement assertStat() {
 
@@ -874,7 +853,7 @@ public class Compiler {
 			next();
 		}
 
-		return null;
+		return new AssertStat(message, expr);
 	}
 
 	private LiteralInt literalInt() {

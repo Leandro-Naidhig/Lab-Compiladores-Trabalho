@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class WhileStat {
+public class WhileStat extends Statement{
 
     //Construtor da classe WhileStat
     public WhileStat(StatementList statList, Expression expr) {
