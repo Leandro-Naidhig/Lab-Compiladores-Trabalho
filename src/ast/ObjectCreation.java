@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class ObjectCreation {
+public class ObjectCreation extends Factor{
 
     //Construtor da classe
     public ObjectCreation(Id id) {

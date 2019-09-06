@@ -7,5 +7,5 @@ package ast;
 
 public abstract class Factor {
 
-
+    
 }

@@ -683,29 +683,29 @@ public class Compiler {
 			
 
 		}
+		return new Factor();
+	}
 
-			case RIGHTPAR:
-				expressao = expression();
-				if(lexer.token != Token.LEFTPAR) {
-					error();
-				}
-				break;
-			case NOT:
-				Factor fac = factor();
+	private PrimaryExpr primaryExpr() {
+
+		ArrayList<Id> ids = new ArrayList<>();
+
+		switch(lexer.token) {
+			case SUPER
 				break;
 			case ID:
 				break;
-			case (SUPER):
+			case SELF:
 				break;
 			case IN:
 				break;
-			case NIL:
-				break;
-			
 
 
 
-		return new Factor();
+		}
+
+
+		return new PrimaryExpr(qualifier, id, idc, exprlist);
 	}
 
 	private void localDec() {
