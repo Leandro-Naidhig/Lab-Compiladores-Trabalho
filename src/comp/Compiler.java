@@ -370,22 +370,31 @@ public class Compiler {
 		}
 	}
 
+	//Ok
 	private MethodDec methodDec() {
 		
+		Id id_idColon = null;
+		String name = "";
 		Type tipo = null;
+		FormalParamDec formparaDec = null;
 
 		if(lexer.token == Token.ID) {
-			// unary method
+
+			name = lexer.getStringValue();
+			id_idColon = new Id(name);
 			next();
 
 		} else if(lexer.token == Token.IDCOLON) {
-			// keyword method. It has parameters
+
+			name = lexer.getStringValue();
+			id_idColon = new Id(name);
+			next();
+			formparaDec = formalParamDec();
+			next();
 
 		} else {
 			error("An identifier or identifer: was expected after 'func'");
 		}
-
-		FormalParamDec formparaDec = formalParamDec();
 
 		if(lexer.token == Token.MINUS_GT) {
 			next();
@@ -400,12 +409,12 @@ public class Compiler {
 
 		StatementList statlist = statementList();
 
-		if ( lexer.token != Token.RIGHTCURBRACKET ) {
+		if (lexer.token != Token.RIGHTCURBRACKET) {
 			error("'{' expected");
 		}
 
 		next();
-		return new MethodDec(formparaDec, tipo, statlist);
+		return new MethodDec(id_idColon, formparaDec, tipo, statlist);
 	}
 
 	//Ok
