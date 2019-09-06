@@ -612,6 +612,21 @@ public class Compiler {
 	}
 
 	//Ok
+	private ExpressionList expressionList() {
+
+		ArrayList<Expression> exprList = new ArrayList<>();
+
+		Expression expr = expression();
+		exprList.add(expr);
+
+		while(lexer.token == Token.COMMA) {
+			exprList.add(expr);
+		}
+
+		return new ExpressionList(exprList);
+	}
+
+	//Ok
 	private SimpleExpression simpleExpression() {
 
 		ArrayList<SumSubExpression> arraySumSub = new ArrayList<>();
@@ -702,9 +717,29 @@ public class Compiler {
 	private Factor primaryExpr() {
 
 		ArrayList<Id> ids = new ArrayList<>();
+		ArrayList<Id> idcs = new ArrayList<>();
+
 
 		switch(lexer.token) {
-			case SUPER
+			case SUPER:
+				check(Token.DOT, "'.' expected after the 'super'");
+				next();
+				if(lexer.token != Token.ID && lexer.token != Token.IDCOLON) {
+					error("An identifier or identifer: was expected after '.'");
+				} else {
+					if(lexer.token == Token.ID) {
+						String name = lexer.getStringValue();
+						Id id = new Id(name);
+						ids.add(id);
+						return new PrimaryExpr("super", ids, null, null, null);
+					} else if(lexer.token == Token.IDCOLON) {
+						String name = lexer.getStringValue();
+						Id id = new Id(name);
+						idcs.add(id);
+						ExpressionList exprList = 
+					}
+				}
+				
 				break;
 			case ID:
 				break;

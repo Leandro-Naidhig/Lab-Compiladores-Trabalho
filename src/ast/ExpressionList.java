@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ExpressionList {
 
     //Construtor da classe
-    public ExpressionList(ArrayList<Expr> exprList) {
+    public ExpressionList(ArrayList<Expression> exprList) {
         this.exprList = exprList;
     }
 
@@ -18,7 +18,7 @@ public class ExpressionList {
 
         int contador = 0;
 
-        for(Expr s : exprList) {
+        for(Expression s : exprList) {
             s.genC(pw);
             contador++;
             
@@ -33,5 +33,5 @@ public class ExpressionList {
     }
 
     //Atributos da classe
-    private ArrayList<Expr> exprList;
+    private ArrayList<Expression> exprList;
 }
