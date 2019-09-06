@@ -690,28 +690,36 @@ public class Compiler {
 		return new SignalFactor(signal, fac);
 	}
 
+	//Ok
 	private Factor factor() {
 
 		Expression expressao = null;
+		String name = "";
+		Id id = null;
 
 		if(lexer.token == Token.LEFTPAR) {
-
 			expressao = expression();
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected");
-			}			
+			}
+			return new ExpressionFactor(expressao);
 
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
-			primaryExpr();
+			Factor primexpr = primaryExpr();
+			return primexpr;
 
 		} else if(lexer.token == Token.NOT) {
 			Factor fac = factor();
+			return fac;
 
 		} else if(lexer.token == Token.ID) {
-			
-
+			name = lexer.getStringValue();
+			id = new Id(name);
+			return new ObjectCreation(id); 
+		
+		} else {
+			error();
 		}
-		return new Factor();
 	}
 
 	//Ok
