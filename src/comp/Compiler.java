@@ -542,7 +542,7 @@ public class Compiler {
 			if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
 				statements.add(writeStat());
 			} else {	
-				statements.add(expr());
+				statements.add(assignExpr());
 			}
 		}
 
@@ -558,7 +558,7 @@ public class Compiler {
 		ArrayList<Statement> statElse = new ArrayList<>();
 
 		next();
-		Expr expressao = expression();
+		Expression expressao = expression();
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
 		
@@ -582,11 +582,24 @@ public class Compiler {
 	}
 
 	//Ok
-	private Expr expression() {
+	private AssignExpr assignExpr() {
+
+		Expression exprLeft = expression();
+		Expression exprRight = null;
+
+		if(lexer.token == Token.EQ) {
+			exprRight = expression();
+		}
+
+		return new AssignExpr(exprLeft, exprRight); 
+	}
+
+	//Ok
+	private Expression expression() {
 
 		String relation = "";
-		Expr exprLeft = simpleExpression();
-		Expr exprRight = null;
+		SimpleExpression exprLeft = simpleExpression();
+		SimpleExpression exprRight = null;
 
 		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
 		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
@@ -664,13 +677,13 @@ public class Compiler {
 
 	private Factor factor() {
 
-		Expr expressao = null;
+		Expression expressao = null;
 
-		if(lexer.token == Token.RIGHTPAR) {
+		if(lexer.token == Token.LEFTPAR) {
 
 			expressao = expression();
-			if(lexer.token != Token.LEFTPAR) {
-				error();
+			if(lexer.token != Token.RIGHTPAR) {
+				error("')' expected");
 			}			
 
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
@@ -686,7 +699,7 @@ public class Compiler {
 		return new Factor();
 	}
 
-	private PrimaryExpr primaryExpr() {
+	private Factor primaryExpr() {
 
 		ArrayList<Id> ids = new ArrayList<>();
 
@@ -698,6 +711,8 @@ public class Compiler {
 			case SELF:
 				break;
 			case IN:
+				next();
+				Factor 
 				break;
 
 
@@ -706,6 +721,28 @@ public class Compiler {
 
 
 		return new PrimaryExpr(qualifier, id, idc, exprlist);
+	}
+
+	//Ok
+	private Factor readExpr() {
+
+		String name = "";
+
+		if(lexer.token != Token.DOT) {
+			error("'.' expected after the 'In'");
+		}
+
+		next();
+
+		if(!(lexer.getStringValue().equals("readInt")) && 
+		   !(lexer.getStringValue().equals("readString"))) {
+			error("'readInt' or 'readString' expected after the '.'");
+		
+		} else {
+			name = lexer.getStringValue();
+		}
+
+		return new ReadExpr(name);
 	}
 
 	private void localDec() {
@@ -749,16 +786,16 @@ public class Compiler {
 		expr();
 	}
 
-	private void whileStat() {
+	//Ok
+	private WhileStat whileStat() {
+
 		next();
-		expr();
+		Expression expressao = expression();
 		check(Token.LEFTCURBRACKET, "missing '{' after the 'while' expression");
 		next();
-		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END) {
-			statement();
-		}
-
+		StatementList statList = statementList();
 		check(Token.RIGHTCURBRACKET, "missing '}' after 'while' body");
+		return new WhileStat(statList, expressao);
 	}
 
 	private void writeStat() {

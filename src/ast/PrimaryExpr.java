@@ -9,11 +9,12 @@ import java.util.ArrayList;
 public class PrimaryExpr extends Factor{
 
     //Construtor da classe
-    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist) {
+    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist, ReadExpr readExpr) {
         this.qualifier = qualifier;
         this.ids = ids;
         this.idc = idc;
         this.exprlist = exprlist;
+        this.readExpr = readExpr;
     }
 
     //Metodo para geracao do codigo em C
@@ -28,4 +29,5 @@ public class PrimaryExpr extends Factor{
     private ArrayList<Id> ids;
     private Id idc;
     private ExpressionList exprlist; 
+    private ReadExpr readExpr;
 }

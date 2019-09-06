@@ -5,10 +5,10 @@
  */
 package ast;
 
-public class WriteStat {
+public class WriteStat extends Statement{
 
     //Construtor da classe
-    public WriteStat(Expr expr) {
+    public WriteStat(Expression expr) {
         this.expr = expr;
     }
 
@@ -21,6 +21,6 @@ public class WriteStat {
     }
 
     //Atributos da classe
-    private Expr expr;
+    private Expression expr;
 
 }

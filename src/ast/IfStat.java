@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class IfStat extends Statement {
 
     //Construtor da classe
-    public IfStat(Expr expr, ArrayList<Statement> statIf, ArrayList<Statement> statElse) {
+    public IfStat(Expression expr, ArrayList<Statement> statIf, ArrayList<Statement> statElse) {
         this.expr = expr;
         this.statIf = statIf;
         this.statElse = statElse;
@@ -53,7 +53,7 @@ public class IfStat extends Statement {
     }
 
     //Atributos da classe
-    private Expr expr;
+    private Expression expr;
     private ArrayList<Statement> statElse;
     private ArrayList<Statement> statIf;
 }

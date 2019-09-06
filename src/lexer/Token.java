@@ -25,6 +25,7 @@ public enum Token {
     ID("~ident"),
     IDCOLON("~ident:"),
     IF("if"),
+    IN("In"),
     INT("Int"),
     LE("<="),
     LEFTCURBRACKET("{"),

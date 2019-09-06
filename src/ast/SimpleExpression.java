@@ -21,6 +21,7 @@ public class SimpleExpression {
     public void genJava(PW pw) {
     }
 
+
     //Atributos da classe
     private ArrayList<SumSubExpression> arraySumSub;
 }

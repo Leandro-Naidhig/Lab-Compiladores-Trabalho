@@ -8,7 +8,7 @@ package ast;
 public class WhileStat {
 
     //Construtor da classe WhileStat
-    public WhileStat(StatementList statList, Expr expr) {
+    public WhileStat(StatementList statList, Expression expr) {
         this.statList = statList;
         this.expr = expr;
     }
@@ -34,5 +34,5 @@ public class WhileStat {
 
     //Atributos da Classe
     private StatementList statList;
-    private Expr expr;
+    private Expression expr;
 }

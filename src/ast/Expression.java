@@ -5,10 +5,10 @@
  */
 package ast;
 
-public class Expression extends Expr{
+public class Expression {
 
     //Construtor da classe
-    public Expression(Expr exprLeft, String relation, Expr exprRight) {
+    public Expression(SimpleExpression exprLeft, String relation, SimpleExpression exprRight) {
         this.exprLeft = exprLeft;
         this.relation = relation;
         this.exprRight = exprRight;
@@ -28,7 +28,7 @@ public class Expression extends Expr{
     }
 
     //Atributos da classe
-    private Expr exprLeft;
-    private Expr exprRight;
+    private SimpleExpression exprLeft;
+    private SimpleExpression exprRight;
     private String relation;
 }
