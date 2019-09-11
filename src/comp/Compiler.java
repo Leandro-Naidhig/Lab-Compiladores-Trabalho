@@ -30,7 +30,7 @@ public class Compiler {
 
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
 		
-		//Variavel responsï¿½vel por verificar se existe algum erro na gramatica
+		//Variavel responsável por verificar se existe algum erro na gramatica
 		//Por padrao e inicializada com false
 		boolean thereWasAnError = false;
 
@@ -91,7 +91,7 @@ public class Compiler {
 		String name = lexer.getMetaobjectName();
 		int lineNumber = lexer.getLineNumber();
 
-		//Verifica se o ID (name) ï¿½ uma palavra chave
+		//Verifica se o ID (name) é uma palavra chave
 		if(lexer.get_keywords(name) != null) {
 			error(name + " is a keyword");
 		}
@@ -108,7 +108,7 @@ public class Compiler {
 		
 			next();
 
-			//Verifica se trata de alguma sentenï¿½a pertencente ao AnnotParam
+			//Verifica se trata de alguma sentença pertencente ao AnnotParam
 			while(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
 				  lexer.token == Token.ID) {
 				switch(lexer.token) {
@@ -138,7 +138,7 @@ public class Compiler {
 				}
 			}
 
-			//Caso o token nï¿½o for um fecha parenteses
+			//Caso o token não for um fecha parenteses
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected after annotation with parameters");
 			
@@ -203,7 +203,7 @@ public class Compiler {
 
 			break;
 		
-		//Caso nï¿½o for nenhuma das denotaï¿½ï¿½es
+		//Caso não for nenhuma das denotações
 		default:
 			error("Annotation '" + name + "' is illegal");
 		}
@@ -222,6 +222,7 @@ public class Compiler {
 		String className = "";
 		String superclassName = "";
 		MemberList memberlist = null;
+		ClassDec superclass = null;
 
 		if(lexer.token == Token.ID && lexer.getStringValue().equals("open")) {
 			
@@ -239,12 +240,12 @@ public class Compiler {
 			className = lexer.getStringValue();
 		}
 
-		//Verifica se o nome da classe nï¿½o ï¿½ um keyword
+		//Verifica se o nome da classe não é um keyword
 		if(lexer.get_keywords(className) != null) {
 			error(className + " is a keyword");
 		}
 
-		//Verifica se a classe jï¿½ foi declarada no cï¿½digo
+		//Verifica se a classe já foi declarada no código
 		if (symbolTable.getInGlobal(className) != null) {
 			error("Class '" + className + "' has already been declared");
 		}
@@ -261,10 +262,12 @@ public class Compiler {
 			
 			superclassName = lexer.getStringValue();
 
-			//Verifica se o ID (superclassName) ï¿½ uma palavra chave
+			//Verifica se o ID (superclassName) é uma palavra chave
 			if(lexer.get_keywords(superclassName) != null) {
 				error(superclassName + " is a keyword");
 			}
+
+			superclass = null;
 
 			next();
 		}
@@ -277,7 +280,7 @@ public class Compiler {
 
 		next();
 
-		return new ClassDec(className, superclassName, memberlist);
+		return new ClassDec(className, superclass, memberlist);
 		
 	}
 
@@ -298,7 +301,7 @@ public class Compiler {
 			FieldDec field = null;
 			MethodDec method = null;
 			
-			//Verifica se o qualificador estï¿½ correto de acordo com a gramatica do cianeto
+			//Verifica se o qualificador está correto de acordo com a gramatica do cianeto
 			if(lexer.token == Token.PRIVATE || lexer.token == Token.PUBLIC || 
 			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
 			   lexer.token == Token.SHARED) {
@@ -442,7 +445,7 @@ public class Compiler {
 
 		while(lexer.token == Token.ID ) {
 
-			//Verifica se o ID (name) ï¿½ uma palavra chave
+			//Verifica se o ID (name) é uma palavra chave
 			if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			
@@ -504,17 +507,18 @@ public class Compiler {
 		ArrayList<Statement> statements = new ArrayList<>();
 		
 		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
-		   || lexer.token == Token.BREAK || lexer.token == Token.SEMICOLON || lexer.token == Token.REPEAT
+		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT
 		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || (
 		   lexer.token == Token.ID && lexer.getStringValue().equals("Out"))) {
 			statement(statements);
+			next();
 		}
 
 		return new StatementList(statements);
 	}
 
 	//Ok
-	private Statement statement(ArrayList<Statement> statements) {
+	private void statement(ArrayList<Statement> statements) {
 
 		boolean checkSemiColon = true;
 		switch(lexer.token) {
@@ -568,7 +572,7 @@ public class Compiler {
 		next();
 		
 		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE) {
-			statIf.add(statement(statIf));
+			statement(statIf);
 		}
 
 		check(Token.RIGHTCURBRACKET, "'}' was expected");
@@ -727,7 +731,7 @@ public class Compiler {
 			return new ObjectCreation(id); 
 		
 		} else {
-			error();
+			error("identifier, '(', super, In, '!', nil, string, int or boolean expected");
 		}
 	}
 
@@ -826,8 +830,9 @@ public class Compiler {
 				break;
 			case IN:
 				next();
-				ReadExpr readexpr = readExpr();
+				Factor readexpr = readExpr();
 				return new PrimaryExpr(null, null, null, null, readexpr);
+			default:
 				break;
 		}
 	}
@@ -883,9 +888,9 @@ public class Compiler {
 		return new RepeatStat(statList, expressao);
 	}
 
-	//Ainda nao sei o que fazer aqui
-	private void breakStat() {
-		next();
+	//Ok
+	private BreakStat breakStat() {
+		return  new BreakStat();
 	}
 
 	//Ok

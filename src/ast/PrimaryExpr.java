@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class PrimaryExpr extends Factor{
 
     //Construtor da classe
-    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist, ReadExpr readExpr) {
+    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist, Factor readExpr) {
         this.qualifier = qualifier;
         this.ids = ids;
         this.idc = idc;
@@ -29,5 +29,5 @@ public class PrimaryExpr extends Factor{
     private ArrayList<Id> ids;
     private Id idc;
     private ExpressionList exprlist; 
-    private ReadExpr readExpr;
+    private Factor readExpr;
 }
