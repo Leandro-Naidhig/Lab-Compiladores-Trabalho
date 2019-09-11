@@ -30,7 +30,7 @@ public class Compiler {
 
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
 		
-		//Variavel responsável por verificar se existe algum erro na gramatica
+		//Variavel responsï¿½vel por verificar se existe algum erro na gramatica
 		//Por padrao e inicializada com false
 		boolean thereWasAnError = false;
 
@@ -91,7 +91,7 @@ public class Compiler {
 		String name = lexer.getMetaobjectName();
 		int lineNumber = lexer.getLineNumber();
 
-		//Verifica se o ID (name) é uma palavra chave
+		//Verifica se o ID (name) ï¿½ uma palavra chave
 		if(lexer.get_keywords(name) != null) {
 			error(name + " is a keyword");
 		}
@@ -108,7 +108,7 @@ public class Compiler {
 		
 			next();
 
-			//Verifica se trata de alguma sentença pertencente ao AnnotParam
+			//Verifica se trata de alguma sentenï¿½a pertencente ao AnnotParam
 			while(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING ||
 				  lexer.token == Token.ID) {
 				switch(lexer.token) {
@@ -138,7 +138,7 @@ public class Compiler {
 				}
 			}
 
-			//Caso o token não for um fecha parenteses
+			//Caso o token nï¿½o for um fecha parenteses
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected after annotation with parameters");
 			
@@ -203,7 +203,7 @@ public class Compiler {
 
 			break;
 		
-		//Caso não for nenhuma das denotações
+		//Caso nï¿½o for nenhuma das denotaï¿½ï¿½es
 		default:
 			error("Annotation '" + name + "' is illegal");
 		}
@@ -239,12 +239,12 @@ public class Compiler {
 			className = lexer.getStringValue();
 		}
 
-		//Verifica se o nome da classe não é um keyword
+		//Verifica se o nome da classe nï¿½o ï¿½ um keyword
 		if(lexer.get_keywords(className) != null) {
 			error(className + " is a keyword");
 		}
 
-		//Verifica se a classe já foi declarada no código
+		//Verifica se a classe jï¿½ foi declarada no cï¿½digo
 		if (symbolTable.getInGlobal(className) != null) {
 			error("Class '" + className + "' has already been declared");
 		}
@@ -261,7 +261,7 @@ public class Compiler {
 			
 			superclassName = lexer.getStringValue();
 
-			//Verifica se o ID (superclassName) é uma palavra chave
+			//Verifica se o ID (superclassName) ï¿½ uma palavra chave
 			if(lexer.get_keywords(superclassName) != null) {
 				error(superclassName + " is a keyword");
 			}
@@ -298,7 +298,7 @@ public class Compiler {
 			FieldDec field = null;
 			MethodDec method = null;
 			
-			//Verifica se o qualificador está correto de acordo com a gramatica do cianeto
+			//Verifica se o qualificador estï¿½ correto de acordo com a gramatica do cianeto
 			if(lexer.token == Token.PRIVATE || lexer.token == Token.PUBLIC || 
 			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
 			   lexer.token == Token.SHARED) {
@@ -442,7 +442,7 @@ public class Compiler {
 
 		while(lexer.token == Token.ID ) {
 
-			//Verifica se o ID (name) é uma palavra chave
+			//Verifica se o ID (name) ï¿½ uma palavra chave
 			if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			
@@ -562,7 +562,6 @@ public class Compiler {
 		
 		ArrayList<Statement> statIf = new ArrayList<>();
 		ArrayList<Statement> statElse = new ArrayList<>();
-
 		next();
 		Expression expressao = expression();
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");

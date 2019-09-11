@@ -21,17 +21,17 @@ public class ClassDec extends Type{
 
     //Construtor da clase
     public ClassDec(String name1, ClassDec name2, MemberList memberList) {
+        super(name1);
         this.name1 = name1;
         this.name2 = name2;
         this.memberList = memberList;   
     }
 
-    public ClassDec(String name1) {
-        this.name1 = name1;   
+    public String getCname() {
+        return name1;
     }
 
 
-    
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
     }
