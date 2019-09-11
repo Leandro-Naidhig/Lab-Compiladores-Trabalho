@@ -25,6 +25,6 @@ public class SumSubExpression {
 
     //Atributos da classe
     private ArrayList<Term> term;
-    private ArrayList<String> lowOperator
+    private ArrayList<String> lowOperator;
 
 }

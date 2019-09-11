@@ -931,7 +931,6 @@ public class Compiler {
 	private Type type() {
 
 		Type tipo = null;
-		ClassDec class = null;
 
 		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
 			if(lexer.token == Token.INT) {
@@ -953,6 +952,7 @@ public class Compiler {
 			this.error("A type was expected");
 		}
 
+		return null;
 	}
 
 	//Ok
