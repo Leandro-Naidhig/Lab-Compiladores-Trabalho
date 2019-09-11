@@ -732,6 +732,7 @@ public class Compiler {
 		
 		} else {
 			error("identifier, '(', super, In, '!', nil, string, int or boolean expected");
+			return null;
 		}
 	}
 
@@ -786,6 +787,7 @@ public class Compiler {
 						error("An identifier or identifer: was expected after '.'");
 					}
 					next();
+					return null;
 				}
 				break;
 			case SELF:
@@ -835,6 +837,7 @@ public class Compiler {
 			default:
 				break;
 		}
+		return null;
 	}
 
 	//Ok
