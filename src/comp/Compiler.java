@@ -933,6 +933,7 @@ public class Compiler {
 		Type tipo = null;
 
 		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
+			
 			if(lexer.token == Token.INT) {
 				tipo = Type.intType;
 
@@ -947,9 +948,12 @@ public class Compiler {
 		} else if(lexer.token == Token.ID) {
 			
 			next();
+			//Colocar a classe aqui do tipo
+			//retornar a classe em si
 		
 		} else {
 			this.error("A type was expected");
+			next();
 		}
 
 		return null;
