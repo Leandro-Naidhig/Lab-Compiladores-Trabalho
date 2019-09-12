@@ -7,13 +7,13 @@ package ast;
 
 public class BasicValue extends Factor{
 
-    public BasicValue(String StringValue, Integer IntValue, Boolean BooleanValue) {
+    public BasicValue(LiteralString StringValue, LiteralInt IntValue, LiteralBoolean BooleanValue) {
         this.StringValue = StringValue;
         this.IntValue = IntValue;
         this.BooleanValue = BooleanValue;
     }
 
-    private String StringValue;
-    private Integer IntValue;
-    private Boolean BooleanValue;
+    private LiteralString StringValue;
+    private LiteralInt IntValue;
+    private LiteralBoolean BooleanValue;
 }

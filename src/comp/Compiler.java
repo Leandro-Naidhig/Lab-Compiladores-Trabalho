@@ -629,14 +629,12 @@ public class Compiler {
 
 		return new Expression(exprLeft, relation, exprRight); 
 	}
-	
+
 	//Ok
 	private SimpleExpression simpleExpression() {
 
 		ArrayList<SumSubExpression> arraySumSub = new ArrayList<>();
-
 		arraySumSub.add(sumSubExpression());
-		next();
 
 		while(lexer.token == Token.PLUSPLUS) {
 			next();
@@ -653,7 +651,6 @@ public class Compiler {
 		ArrayList<String> operators = new ArrayList<>();
 
 		terms.add(term());
-		next();
 
 		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
 			operators.add(lexer.getStringValue());
@@ -690,9 +687,8 @@ public class Compiler {
 			signal = lexer.getStringValue();
 		}
 
-		next();
 		Factor fac = factor();
-
+		next();
 		return new SignalFactor(signal, fac);
 	}
 
@@ -940,8 +936,8 @@ public class Compiler {
 		next();
 		check(Token.IDCOLON, "'print:' or 'println:' was expected after 'Out.'");
 		String printName = lexer.getStringValue();
+		next();
 		Expression expressao = expression();
-
 		return new WriteStat(expressao);
 	}
 
@@ -1005,7 +1001,6 @@ public class Compiler {
 		// Integer.
 		// Method intValue returns that value as an value of type int.
 		int value = lexer.getNumberValue();
-		next();
 		return new LiteralInt(value);
 	}
 
