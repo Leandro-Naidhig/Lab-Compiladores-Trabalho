@@ -404,7 +404,6 @@ public class Compiler {
 		}
 
 		next();
-
 		StatementList statlist = statementList();
 
 		if (lexer.token != Token.RIGHTCURBRACKET) {
@@ -598,23 +597,6 @@ public class Compiler {
 	}
 
 	//Ok
-	private Expression expression() {
-
-		String relation = "";
-		SimpleExpression exprLeft = simpleExpression();
-		SimpleExpression exprRight = null;
-
-		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
-		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
-			relation = lexer.getStringValue();
-			next();
-			exprRight = simpleExpression();
-		}
-
-		return new Expression(exprLeft, relation, exprRight); 
-	}
-
-	//Ok
 	private ExpressionList expressionList() {
 
 		ArrayList<Expression> exprList = new ArrayList<>();
@@ -631,6 +613,23 @@ public class Compiler {
 		return new ExpressionList(exprList);
 	}
 
+	//Ok
+	private Expression expression() {
+
+		String relation = "";
+		SimpleExpression exprLeft = simpleExpression();
+		SimpleExpression exprRight = null;
+
+		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
+		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
+			relation = lexer.getStringValue();
+			next();
+			exprRight = simpleExpression();
+		}
+
+		return new Expression(exprLeft, relation, exprRight); 
+	}
+	
 	//Ok
 	private SimpleExpression simpleExpression() {
 
@@ -704,7 +703,31 @@ public class Compiler {
 		String name = "";
 		Id id = null;
 
-		if(lexer.token == Token.LEFTPAR) {
+		if(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING 
+	    	|| lexer.token == Token.TRUE|| lexer.token == Token.FALSE) {
+			
+			LiteralInt value = null;
+			LiteralBoolean bool = null;
+			LiteralString str = null;
+
+			if(lexer.token == Token.LITERALINT) {
+				value = literalInt();
+				return new BasicValue(str, value, bool);
+			
+			} else if(lexer.token == Token.LITERALSTRING) {
+				str = new LiteralString(lexer.getStringValue());
+				return new BasicValue(str, value, bool);
+				
+			} else {
+				if(lexer.token == Token.TRUE) {
+					bool = new LiteralBoolean(true);
+				} else {
+					bool = new LiteralBoolean(false);
+				}
+				return new BasicValue(str, value, bool);
+			}
+			
+		} else if(lexer.token == Token.LEFTPAR) {
 			expressao = expression();
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected");
