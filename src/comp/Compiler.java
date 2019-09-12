@@ -97,7 +97,6 @@ public class Compiler {
 		}
 
 		next();
-
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
 		boolean getNextToken = false;
 
@@ -302,10 +301,9 @@ public class Compiler {
 			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
 			   lexer.token == Token.SHARED) {
 
-				next();
-
 				//Pega o primeiro nome do qualifier
 				first = lexer.getStringValue();
+				next();
 
 				//Caso houver um segundo nome para o qualifier
 				if( (first == "shared" && (!(lexer.token == Token.PRIVATE) || !(lexer.token == Token.PUBLIC))) 
@@ -313,25 +311,25 @@ public class Compiler {
 				    ||  (first == "Override" && !(lexer.token != Token.PUBLIC)) ) {
 
 					error("Qualifier illegal");
-			   	}
+				   
+				} else if(lexer.token != Token.VAR && lexer.token != Token.FUNC) { 
 
-			   	next();
+			   		//Pega o segundo nome do qualifier
+			   		second = lexer.getStringValue();
+					next();
 
-			   	//Pega o segundo nome do qualifier
-			   	second = lexer.getStringValue();
-
-			   	if(first == "" && second == "" && !(lexer.token == Token.PUBLIC)) {
-					error("Qualifier illegal");
-			   
-			   	} else if(lexer.token == Token.PUBLIC) {
-
-					third = lexer.getStringValue();
-			   	}
+					if(first == "" && second == "" && !(lexer.token == Token.PUBLIC)) {
+						error("Qualifier illegal");
 				
-				qual = first + second + third;
-				qualifiers.add(qual);
-				qualifierspos.add(pos);
-			   	pos++;
+					} else if(lexer.token == Token.PUBLIC) {
+
+						third = lexer.getStringValue();
+						qual = first + second + third;
+						qualifiers.add(qual);
+						qualifierspos.add(pos);
+						pos++;
+					}
+				}
 			}
 			
 			if(lexer.token == Token.VAR) {
