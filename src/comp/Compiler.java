@@ -407,7 +407,7 @@ public class Compiler {
 		StatementList statlist = statementList();
 
 		if (lexer.token != Token.RIGHTCURBRACKET) {
-			error("'{' expected");
+			error("'}' expected");
 		}
 
 		next();
@@ -500,7 +500,7 @@ public class Compiler {
 		ArrayList<Statement> statements = new ArrayList<>();
 		
 		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
-		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT
+		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT || lexer.token == Token.ID
 		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || (
 		   lexer.token == Token.ID && lexer.getStringValue().equals("Out"))) {
 			statement(statements);
@@ -544,6 +544,7 @@ public class Compiler {
 			default:
 				if(lexer.token == Token.ID && lexer.getStringValue().equals("Out")) {
 					statements.add(writeStat());
+
 				} else {	
 					statements.add(assignExpr());
 				}
@@ -566,6 +567,7 @@ public class Compiler {
 		
 		while(lexer.token != Token.RIGHTCURBRACKET && lexer.token != Token.END && lexer.token != Token.ELSE) {
 			statement(statIf);
+			next();
 		}
 
 		check(Token.RIGHTCURBRACKET, "'}' was expected");
@@ -590,6 +592,8 @@ public class Compiler {
 		Expression exprRight = null;
 
 		if(lexer.token == Token.ASSIGN) {
+			next();
+			System.out.println(lexer.token);
 			exprRight = expression();
 		}
 
@@ -698,6 +702,9 @@ public class Compiler {
 		Expression expressao = null;
 		String name = "";
 		Id id = null;
+		ArrayList<Id> ids = new ArrayList<>();
+		ExpressionList exprList = null;
+		Factor primexpr = null;
 
 		if(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING 
 	    	|| lexer.token == Token.TRUE|| lexer.token == Token.FALSE) {
@@ -724,6 +731,7 @@ public class Compiler {
 			}
 			
 		} else if(lexer.token == Token.LEFTPAR) {
+			next();
 			expressao = expression();
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected");
@@ -731,7 +739,7 @@ public class Compiler {
 			return new ExpressionFactor(expressao);
 
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
-			Factor primexpr = primaryExpr();
+			primexpr = primaryExpr();
 			return primexpr;
 
 		} else if(lexer.token == Token.NOT) {
@@ -741,8 +749,38 @@ public class Compiler {
 		} else if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 			id = new Id(name);
-			return new ObjectCreation(id); 
-		
+			ids.add(id);
+			if(lexer.token == Token.DOT) {
+				next();
+				if(lexer.getStringValue().equals("new")) {
+					return new ObjectCreation(id);
+				} else {
+					next();
+					System.out.println(lexer.getStringValue());
+					if(lexer.token == Token.ID) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						ids.add(id);
+						primexpr = new PrimaryExpr(null, ids, null, null, null);	
+						
+					} else if(lexer.token == Token.IDCOLON) {
+						name = lexer.getStringValue();
+						id = new Id(name);
+						exprList = expressionList();
+						primexpr = new PrimaryExpr(null, ids, id, exprList, null);
+
+					} else {
+						error("An identifier or identifer: was expected after '.'");
+					}
+					next();
+					return null;
+				}
+			}
+
+			
+			primexpr = new PrimaryExpr(null, ids, null, null, null);
+			return primexpr;
+
 		} else {
 			error("identifier, '(', super, In, '!', nil, string, int or boolean expected");
 			return null;
@@ -775,32 +813,6 @@ public class Compiler {
 						exprList = expressionList();
 						return new PrimaryExpr("super", null, id, exprList, null);
 					}
-				}
-				break;
-			case ID:
-				name = lexer.getStringValue();
-				id = new Id(name);
-				ids.add(id);
-				next();
-				if(lexer.token == Token.DOT) {
-					next();
-					if(lexer.token == Token.ID) {
-						name = lexer.getStringValue();
-						id = new Id(name);
-						ids.add(id);
-						return new PrimaryExpr(null, ids, null, null, null);	
-					
-					} else if(lexer.token == Token.IDCOLON) {
-						name = lexer.getStringValue();
-						id = new Id(name);
-						exprList = expressionList();
-						return new PrimaryExpr(null, ids, id, exprList, null);
-
-					} else {
-						error("An identifier or identifer: was expected after '.'");
-					}
-					next();
-					return null;
 				}
 				break;
 			case SELF:
@@ -861,7 +873,6 @@ public class Compiler {
 		if(lexer.token != Token.DOT) {
 			error("'.' expected after the 'In'");
 		}
-
 		next();
 
 		if(!(lexer.getStringValue().equals("readInt")) && 
