@@ -74,7 +74,8 @@ No diretorio [Lab-Compiladores-Trabalho], execute o seguinte comando no terminal
 
 #### Verificação dos Testes
 
-- OK_GER01.ci -> OK
+- OK_GER01.ci -> OK, sem GenJava
+- OK_GER02.ci -> OK, sem GenJava
 
 ----
 
