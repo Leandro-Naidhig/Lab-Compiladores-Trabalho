@@ -101,11 +101,7 @@ public class Compiler {
 		ArrayList<Object> metaobjectParamList = new ArrayList<>();
 		boolean getNextToken = false;
 
-		if(lexer.token != Token.LEFTPAR) {
-			error("'(' expected before ID");
-
-		} else {
-		
+		if(lexer.token == Token.LEFTPAR) {		
 			next();
 
 			//Verifica se trata de alguma sentença pertencente ao AnnotParam
@@ -228,7 +224,7 @@ public class Compiler {
 			
 		}
 
-		if ( lexer.token != Token.CLASS ) {
+		if(lexer.token != Token.CLASS) {
 			error("'class' expected");
 		}
 
