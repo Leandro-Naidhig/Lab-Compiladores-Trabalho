@@ -593,7 +593,6 @@ public class Compiler {
 
 		if(lexer.token == Token.ASSIGN) {
 			next();
-			System.out.println(lexer.token);
 			exprRight = expression();
 		}
 
@@ -692,7 +691,6 @@ public class Compiler {
 		}
 
 		Factor fac = factor();
-		next();
 		return new SignalFactor(signal, fac);
 	}
 
@@ -715,10 +713,12 @@ public class Compiler {
 
 			if(lexer.token == Token.LITERALINT) {
 				value = literalInt();
+				next();
 				return new BasicValue(str, value, bool);
 			
 			} else if(lexer.token == Token.LITERALSTRING) {
 				str = new LiteralString(lexer.getStringValue());
+				next();
 				return new BasicValue(str, value, bool);
 				
 			} else {
@@ -727,6 +727,7 @@ public class Compiler {
 				} else {
 					bool = new LiteralBoolean(false);
 				}
+				next();
 				return new BasicValue(str, value, bool);
 			}
 			
@@ -736,27 +737,30 @@ public class Compiler {
 			if(lexer.token != Token.RIGHTPAR) {
 				error("')' expected");
 			}
+			next();
 			return new ExpressionFactor(expressao);
 
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
 			primexpr = primaryExpr();
+			next();
 			return primexpr;
 
 		} else if(lexer.token == Token.NOT) {
 			Factor fac = factor();
+			next();
 			return fac;
 
 		} else if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 			id = new Id(name);
 			ids.add(id);
+			next();
 			if(lexer.token == Token.DOT) {
 				next();
 				if(lexer.getStringValue().equals("new")) {
+					next();
 					return new ObjectCreation(id);
 				} else {
-					next();
-					System.out.println(lexer.getStringValue());
 					if(lexer.token == Token.ID) {
 						name = lexer.getStringValue();
 						id = new Id(name);
@@ -773,11 +777,9 @@ public class Compiler {
 						error("An identifier or identifer: was expected after '.'");
 					}
 					next();
-					return null;
+					return primexpr;
 				}
 			}
-
-			
 			primexpr = new PrimaryExpr(null, ids, null, null, null);
 			return primexpr;
 

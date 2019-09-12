@@ -92,9 +92,8 @@ class Program
       var A a;
       
       Out.println: "7 0 1 2 3 4 5 6 7";
-      a;
+      a = A.new;    
+      a.m;
    }   
 
 end
-
-
