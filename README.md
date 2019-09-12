@@ -76,7 +76,7 @@ No diretorio [Lab-Compiladores-Trabalho], execute o seguinte comando no terminal
 
 - OK_GER01.ci -> OK, sem GenJava
 - OK_GER02.ci -> OK, sem GenJava
-
+- OK_GER02.ci -> Não gerou o report.txt
 ----
 
 ## Integrantes
