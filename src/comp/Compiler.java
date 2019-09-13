@@ -603,14 +603,11 @@ public class Compiler {
 	private ExpressionList expressionList() {
 
 		ArrayList<Expression> exprList = new ArrayList<>();
-
-		Expression expr = expression();
-		exprList.add(expr);
-		next();
+		exprList.add(expression());
 
 		while(lexer.token == Token.COMMA) {
 			next();
-			exprList.add(expr);
+			exprList.add(expression());
 		}
 
 		return new ExpressionList(exprList);
@@ -728,6 +725,7 @@ public class Compiler {
 					bool = new LiteralBoolean(false);
 				}
 				next();
+				System.out.println(lexer.token);
 				return new BasicValue(str, value, bool);
 			}
 			
@@ -745,9 +743,10 @@ public class Compiler {
 			next();
 			return primexpr;
 
+		//Lembrar de guardar o not (ainda não sei como)
 		} else if(lexer.token == Token.NOT) {
-			Factor fac = factor();
 			next();
+			Factor fac = factor();
 			return fac;
 
 		} else if(lexer.token == Token.ID) {
@@ -950,10 +949,11 @@ public class Compiler {
 		check(Token.IDCOLON, "'print:' or 'println:' was expected after 'Out.'");
 		String printName = lexer.getStringValue();
 		next();
-		Expression expressao = expression();
-		return new WriteStat(expressao);
+		ExpressionList exprList = expressionList();
+		return new WriteStat(exprList);
 	}
 
+	//Ok
 	private Type type() {
 
 		Type tipo = null;

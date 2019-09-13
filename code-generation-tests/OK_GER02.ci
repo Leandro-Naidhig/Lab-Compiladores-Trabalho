@@ -16,13 +16,13 @@
 class A
    
    public func m {
-      Out.print:  6, " " ;
-      Out.print:  1, " " ;
-      Out.print:  1 + 1, " " ;
-      Out.print:  4 - 1, " " ;
-      Out.print:  (6 - 3) + 1, " " ;
-      Out.print:  10 / 2, " " ;
-      Out.print:  2 * 3, " " ;
+      Out.print:  6;
+      Out.print:  1;
+      Out.print:  1 + 1;
+      Out.print:  4 - 1;
+      Out.print:  (6 - 3);
+      Out.print:  10 / 2;
+      Out.print:  2 * 3;
    }   
 
 end

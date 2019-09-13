@@ -8,8 +8,8 @@ package ast;
 public class WriteStat extends Statement{
 
     //Construtor da classe
-    public WriteStat(Expression expr) {
-        this.expr = expr;
+    public WriteStat(ExpressionList exprList) {
+        this.exprList = exprList;
     }
 
     //Metodo para geracao do codigo em C
@@ -21,6 +21,6 @@ public class WriteStat extends Statement{
     }
 
     //Atributos da classe
-    private Expression expr;
+    private ExpressionList exprList;
 
 }
