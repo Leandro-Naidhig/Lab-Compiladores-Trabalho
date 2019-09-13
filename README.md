@@ -62,7 +62,6 @@ Type ::= BasicType | Id\
 WriteStat ::= “Out” “.” [ “print:” | “println:” ] Expression\
 WhileStat ::= “while” Expression “{” StatementList “}”\
 
-
 #### Execução (Comandos via terminal)
 
 No diretorio [src], execute o seguinte comando no terminal:
@@ -73,6 +72,11 @@ No diretorio [Lab-Compiladores-Trabalho], execute o seguinte comando no terminal
 
 - java -cp src/ comp.Comp code-generation-tests/OK_GERXX.ci (execução do código em cima de um determinado teste)
 
+#### Verificação dos Testes
+
+- OK_GER01.ci -> OK, sem GenJava
+- OK_GER02.ci -> OK, sem GenJava
+- OK_GER02.ci -> Não gerou o report.txt
 ----
 
 ## Integrantes
