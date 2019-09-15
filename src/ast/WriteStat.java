@@ -8,8 +8,9 @@ package ast;
 public class WriteStat extends Statement{
 
     //Construtor da classe
-    public WriteStat(ExpressionList exprList) {
+    public WriteStat(ExpressionList exprList, String mode) {
         this.exprList = exprList;
+        this.mode = mode;
     }
 
     //Metodo para geracao do codigo em C
@@ -18,9 +19,19 @@ public class WriteStat extends Statement{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        if(mode.equals("print:")) {
+            pw.print("System.out.println(");
+            exprList.genJava(pw);
+            pw.print(");");
+        } else {
+            pw.print("System.out.print(");
+            exprList.genJava(pw);
+            pw.print(");");
+        }
     }
 
     //Atributos da classe
     private ExpressionList exprList;
+    private String mode;
 
 }

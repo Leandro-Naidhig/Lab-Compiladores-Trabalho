@@ -870,7 +870,7 @@ public class Compiler {
 		String printName = lexer.getStringValue();
 		next();
 		ExpressionList exprList = expressionList();
-		return new WriteStat(exprList);
+		return new WriteStat(exprList, printName);
 	}
 
 	private Type type() {

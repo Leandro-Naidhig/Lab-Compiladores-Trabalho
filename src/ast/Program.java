@@ -22,7 +22,6 @@ public class Program {
 
 		//Bibliotecas do Java
 		pw.print("package comp;");
-		pw.print("import java.util.Scanner");
 
 		for(ClassDec s : classList) {
 
@@ -31,6 +30,7 @@ public class Program {
 				pw.add();
 				pw.print("public static void main(String []args) {");
 				pw.add();
+				s.getName();
 				pw.sub();
 				pw.print("}");
 			

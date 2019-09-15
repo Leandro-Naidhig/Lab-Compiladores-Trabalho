@@ -15,8 +15,8 @@ public class IdList {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+        
         int contador = 0;
-
         for(Id s : ids) {
             s.genC(pw);
             contador++;
@@ -29,6 +29,16 @@ public class IdList {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        
+        int contador = 0;
+        for(Id s : ids) {
+            s.genJava(pw);
+            contador++;
+
+            if((ids.size()-1) != contador) {
+                pw.print(", ");
+            }
+        }
     }
 
     //Atributos da classe

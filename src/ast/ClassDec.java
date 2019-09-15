@@ -40,8 +40,15 @@ public class ClassDec extends Type{
     public void genJava(PW pw) {
         pw.print("public class ");
         pw.print(name1);
+        if(name2 != null) {
+            pw.print(" extends ");
+            pw.print(name2.getName());
+        }
         pw.print(" {");
-
+        pw.add();
+        memberList.genJava(pw);
+        pw.sub();
+        pw.print("}");
     }
 
     //Atributos da classe

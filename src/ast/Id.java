@@ -19,6 +19,7 @@ public class Id {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print(name);
     }
 
     //Atributos da classe

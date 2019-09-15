@@ -19,11 +19,16 @@ public class FieldDec {
         type.getName();
         pw.print(" ");
         idList.genC(pw);
-        //pw.print(";");
+        pw.print(";");
     }
     
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print("private ");
+        type.getName();
+        pw.print(" ");
+        idList.genJava(pw);
+        pw.print(";");
     }
 
     //Atributos da classe

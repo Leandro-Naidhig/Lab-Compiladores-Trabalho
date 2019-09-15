@@ -21,35 +21,50 @@ public class IfStat extends Statement {
         expr.genC(pw);
         pw.println(") {");
 
-        //Caso existir instrucoes dentro do IF
         if(statIf != null) {
             pw.add();
-            
             for(Statement s : statIf) {
                 s.genC(pw);
             }
-
-            pw.sub();    
+            pw.sub();
+            pw.print("} ");
         }
 
-        pw.print("} ");
-
-        //Caso existir o else
         if(statElse != null) {
-            pw.print("else { ");
-            pw.add();
-            
+            pw.print(" else { ");
+            pw.add();    
             for(Statement s : statElse) {
                 s.genC(pw);
             }
-
-            pw.print("} ");
-            pw.sub();    
+            pw.sub();
+            pw.print("} ");    
         }
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.printIdent("if(");
+        expr.genC(pw);
+        pw.println(") {");
+
+        if(statIf != null) {
+            pw.add();
+            for(Statement s : statIf) {
+                s.genC(pw);
+            }
+            pw.sub();
+            pw.print("} ");    
+        }
+
+        if(statElse != null) {
+            pw.print(" else { ");
+            pw.add();
+            for(Statement s : statElse) {
+                s.genC(pw);
+            }
+            pw.sub();
+            pw.print("} ");
+        }
     }
 
     //Atributos da classe
