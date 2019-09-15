@@ -8,9 +8,10 @@ package ast;
 public class FieldDec {
 
     //Construtor da classe 
-    public FieldDec(Type type, IdList idList) {
+    public FieldDec(Type type, IdList idList, Boolean isSemiColon) {
         this.type = type;
         this.idList = idList;
+        this.isSemiColon = isSemiColon;
     }
     
     //Metodo para geracao do codigo em C
@@ -26,6 +27,7 @@ public class FieldDec {
     }
 
     //Atributos da classe
+    private Boolean isSemiColon;
     private Type type;
     private IdList idList;
 }

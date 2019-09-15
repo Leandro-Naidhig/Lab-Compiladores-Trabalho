@@ -218,7 +218,6 @@ public class Compiler {
 
 		if (lexer.token == Token.EXTENDS) {
 			next();
-			
 			superclassName = lexer.getStringValue();
 			next();
 
@@ -277,14 +276,15 @@ public class Compiler {
 						error("Qualifier illegal");
 				
 					} else if(lexer.token == Token.PUBLIC) {
-
 						third = lexer.getStringValue();
-						qual = first + second + third;
-						qualifiers.add(qual);
-						qualifierspos.add(pos);
-						pos++;
+						next();
 					}
 				}
+
+				qual = first + second + third;
+				qualifiers.add(qual);
+				qualifierspos.add(pos);
+				pos++;
 			}
 			
 			if(lexer.token == Token.VAR) {
@@ -342,18 +342,25 @@ public class Compiler {
 	}
 
 	private FieldDec fieldDec() {
-	
-		Type tipo = type();
+		
 		IdList idlist = null;
-
+		Boolean isSemiColon = false;
+		Type tipo = type();
+		next();
+		
 		if(lexer.token != Token.ID) {
-			this.error("A field name was expected");
+			error("A field name was expected");
 		
 		} else {
 			idlist = idList();
 		}
 
-		return new FieldDec(tipo, idlist);
+		if(lexer.token == Token.SEMICOLON) {
+			isSemiColon = true;
+			next();
+		}
+
+		return new FieldDec(tipo, idlist, isSemiColon);
 	}
 
 	private IdList idList() {
@@ -644,9 +651,7 @@ public class Compiler {
 		} else if(lexer.token == Token.LEFTPAR) {
 			next();
 			expressao = expression();
-			if(lexer.token != Token.RIGHTPAR) {
-				error("')' expected");
-			}
+			check(Token.RIGHTPAR, "')' expected");
 			next();
 			return new ExpressionFactor(expressao);
 
@@ -696,6 +701,10 @@ public class Compiler {
 			primexpr = new PrimaryExpr(null, ids, null, null, null);
 			return primexpr;
 
+		} else if(lexer.token == Token.NIL) {
+			next();
+			return null;
+	
 		} else {
 			error("identifier, '(', super, In, '!', nil, string, int or boolean expected");
 			return null;
@@ -759,6 +768,7 @@ public class Compiler {
 								error("An identifier or identifer: was expected after '.'");		
 							}
 						}
+						return new PrimaryExpr("self", ids, null, null, null);
 
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
@@ -820,21 +830,19 @@ public class Compiler {
 		return new LocalDec(tipo, idlist, expressao);
 	}
 
-	//Ok
 	private RepeatStat repeatStat() {
 		next();
 		StatementList statList = statementList();
 		check(Token.UNTIL, "missing keyword 'until'");
+		next();
 		Expression expressao = expression();
 		return new RepeatStat(statList, expressao);
 	}
 
-	//Ok
 	private BreakStat breakStat() {
-		return  new BreakStat();
+		return new BreakStat();
 	}
 
-	//Ok
 	private ReturnStat returnStat() {
 		next();
 		Expression expressao = expression();
@@ -895,18 +903,11 @@ public class Compiler {
 		next();
 		int lineNumber = lexer.getLineNumber();
 		Expression expressao = expression();
-		
-		if(lexer.token != Token.COMMA) {
-			this.error("',' expected after the expression of the 'assert' statement");
-		}
-
+		check(Token.COMMA, "',' expected after the expression of the 'assert' statement");
 		next();
-		
-		if(lexer.token != Token.LITERALSTRING) {
-			this.error("A literal string expected after the ',' of the 'assert' statement");
-		}
-
+		check(Token.LITERALSTRING, "A literal string expected after the ',' of the 'assert' statement");
 		String message = lexer.getLiteralStringValue();
+		next();
 		return new AssertStat(message, expressao);
 	}
 
