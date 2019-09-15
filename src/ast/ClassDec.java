@@ -20,17 +20,17 @@ package ast;
 public class ClassDec extends Type{
 
     //Construtor da clase
-    public ClassDec(String name1, ClassDec name2, MemberList memberList) {
+    public ClassDec(String name1, ClassDec name2, MemberList memberList, Boolean isOpen) {
         super(name1);
         this.name1 = name1;
         this.name2 = name2;
-        this.memberList = memberList;   
+        this.memberList = memberList;
+        this.isOpen = isOpen;  
     }
 
     public String getCname() {
         return name1;
     }
-
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
@@ -48,5 +48,6 @@ public class ClassDec extends Type{
     private String name1;
     private ClassDec name2;
     private MemberList memberList;
+    private Boolean isOpen;
 
 }

@@ -55,14 +55,6 @@ public class Compiler {
 				}
 
 				CianetoClassList.add(classDec());
-
-				while (lexer.token == Token.ANNOT || lexer.token == Token.CLASS) {				
-					if(lexer.token == Token.ANNOT) {
-						metaobjectAnnotation(metaobjectCallList);
-					} else {
-						CianetoClassList.add(classDec());
-					}
-				}
 			}
 
 			catch(CompilerError e) {
@@ -198,10 +190,14 @@ public class Compiler {
 		String superclassName = "";
 		MemberList memberlist = null;
 		ClassDec superclass = null;
+		Boolean isopen = false;
 
 		if(lexer.token == Token.ID && lexer.getStringValue().equals("open")) {	
+			isopen = true;
+			next();
 		}
 
+		check(Token.CLASS, "'Class' expected");
 		next();
 		
 		if (lexer.token != Token.ID) {
@@ -238,7 +234,7 @@ public class Compiler {
 		memberlist = memberList();
 		check(Token.END, "'end' expected");
 		next();
-		return new ClassDec(className, superclass, memberlist);
+		return new ClassDec(className, superclass, memberlist, isopen);
 		
 	}
 
@@ -437,11 +433,11 @@ public class Compiler {
 	private StatementList statementList() {
 		
 		ArrayList<Statement> statements = new ArrayList<>();
-		
+
 		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
 		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT || lexer.token == Token.ID
-		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || (
-		   lexer.token == Token.ID && lexer.getStringValue().equals("Out"))) {
+		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || lexer.token == Token.SUPER 
+		   || lexer.token == Token.SELF || (lexer.token == Token.ID && lexer.getStringValue().equals("Out")) ) {
 			statement(statements);
 		}
 		return new StatementList(statements);
@@ -657,7 +653,6 @@ public class Compiler {
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER 
 		|| lexer.token == Token.IN) {
 			primexpr = primaryExpr();
-			next();
 			return primexpr;
 
 		//Lembrar de guardar o not (ainda não sei como)
@@ -716,6 +711,7 @@ public class Compiler {
 
 		switch(lexer.token) {
 			case SUPER:
+				next();
 				check(Token.DOT, "'.' expected after the 'super'");
 				next();
 				if(lexer.token != Token.ID && lexer.token != Token.IDCOLON) {
@@ -725,10 +721,12 @@ public class Compiler {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						ids.add(id);
+						next();
 						return new PrimaryExpr("super", ids, null, null, null);
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
 						id = new Id(name);
+						next();
 						exprList = expressionList();
 						return new PrimaryExpr("super", null, id, exprList, null);
 					}
@@ -749,10 +747,12 @@ public class Compiler {
 								name = lexer.getStringValue();
 								id = new Id(name);
 								ids.add(id);
+								next();
 								return new PrimaryExpr("self", ids, null, null, null);
 							} else if(lexer.token == Token.IDCOLON) {
 								name = lexer.getStringValue();
 								id = new Id(name);
+								next();
 								exprList = expressionList();
 								return new PrimaryExpr("self", ids, id, exprList, null);			
 							} else {
@@ -798,6 +798,7 @@ public class Compiler {
 			name = lexer.getStringValue();
 		}
 
+		next();
 		return new ReadExpr(name);
 	}
 
