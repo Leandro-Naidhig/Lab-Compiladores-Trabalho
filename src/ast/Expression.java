@@ -16,8 +16,8 @@ public class Expression {
 
     //Metodo para geracao do codigo em Java
     public void genC(PW pw) {
+        
         exprLeft.genC(pw);
-
         if(exprRight != null) {
             pw.print(relation);
             exprRight.genC(pw);
@@ -25,6 +25,12 @@ public class Expression {
     }
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        
+        exprLeft.genC(pw);
+        if(exprRight != null) {
+            pw.print(relation);
+            exprRight.genC(pw);
+        }
     }
 
     //Atributos da classe

@@ -15,8 +15,8 @@ public class AssignExpr extends Statement{
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-		exprLeft.genC(pw);
-
+    
+        exprLeft.genC(pw);
 		if (exprRight != null) {
             pw.print(" = ");
             exprRight.genC(pw);
@@ -26,6 +26,13 @@ public class AssignExpr extends Statement{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+
+        exprLeft.genC(pw);
+		if (exprRight != null) {
+            pw.print(" = ");
+            exprRight.genC(pw);
+            pw.print(";");
+        }
     }
 
     //Atributos da Classe
