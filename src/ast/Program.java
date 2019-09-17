@@ -30,13 +30,15 @@ public class Program {
 				pw.add();
 				pw.print("public static void main(String []args) {");
 				pw.add();
-				s.getName();
+				s.genJava(pw);
 				pw.sub();
 				pw.print("}");
 			
 			} else {
+
 				pw.print("public class ");
-				s.getName();
+				System.out.println(s);
+				s.genJava(pw);
 				pw.print("} ");
 			}
 		}

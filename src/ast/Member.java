@@ -4,7 +4,6 @@
 
  */
 package ast;
-import java.util.ArrayList;
 
 public class Member {
 
@@ -16,10 +15,8 @@ public class Member {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-
       if(field != null) {
         field.genC(pw);
-
       } else {
         method.genC(pw);
       }
@@ -27,6 +24,11 @@ public class Member {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+      if(field != null) {
+        field.genJava(pw);
+      } else {
+        method.genJava(pw);
+      }
     }
 
     //Atributos da classe

@@ -4,8 +4,9 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class LocalDec extends Statement{
+public class LocalDec extends Statement {
 
     //Construtor da classe
     public LocalDec(Type tipo, IdList idList, Expression expr) {
@@ -16,18 +17,57 @@ public class LocalDec extends Statement{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+
+        int contador = 0;
         tipo.getCname();
-        idList.genC(pw);
 
         //Caso houver uma expressao
         if(expr != null) {
-            pw.print(" = ");
-            expr.genC(pw);
+            ArrayList<Id> ids = idList.getArray();
+
+            for(Id s : ids) {
+                s.genC(pw);
+                pw.print(" = ");
+                expr.genC(pw);
+                contador++;
+                
+                if((ids.size()-1) != contador) {
+                    pw.print(", ");
+                }
+            }
+            pw.print(";");
+        
+        } else {
+            idList.genJava(pw);
+            pw.print(";");
         }
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        int contador = 0;
+        tipo.getCname();
+
+        //Caso houver uma expressao
+        if(expr != null) {
+            ArrayList<Id> ids = idList.getArray();
+
+            for(Id s : ids) {
+                s.genC(pw);
+                pw.print(" = ");
+                expr.genC(pw);
+                contador++;
+                
+                if((ids.size()-1) != contador) {
+                    pw.print(", ");
+                }
+            }
+            pw.print(";");
+        
+        } else {
+            idList.genJava(pw);
+            pw.print(";");
+        }
     }
 
     //Atributos da classe

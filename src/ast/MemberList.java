@@ -5,6 +5,7 @@
  */
 package ast;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MemberList {
 
@@ -21,6 +22,21 @@ public class MemberList {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+      
+      Iterator<String> q = qualifier.iterator();
+      Iterator<Member> m = member.iterator();
+      
+      while (q.hasNext() && m.hasNext()) {
+
+        String q1 = q.next();
+        Member m1 = m.next();
+
+        if(!(q1.equals(""))) {
+          pw.print(q1); 
+        }
+        pw.print(" ");
+        m1.genJava(pw);
+      }
     }
 
     //Atributos da classe

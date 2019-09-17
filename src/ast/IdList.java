@@ -41,6 +41,11 @@ public class IdList {
         }
     }
 
+    //Metodo para recuperacao do array de ids
+    public ArrayList<Id> getArray() {
+        return ids;
+    }
+
     //Atributos da classe
     private ArrayList<Id> ids;
 }

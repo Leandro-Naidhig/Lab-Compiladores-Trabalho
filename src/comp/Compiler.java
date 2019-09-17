@@ -38,49 +38,29 @@ public class Compiler {
 	}
 
 	private Program program(ArrayList<CompilationError> compilationErrorList) {
-		
 		ArrayList<MetaobjectAnnotation> metaobjectCallList = new ArrayList<>();
 		ArrayList<ClassDec> CianetoClassList = new ArrayList<>();
-
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
 		boolean thereWasAnError = false;
-
-		while(lexer.token == Token.CLASS ||
-			 (lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
-			  lexer.token == Token.ANNOT) {
-			
+		while ( lexer.token == Token.CLASS ||
+				(lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
+				lexer.token == Token.ANNOT ) {
 			try {
-				while (lexer.token == Token.ANNOT) {
+				while ( lexer.token == Token.ANNOT ) {
 					metaobjectAnnotation(metaobjectCallList);
 				}
-
 				CianetoClassList.add(classDec());
 			}
-
-			catch(CompilerError e) {
+			catch( CompilerError e) {
+				// if there was an exception, there is a compilation error
 				thereWasAnError = true;
-				while(lexer.token != Token.CLASS && lexer.token != Token.EOF) {
-					try {
-						next();
-					}
-					catch (RuntimeException ee) {
-						e.printStackTrace();
-						return program;
-					}
-				}
-			}
-			catch(RuntimeException e) {
-				e.printStackTrace();
-				thereWasAnError = true;
-			}
-
+		  }
 		}
-		if (!thereWasAnError && lexer.token != Token.EOF) {
-			
+		if ( !thereWasAnError && lexer.token != Token.EOF ) {
 			try {
 				error("End of file expected");
 			}
-			catch(CompilerError e) {
+			catch( CompilerError e) {
 			}
 		}
 		return program;
@@ -207,13 +187,14 @@ public class Compiler {
 			className = lexer.getStringValue();
 		}
 
+		/*
 		if(lexer.get_keywords(className) != null) {
 			error(className + " is a keyword");
 		}
 
 		if (symbolTable.getInGlobal(className) != null) {
 			error("Class '" + className + "' has already been declared");
-		}
+		}*/
 		
 		next();
 
@@ -222,6 +203,7 @@ public class Compiler {
 			superclassName = lexer.getStringValue();
 			next();
 
+			/*
 			if(lexer.get_keywords(superclassName) != null) {
 				error(superclassName + " is a keyword");
 			}
@@ -230,7 +212,7 @@ public class Compiler {
 			
 			if(superclass == null) {
 				error("Class '" + superclassName + "' has not been declared");
-			}
+			}*/
 			
 		}
 
@@ -323,18 +305,20 @@ public class Compiler {
 			name = lexer.getStringValue();
 			id_idColon = new Id(name);
 
+			/*
 			if(symbolTable.getInLocal(name) != null) {
 				error("Function '" + name + "' has already been declared");
-			}
+			}*/
 			next();
 
 		} else if(lexer.token == Token.IDCOLON) {
 			name = lexer.getStringValue();
 			id_idColon = new Id(name);
 			
+			/*
 			if(symbolTable.getInLocal(name) != null) {
 				error("Function '" + name + "' has already been declared");
-			}
+			}*/
 			next();
 			formparaDec = formalParamDec();
 
@@ -387,9 +371,11 @@ public class Compiler {
 			error("Identifier expected");
 		} else {
 			name = lexer.getStringValue();
-			
+			Id id = new Id(name); 
+			ids.add(id);
+
 			/*Análise Semânica (verificacao de existencia do identificador)*/
-			if(lexer.get_keywords(name) != null) {
+			/*if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			
 			} else  if (symbolTable.getInLocal(name) != null) {
@@ -399,7 +385,7 @@ public class Compiler {
 				Id id = new Id(name); 
 				ids.add(id);
 				symbolTable.putInLocal(name, id);
-			}
+			}*/
 		}
 
 		next();
@@ -411,19 +397,21 @@ public class Compiler {
 				error("Identifier expected");
 			} else {
 				name = lexer.getStringValue();
-			
+				Id id = new Id(name); 
+				ids.add(id);
+
 				/*Análise Semânica (verificacao de existencia do identificador)*/
-				if(lexer.get_keywords(name) != null) {
+				/*if(lexer.get_keywords(name) != null) {
 					error(name + " is a keyword");
 				
 				} else  if (symbolTable.getInLocal(name) != null) {
-					error("Identifier '" + name + "' has already been declared in class");
+					//error("Identifier '" + name + "' has already been declared in class");
 				
 				} else {
 					Id id = new Id(name); 
 					ids.add(id);
 					symbolTable.putInLocal(name, id);
-				}
+				}*/
 			}
 			next();
 		}
@@ -451,9 +439,11 @@ public class Compiler {
 
 		if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
-			
+			id = new Id(name);
+			symbolTable.putInLocal(name, id);
+
 			/*Análise Semânica (verificacao de existencia do identificador*)*/
-			if(lexer.get_keywords(name) != null) {
+			/*if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			
 			} else  if (symbolTable.getInLocal(name) != null) {
@@ -462,7 +452,7 @@ public class Compiler {
 			} else {
 				id = new Id(name);
 				symbolTable.putInLocal(name, id);
-			}
+			}*/
 
 		} else {
 			error("An identifier was expected after type");
@@ -711,10 +701,11 @@ public class Compiler {
 				next();
 				if(lexer.getStringValue().equals("new")) {
 					next();
+					/*
 					ClassDec classe = (ClassDec)symbolTable.getInGlobal(id);
 					if(classe == null) {
 						error("Class " + name + " has not been declared");
-					}
+					}*/
 					return new ObjectCreation(id);
 				} else {
 					if(lexer.token == Token.ID) {
@@ -920,7 +911,6 @@ public class Compiler {
 		String name = "";
 
 		if(lexer.token == Token.INT || lexer.token == Token.BOOLEAN || lexer.token == Token.STRING) {
-			
 			if(lexer.token == Token.INT) {
 				tipo = Type.intType;
 			} else if(lexer.token == Token.STRING){
@@ -934,11 +924,11 @@ public class Compiler {
 			name = lexer.getStringValue();
 			id = new Id(name);
 			classe = (ClassDec)symbolTable.getInGlobal(id);
-			
+			/*
 			if(classe == null) {
 				error("There is no class with name" + name);
 			}
-			
+			*/
 			return classe;
 			
 		} else {

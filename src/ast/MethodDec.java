@@ -21,6 +21,22 @@ public class MethodDec {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print("public ");
+        type.getName();
+        pw.print(" ");
+        if(id != null) {
+            id.genJava(pw);
+        } else {
+            id_idColon.genJava(pw);
+            pw.print("(");
+            formParDec.genJava(pw);
+            pw.print(")");
+        }
+        pw.print(" {");
+        pw.add();
+        statementList.genJava(pw);
+        pw.sub();
+        pw.print("}");
     }
 
     //Atributos da classe
@@ -28,5 +44,5 @@ public class MethodDec {
     private FormalParamDec formParDec;
     private Type type;
     private StatementList statementList;
-
+    private Id id;
 }

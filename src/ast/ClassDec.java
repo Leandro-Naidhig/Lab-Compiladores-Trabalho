@@ -38,7 +38,7 @@ public class ClassDec extends Type{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print("public class ");
+        System.out.println(name1);
         pw.print(name1);
         if(name2 != null) {
             pw.print(" extends ");
@@ -46,6 +46,7 @@ public class ClassDec extends Type{
         }
         pw.print(" {");
         pw.add();
+        System.out.println(memberList);
         memberList.genJava(pw);
         pw.sub();
         pw.print("}");
