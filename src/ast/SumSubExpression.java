@@ -6,6 +6,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SumSubExpression {
 
@@ -21,6 +22,25 @@ public class SumSubExpression {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+
+        Iterator<Term> termo = term.iterator();
+        Iterator<String> operador = lowOperator.iterator();
+        Term termo1 = null;
+        String operador1 = null;
+
+        while(termo.hasNext()) {
+            termo1 = termo.next();
+            termo1.genJava(pw);
+
+            if(operador.hasNext()) {
+                operador1 = operador.next();
+                pw.print(" ");
+                pw.print(operador1);
+                pw.print(" ");
+                termo1 = termo.next();
+                termo1.genJava(pw);
+            }
+        }
     }
 
     //Atributos da classe

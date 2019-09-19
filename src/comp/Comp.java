@@ -823,9 +823,10 @@ public class Comp {
 			String className = javaFilename.substring(0, javaFilename.length() - dotJavaLength);
 
 			javaFilename = this.dirToJavaOutput + File.separator + javaFilename;
-			PrintWriter printWriter = null;
-			try ( FileOutputStream fos = new FileOutputStream(javaFilename) ) {
-				printWriter = new PrintWriter(fos, true);
+			//PrintWriter printWriter = null;
+			try ( FileOutputStream fos = new FileOutputStream(javaFilename);
+					PrintWriter printWriter = new PrintWriter(fos, true) ) {
+
 				PW pw = new PW(printWriter);
 				try {
 					program.genJava(pw);

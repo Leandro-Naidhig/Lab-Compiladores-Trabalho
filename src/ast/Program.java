@@ -21,14 +21,14 @@ public class Program {
 	public void genJava(PW pw) {
 
 		//Bibliotecas do Java
-		pw.print("package comp;");
+		pw.println("package comp;");
 
 		for(ClassDec s : classList) {
 
 			if(s.getName().equals("Program")) {
-				pw.print("public class Program {");
+				pw.println("public class Program {");
 				pw.add();
-				pw.print("public static void main(String []args) {");
+				pw.printIdent("public static void main(String []args) {");
 				pw.add();
 				s.genJava(pw);
 				pw.sub();
@@ -37,7 +37,6 @@ public class Program {
 			} else {
 
 				pw.print("public class ");
-				System.out.println(s);
 				s.genJava(pw);
 				pw.print("} ");
 			}

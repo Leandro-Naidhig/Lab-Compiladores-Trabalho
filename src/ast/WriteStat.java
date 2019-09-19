@@ -20,14 +20,15 @@ public class WriteStat extends Statement{
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         if(mode.equals("print:")) {
-            pw.print("System.out.println(");
+            pw.printIdent("System.out.println(");
             exprList.genJava(pw);
             pw.print(");");
         } else {
-            pw.print("System.out.print(");
+            pw.printIdent("System.out.print(");
             exprList.genJava(pw);
             pw.print(");");
         }
+        pw.println();
     }
 
     //Atributos da classe

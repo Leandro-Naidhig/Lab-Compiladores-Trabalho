@@ -30,6 +30,17 @@ public class ExpressionList {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        int contador = 0;
+
+        for(Expression s : exprList) {
+            s.genC(pw);
+            System.out.println(s);
+            contador++;
+            
+            if((exprList.size()-1) != contador) {
+                pw.print(", ");
+            }
+        }
     }
 
     //Atributos da classe

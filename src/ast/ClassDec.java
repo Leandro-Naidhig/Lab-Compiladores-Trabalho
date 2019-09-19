@@ -38,15 +38,13 @@ public class ClassDec extends Type{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        System.out.println(name1);
         pw.print(name1);
         if(name2 != null) {
             pw.print(" extends ");
             pw.print(name2.getName());
         }
-        pw.print(" {");
+        pw.println(" {");
         pw.add();
-        System.out.println(memberList);
         memberList.genJava(pw);
         pw.sub();
         pw.print("}");

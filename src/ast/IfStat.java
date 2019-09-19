@@ -57,14 +57,14 @@ public class IfStat extends Statement {
         }
 
         if(statElse != null) {
-            pw.print(" else { ");
-            pw.add();
+            pw.print("else { ");
             for(Statement s : statElse) {
                 s.genC(pw);
             }
             pw.sub();
             pw.print("} ");
         }
+        pw.println();
     }
 
     //Atributos da classe

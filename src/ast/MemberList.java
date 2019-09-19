@@ -32,9 +32,12 @@ public class MemberList {
         Member m1 = m.next();
 
         if(!(q1.equals(""))) {
-          pw.print(q1); 
+          pw.printIdent(q1);
+          pw.print(" "); 
+        } else {
+          pw.printIdent("public");
+          pw.print(" ");
         }
-        pw.print(" ");
         m1.genJava(pw);
       }
     }

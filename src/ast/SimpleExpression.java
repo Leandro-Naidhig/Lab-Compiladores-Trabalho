@@ -19,6 +19,18 @@ public class SimpleExpression {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+
+        Boolean flag = true;
+
+        for(SumSubExpression s : arraySumSub) {
+            if(flag) {
+                s.genC(pw);
+                flag = false;
+            } else {
+                pw.print(" + ");
+                s.genC(pw); 
+            }
+        }
     }
 
 
