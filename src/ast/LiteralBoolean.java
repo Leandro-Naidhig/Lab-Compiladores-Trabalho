@@ -20,6 +20,7 @@ public class LiteralBoolean extends Expr {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print("" + value);
     }
 
     //Metodo para retornar o tipo

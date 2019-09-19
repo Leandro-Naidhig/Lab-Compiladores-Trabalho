@@ -575,13 +575,13 @@ public class Compiler {
 
 	private Expression expression() {
 
-		String relation = "";
+		Token relation = null;
 		SimpleExpression exprLeft = simpleExpression();
 		SimpleExpression exprRight = null;
 
 		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
 		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
-			relation = lexer.getStringValue();
+			relation = lexer.token;
 			next();
 			exprRight = simpleExpression();
 		}
@@ -661,7 +661,7 @@ public class Compiler {
 				value = literalInt();
 			
 			} else if(lexer.token == Token.LITERALSTRING) {
-				str = new LiteralString(lexer.getStringValue());
+				str = new LiteralString(lexer.getLiteralStringValue());
 				
 			} else {
 				if(lexer.token == Token.TRUE) {

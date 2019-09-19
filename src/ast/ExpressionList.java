@@ -33,11 +33,10 @@ public class ExpressionList {
         int contador = 0;
 
         for(Expression s : exprList) {
-            s.genC(pw);
-            System.out.println(s);
+            s.genJava(pw);
             contador++;
             
-            if((exprList.size()-1) != contador) {
+            if(exprList.size() != contador) {
                 pw.print(", ");
             }
         }

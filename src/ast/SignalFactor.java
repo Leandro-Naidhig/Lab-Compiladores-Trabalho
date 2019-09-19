@@ -5,8 +5,6 @@
  */
 package ast;
 
-import java.util.ArrayList;
-
 public class SignalFactor {
 
     //Construtor da classe
@@ -21,6 +19,11 @@ public class SignalFactor {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        if(signal != null) {
+            pw.print(signal);
+            pw.print(" ");
+        }
+        factor.genJava(pw);
     }
 
     //Atributos da classe

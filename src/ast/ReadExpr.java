@@ -11,5 +11,13 @@ public class ReadExpr extends Factor{
         this.name = name;
     }
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+    }
+
     private String name;
 }

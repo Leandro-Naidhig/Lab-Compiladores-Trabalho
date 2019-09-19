@@ -13,6 +13,21 @@ public class BasicValue extends Factor{
         this.BooleanValue = BooleanValue;
     }
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em Java
+    public void genJava(PW pw) {
+        if(StringValue != null) {
+            StringValue.genJava(pw);
+        } else if(BooleanValue != null) {
+            BooleanValue.genJava(pw);
+        } else {
+            IntValue.genJava(pw);
+        }
+    }
+
     private LiteralString StringValue;
     private LiteralInt IntValue;
     private LiteralBoolean BooleanValue;

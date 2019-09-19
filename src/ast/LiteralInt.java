@@ -24,6 +24,8 @@ public class LiteralInt extends Expr {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        System.out.println(value);
+        pw.print("" + value);
     }
     
     //Retorna o tipo

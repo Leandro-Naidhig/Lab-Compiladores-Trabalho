@@ -4,11 +4,12 @@
 
  */
 package ast;
+import lexer.Token;
 
 public class Expression {
 
     //Construtor da classe
-    public Expression(SimpleExpression exprLeft, String relation, SimpleExpression exprRight) {
+    public Expression(SimpleExpression exprLeft, Token relation, SimpleExpression exprRight) {
         this.exprLeft = exprLeft;
         this.relation = relation;
         this.exprRight = exprRight;
@@ -19,22 +20,22 @@ public class Expression {
         
         exprLeft.genC(pw);
         if(exprRight != null) {
-            pw.print(relation);
+            pw.print(" ");
+            pw.print(relation.toString());
             exprRight.genC(pw);
         }
     }
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        
-        exprLeft.genC(pw);
+        exprLeft.genJava(pw);
         if(exprRight != null) {
-            pw.print(relation);
-            exprRight.genC(pw);
+            pw.print(relation.toString());
+            exprRight.genJava(pw);
         }
     }
 
     //Atributos da classe
     private SimpleExpression exprLeft;
     private SimpleExpression exprRight;
-    private String relation;
+    private Token relation;
 }

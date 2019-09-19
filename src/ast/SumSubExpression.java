@@ -4,7 +4,6 @@
 
  */
 package ast;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -34,9 +33,7 @@ public class SumSubExpression {
 
             if(operador.hasNext()) {
                 operador1 = operador.next();
-                pw.print(" ");
                 pw.print(operador1);
-                pw.print(" ");
                 termo1 = termo.next();
                 termo1.genJava(pw);
             }

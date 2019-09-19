@@ -224,7 +224,7 @@ public class Lexer {
                     case '"' :
                        StringBuffer s = new StringBuffer();
                        while ( input[tokenPos] != '\0' && input[tokenPos] != '\n' )
-                          if ( input[tokenPos] == '"' )
+                          if ( input[tokenPos] == '"' ) 
                              break;
                           else
                              if ( input[tokenPos] == '\\' ) {
