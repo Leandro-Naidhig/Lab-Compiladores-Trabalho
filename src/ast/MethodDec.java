@@ -39,7 +39,7 @@ public class MethodDec {
         pw.add();
         statementList.genJava(pw);
         pw.sub();
-        pw.println("}");
+        pw.printlnIdent("}");
     }
 
     //Atributos da classe

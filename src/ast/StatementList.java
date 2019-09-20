@@ -23,6 +23,7 @@ public class StatementList {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
       for(Statement s : arrayStatement) {
+        System.out.println(s);
         s.genJava(pw);
       }
     }

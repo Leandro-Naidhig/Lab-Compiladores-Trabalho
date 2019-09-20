@@ -523,7 +523,7 @@ public class Compiler {
 	private IfStat ifStat() {
 		
 		ArrayList<Statement> statIf = new ArrayList<>();
-		ArrayList<Statement> statElse = new ArrayList<>();
+		ArrayList<Statement> statElse = null;
 		next();
 		Expression expressao = expression();
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
@@ -537,6 +537,7 @@ public class Compiler {
 		next();
 		
 		if (lexer.token == Token.ELSE) {
+			statElse = new ArrayList<>();
 			next();
 			check(Token.LEFTCURBRACKET, "'{' expected after 'else'");
 			next();

@@ -28,17 +28,15 @@ public class Program {
 			if(s.getName().equals("Program")) {
 				pw.println("public class Program {");
 				pw.add();
-				pw.printIdent("public static void main(String []args) {");
+				pw.printlnIdent("public static void main(String []args) {");
 				pw.add();
 				s.genJava(pw);
 				pw.sub();
-				pw.print("}");
 			
 			} else {
 
 				pw.print("public class ");
 				s.genJava(pw);
-				pw.print("} ");
 			}
 		}
 	}

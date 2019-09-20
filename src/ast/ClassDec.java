@@ -47,7 +47,7 @@ public class ClassDec extends Type{
         pw.add();
         memberList.genJava(pw);
         pw.sub();
-        pw.print("}");
+        pw.printlnIdent("}");
     }
 
     //Atributos da classe
