@@ -17,6 +17,11 @@ public class ReadExpr extends Factor{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        if(name.equals("readInt")) {
+            pw.printIdent("variable.nextInt()");
+        } else {
+            pw.printIdent("variable.readLine()");
+        }
     }
 
     private String name;

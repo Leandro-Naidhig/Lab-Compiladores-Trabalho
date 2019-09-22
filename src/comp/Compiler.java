@@ -689,12 +689,10 @@ public class Compiler {
 			primexpr = primaryExpr();
 			return primexpr;
 
-		//Lembrar de guardar o not (ainda não sei como)
 		} else if(lexer.token == Token.NOT) {
 			next();
-			Factor fac = factor();
-			return fac;
-
+			return new NotFactor(factor());
+			
 		} else if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 			id = new Id(name);

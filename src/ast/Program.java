@@ -22,6 +22,7 @@ public class Program {
 
 		//Bibliotecas do Java
 		pw.println("package comp;");
+		pw.println("import java.util.*;");
 
 		for(ClassDec s : classList) {
 

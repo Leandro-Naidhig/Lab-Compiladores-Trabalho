@@ -38,6 +38,7 @@ public class MethodDec {
         }
         pw.println(" {");
         pw.add();
+        pw.printlnIdent("Scanner variable = new Scanner(System.in);");
         statementList.genJava(pw);
         pw.sub();
         pw.printlnIdent("}");

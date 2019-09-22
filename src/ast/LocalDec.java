@@ -76,7 +76,7 @@ public class LocalDec extends Statement {
                 contador++;
                 
                 if(ids.size() != contador) {
-                    pw.println(", ");
+                    pw.print(", ");
                 }
             }
             pw.println(";");

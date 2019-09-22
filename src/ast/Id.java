@@ -19,9 +19,15 @@ public class Id {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print(name);
+        if(name.indexOf(":") != -1) {
+            int tamanho = name.length()-1;
+            name = this.name.substring(0, tamanho);
+            pw.print(name);
+        } else {
+            pw.print(name);
+        }
     }
 
-    //Atributos da classe
+    // Atributos da classe
     private String name;
 }

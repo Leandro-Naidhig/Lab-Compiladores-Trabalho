@@ -28,7 +28,7 @@ public class Expression {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         
-        pw.print("(");
+        pw.printIdent("(");
         exprLeft.genJava(pw);
         if(exprRight != null) {
             pw.print("");

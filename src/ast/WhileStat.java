@@ -30,6 +30,17 @@ public class WhileStat extends Statement{
     
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.printIdent("while(");
+		expr.genJava(pw);
+		pw.println(") { ");
+
+		if (statList != null) {
+            pw.add();
+			statList.genJava(pw);
+            pw.sub();
+        }
+        
+        pw.printlnIdent("}");
     }
 
     //Atributos da Classe

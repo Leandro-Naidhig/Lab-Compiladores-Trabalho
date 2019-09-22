@@ -23,7 +23,9 @@ public class PrimaryExpr extends Factor{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        if(ids.size() == 1) {
+        if(readExpr != null) {
+            readExpr.genJava(pw);
+        } else if(ids.size() == 1) {
             for(Id s: ids) {
                 s.genJava(pw);
             }

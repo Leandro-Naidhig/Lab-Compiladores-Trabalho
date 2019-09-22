@@ -1,34 +1,31 @@
 /**
     Integrantes:    Leandro Naidhig 726555
                     Gustavo Buoro Branco de Souza 726533
-
+                    
  */
 package ast;
 
-public class ParamDec {
+public class NotFactor extends Factor{
 
     //Construtor da classe
-    public ParamDec(Type type, Id id) {
-        this.type = type;
-        this.id = id;
+    public NotFactor(Factor factor) {
+      this.factor = factor;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.print(type.getName());
-        pw.print(" ");
-        id.genJava(pw);
+      pw.printIdent("!(");
+      factor.genJava(pw);
+      pw.print(")");
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print(type.getName());
-        pw.print(" ");
-        id.genJava(pw);
+      pw.printIdent("!(");
+      factor.genJava(pw);
+      pw.print(")");
     }
 
     //Atributos da classe
-    private Type type;
-    private Id id;
-
+    private Factor factor;
 }

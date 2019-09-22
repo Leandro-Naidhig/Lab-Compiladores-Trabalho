@@ -56,7 +56,7 @@ public class IfStat extends Statement {
         }
 
         if(statElse != null) {
-            pw.printIdent("} else { ");
+            pw.printlnIdent("} else { ");
             pw.add();
             for(Statement s : statElse) {
                 s.genJava(pw);

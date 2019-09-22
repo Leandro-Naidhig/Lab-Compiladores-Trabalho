@@ -15,7 +15,6 @@
 
   */
 
-open
 class A
 
     func m1:Int n {
@@ -24,11 +23,10 @@ class A
 
 end
 
-open
 class B extends A
 
     func m2:Int n {
-        super.m1: 1;
+        //super.m1: 1;
         Out.print: " 2 " ++ n, " ";
     }  
 
@@ -37,12 +35,12 @@ end
 class C extends B
 
     func m3: Int n {
-        super.m2: 2;
+        //super.m2: 2;
         Out.print: " 3 " ++ n, " ";
     } 
 
     func m4:Int n {
-        self.m3: 3;
+        //self.m3: 3;
         Out.println: " 4 " ++ n, " ";
     } 
 

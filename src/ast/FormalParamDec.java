@@ -15,7 +15,6 @@ public class FormalParamDec {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-
         int contador = 0;
 
         for(ParamDec s : paramDec) {
@@ -30,6 +29,16 @@ public class FormalParamDec {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        int contador = 0;
+
+        for(ParamDec s : paramDec) {
+            s.genJava(pw);
+            contador++;
+            
+            if(paramDec.size() != contador) {
+                pw.print(", ");
+            }
+        }
     }
 
     //Atributos da classe
