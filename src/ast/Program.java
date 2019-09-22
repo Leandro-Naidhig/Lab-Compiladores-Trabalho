@@ -25,20 +25,20 @@ public class Program {
 		pw.println("import java.util.*;");
 
 		for(ClassDec s : classList) {
-
-			if(s.getName().equals("Program")) {
-				pw.println("public class Program {");
-				pw.add();
-				pw.printlnIdent("public static void main(String []args) {");
-				pw.add();
-				s.genJava(pw);
-				pw.sub();
-			
-			} else {
-				pw.print("public class ");
-				s.genJava(pw);
-			}
+			pw.print("public class ");
+			s.genJava(pw);
 		}
+
+		pw.println("public class " + "OK_GER01" + " {");
+		pw.add();
+		pw.printlnIdent("public static void main(String []args) {");
+		pw.add();
+		pw.printlnIdent("new Program().run;");
+		pw.sub();
+		pw.printlnIdent("}");
+		pw.sub();
+		pw.printlnIdent("}");
+
 	}
 
 	//Metodo responsavel pela geracao do codigo em C

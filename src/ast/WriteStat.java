@@ -36,7 +36,7 @@ public class WriteStat extends Statement {
             }
             pw.print(");");
         } else {
-            pw.printIdent("System.out.println(\"\" +");
+            pw.printIdent("System.out.println(\"\" + ");
             exprListArray = exprList.getArrayList();
             int contador = 0;
             for(Expression s : exprListArray) {

@@ -28,15 +28,16 @@ public class Expression {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         
-        pw.printIdent("(");
-        exprLeft.genJava(pw);
-        if(exprRight != null) {
+        if(exprRight == null) {
+            exprLeft.genJava(pw);
+        } else {
+            pw.print("(");
             pw.print("");
             pw.print(relation.toString());
             pw.print("");
             exprRight.genJava(pw);
+            pw.print(")");
         }
-        pw.print(")");
     }
 
     //Atributos da classe

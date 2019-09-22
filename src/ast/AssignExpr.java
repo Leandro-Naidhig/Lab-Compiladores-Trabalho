@@ -27,6 +27,7 @@ public class AssignExpr extends Statement{
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
 
+        pw.printIdent("");
         exprLeft.genJava(pw);
 		if (exprRight != null) {
             pw.print(" = ");
