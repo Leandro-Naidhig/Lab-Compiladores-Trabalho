@@ -4,35 +4,58 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class WriteStat extends Statement{
+public class WriteStat extends Statement {
 
-    //Construtor da classe
+    // Construtor da classe
     public WriteStat(ExpressionList exprList, String mode) {
         this.exprList = exprList;
         this.mode = mode;
     }
 
-    //Metodo para geracao do codigo em C
+    // Metodo para geracao do codigo em C
     public void genC(PW pw) {
     }
 
-    //Metodo para geracao do codigo em Java
+    // Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        if(mode.equals("print:")) {
-            pw.printIdent("System.out.println(\"\" + ");
-            exprList.genJava(pw);
+        if (mode.equals("print:")) {
+            pw.printIdent("System.out.print(\"\" + ");
+            exprListArray = exprList.getArrayList();
+            int contador = 0;
+            for(Expression s : exprListArray) {
+                
+                if((exprListArray.size()-1) != contador) {
+                    s.genJava(pw);
+                    pw.print(" + ");
+                    contador++;
+                } else {
+                    s.genJava(pw);
+                }
+            }
             pw.print(");");
         } else {
-            pw.printIdent("System.out.print(");
-            exprList.genJava(pw);
+            pw.printIdent("System.out.println(\"\" +");
+            exprListArray = exprList.getArrayList();
+            int contador = 0;
+            for(Expression s : exprListArray) {
+                if((exprListArray.size()-1) != contador) {
+                    s.genJava(pw);
+                    pw.print(" + ");
+                    contador++;
+                } else {
+                    s.genJava(pw);
+                }
+            }
             pw.print(");");
         }
         pw.println();
     }
 
-    //Atributos da classe
+    // Atributos da classe
     private ExpressionList exprList;
+    private ArrayList<Expression> exprListArray;
     private String mode;
 
 }

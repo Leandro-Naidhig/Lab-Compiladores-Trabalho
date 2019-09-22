@@ -13,6 +13,11 @@ public class ExpressionList {
         this.exprList = exprList;
     }
 
+    //Metodo para retornar uma lista de expressoes
+    public ArrayList<Expression> getArrayList() {
+        return exprList;
+    }
+
     //Metodo para geracao do codigo em Java
     public void genC(PW pw) {
 

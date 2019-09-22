@@ -4,11 +4,12 @@
 
  */
 package ast;
+import lexer.Token;
 
 public class SignalFactor {
 
     //Construtor da classe
-    public SignalFactor(String signal, Factor factor) {
+    public SignalFactor(Token signal, Factor factor) {
         this.signal = signal;
         this.factor = factor;
     }
@@ -20,13 +21,13 @@ public class SignalFactor {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         if(signal != null) {
-            pw.print(signal);
+            pw.print(signal.toString());
             pw.print(" ");
         }
         factor.genJava(pw);
     }
 
     //Atributos da classe
-    private String signal;
+    private Token signal;
     private Factor factor;
 }

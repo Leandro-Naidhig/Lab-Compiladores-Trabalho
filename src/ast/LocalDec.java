@@ -49,29 +49,37 @@ public class LocalDec extends Statement {
 
         //Arrumar isso depois
         if(tipo != null) {
-            tipo.getCname();
+            pw.printIdent(tipo.getName() + " ");
         }
         
-
         //Caso houver uma expressao
         if(expr != null) {
             ArrayList<Id> ids = idList.getArray();
 
             for(Id s : ids) {
-                s.genC(pw);
+                s.genJava(pw);
                 pw.print(" = ");
-                expr.genC(pw);
+                expr.genJava(pw);
                 contador++;
                 
-                if((ids.size()-1) != contador) {
+                if(ids.size() != contador) {
                     pw.print(", ");
                 }
             }
-            pw.print(";");
+            pw.println(";");
         
         } else {
-            idList.genJava(pw);
-            pw.print(";");
+            ArrayList<Id> ids = idList.getArray();
+
+            for(Id s : ids) {
+                s.genJava(pw);
+                contador++;
+                
+                if(ids.size() != contador) {
+                    pw.println(", ");
+                }
+            }
+            pw.println(";");
         }
     }
 

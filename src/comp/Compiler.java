@@ -274,6 +274,9 @@ public class Compiler {
 				qualifiers.add(qual);
 				qualifierspos.add(pos);
 				pos++;
+			} else {
+				qual = "public";
+				qualifiers.add(qual);
 			}
 			
 			if(lexer.token == Token.VAR) {
@@ -604,12 +607,12 @@ public class Compiler {
 	private SumSubExpression sumSubExpression() {
 
 		ArrayList<Term> terms = new ArrayList<>();
-		ArrayList<String> operators = new ArrayList<>();
+		ArrayList<Token> operators = new ArrayList<>();
 
 		terms.add(term());
 
 		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
-			operators.add(lexer.getStringValue());
+			operators.add(lexer.token);
 			next();
 			terms.add(term());
 		}
@@ -619,12 +622,12 @@ public class Compiler {
 	private Term term() {
 
 		ArrayList<SignalFactor> signalfactor = new ArrayList<>();
-		ArrayList<String> highOperator = new ArrayList<>();
+		ArrayList<Token> highOperator = new ArrayList<>();
 
 		signalfactor.add(signalFactor());
 
 		while(lexer.token == Token.MULT || lexer.token == Token.DIV || lexer.token == Token.AND) {
-			highOperator.add(lexer.getStringValue());
+			highOperator.add(lexer.token);
 			next();
 			signalfactor.add(signalFactor());
 		}
@@ -633,10 +636,10 @@ public class Compiler {
 
 	private SignalFactor signalFactor() {
 
-		String signal = "";
+		Token signal = null;
 
 		if(lexer.token == Token.PLUS || lexer.token == Token.MINUS) {
-			signal = lexer.getStringValue();
+			signal = lexer.token;
 		}
 
 		Factor fac = factor();
@@ -925,11 +928,9 @@ public class Compiler {
 			name = lexer.getStringValue();
 			id = new Id(name);
 			classe = (ClassDec)symbolTable.getInGlobal(id);
-			/*
 			if(classe == null) {
 				error("There is no class with name" + name);
 			}
-			*/
 			return classe;
 			
 		} else {

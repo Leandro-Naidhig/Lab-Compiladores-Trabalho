@@ -4,13 +4,15 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+import lexer.Token;
 
 public class Term {
 
     //Construtor da classe
-    public Term(ArrayList<SignalFactor> signalFactor, ArrayList<String> highOperator) {
+    public Term(ArrayList<SignalFactor> signalFactor, ArrayList<Token> highOperator) {
         this.signalFactor = signalFactor;
         this.highOperator = highOperator;
     }
@@ -22,9 +24,9 @@ public class Term {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         Iterator<SignalFactor> fator = signalFactor.iterator();
-        Iterator<String> operador = highOperator.iterator();
+        Iterator<Token> operador = highOperator.iterator();
         SignalFactor fator1 = null;
-        String operador1 = null;
+        Token operador1 = null;
 
         while(fator.hasNext()) {
             fator1 = fator.next();
@@ -32,7 +34,7 @@ public class Term {
 
             if(operador.hasNext()) {
                 operador1 = operador.next();
-                pw.print(operador1);
+                pw.print(operador1.toString());
                 fator1 = fator.next();
                 fator1.genJava(pw);
             }
@@ -40,5 +42,5 @@ public class Term {
     }
 
     private ArrayList<SignalFactor> signalFactor;
-    private ArrayList<String> highOperator;
+    private ArrayList<Token> highOperator;
 }

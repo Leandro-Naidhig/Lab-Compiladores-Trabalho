@@ -29,6 +29,7 @@ public class MethodDec {
         pw.print(" ");
         if(formParDec == null) {
             id_idColon.genJava(pw);
+            pw.print("()");
         } else {
             id_idColon.genJava(pw);
             pw.print("(");

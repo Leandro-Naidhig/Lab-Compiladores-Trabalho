@@ -4,13 +4,15 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+import lexer.Token;
 
 public class SumSubExpression {
 
     //Construtor da classe
-    public SumSubExpression(ArrayList<Term> term, ArrayList<String> lowOperator){
+    public SumSubExpression(ArrayList<Term> term, ArrayList<Token> lowOperator){
         this.term = term;
         this.lowOperator = lowOperator;
     }
@@ -23,9 +25,9 @@ public class SumSubExpression {
     public void genJava(PW pw) {
 
         Iterator<Term> termo = term.iterator();
-        Iterator<String> operador = lowOperator.iterator();
+        Iterator<Token> operador = lowOperator.iterator();
         Term termo1 = null;
-        String operador1 = null;
+        Token operador1 = null;
 
         while(termo.hasNext()) {
             termo1 = termo.next();
@@ -33,7 +35,7 @@ public class SumSubExpression {
 
             if(operador.hasNext()) {
                 operador1 = operador.next();
-                pw.print(operador1);
+                pw.print(operador1.toString());
                 termo1 = termo.next();
                 termo1.genJava(pw);
             }
@@ -42,6 +44,6 @@ public class SumSubExpression {
 
     //Atributos da classe
     private ArrayList<Term> term;
-    private ArrayList<String> lowOperator;
+    private ArrayList<Token> lowOperator;
 
 }

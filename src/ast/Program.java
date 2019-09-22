@@ -34,7 +34,6 @@ public class Program {
 				pw.sub();
 			
 			} else {
-
 				pw.print("public class ");
 				s.genJava(pw);
 			}
