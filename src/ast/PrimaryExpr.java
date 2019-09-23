@@ -25,10 +25,19 @@ public class PrimaryExpr extends Factor{
     public void genJava(PW pw) {
         if(readExpr != null) {
             readExpr.genJava(pw);
-        } else if(ids.size() == 1) {
+        } else if(ids.size() == 1 && idc == null) {
             for(Id s: ids) {
                 s.genJava(pw);
             }
+        } else if(exprlist != null && qualifier == null) {
+            for(Id s: ids) {
+                s.genJava(pw);
+            }
+            pw.print(".");
+            idc.genJava(pw);
+            pw.print("(");
+            exprlist.genJava(pw);
+            pw.println(");");
         }
     }
 

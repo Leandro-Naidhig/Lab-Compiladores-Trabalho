@@ -33,6 +33,7 @@ public class AssignExpr extends Statement{
             exprRight.genJava(pw);
             pw.println(";");
         }
+
     }
 
     //Atributos da Classe

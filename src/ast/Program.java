@@ -25,7 +25,7 @@ public class Program {
 		pw.println("import java.util.*;");
 
 		for(ClassDec s : classList) {
-			pw.print("public class ");
+			pw.print("public class ");	
 			s.genJava(pw);
 		}
 
@@ -33,7 +33,7 @@ public class Program {
 		pw.add();
 		pw.printlnIdent("public static void main(String []args) {");
 		pw.add();
-		pw.printlnIdent("new Program().run;");
+		pw.printlnIdent("new Program().run();");
 		pw.sub();
 		pw.printlnIdent("}");
 		pw.sub();

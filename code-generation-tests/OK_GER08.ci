@@ -27,7 +27,7 @@ class A
         Out.print: n, " ";
     }   
    
-    func m3: Int n, Int p, String q, Int r {
+    func m3: Int n, Int p, String q, Int r, Boolean falseBool {
         Out.print: 3, " ";
         Out.print: n, " ";
         Out.print: p, " ";
@@ -46,7 +46,6 @@ end
 class Program
     func run {
         var A a;
-
         Out.println: "1 1 2 2 3 3 4 5 6 7";
         a = A.new;
         a.m1: 1;

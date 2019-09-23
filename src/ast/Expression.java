@@ -32,6 +32,7 @@ public class Expression {
             exprLeft.genJava(pw);
         } else {
             pw.print("(");
+            exprLeft.genJava(pw);
             pw.print("");
             pw.print(relation.toString());
             pw.print("");

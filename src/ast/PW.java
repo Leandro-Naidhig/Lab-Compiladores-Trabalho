@@ -33,6 +33,12 @@ public class PW {
 		out.print(s);
 	}
 
+	public void printNotIdent(String s) {
+		out.print(space.substring(0, 0));
+		out.print(s);
+	}
+
+
 	public void printlnIdent(String s) {
 		out.print( space.substring(0, currentIndent) );
 		out.println(s);

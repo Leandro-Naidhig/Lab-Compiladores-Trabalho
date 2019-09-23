@@ -30,12 +30,18 @@ public class Term {
 
         while(fator.hasNext()) {
             fator1 = fator.next();
-            fator1.genJava(pw);
-
             if(operador.hasNext()) {
+                pw.print("(");
+                fator1.genJava(pw);
                 operador1 = operador.next();
+                pw.print(" ");
                 pw.print(operador1.toString());
+                pw.print(" ");
                 fator1 = fator.next();
+                fator1.genJava(pw);
+                pw.print(")");
+                
+            } else {
                 fator1.genJava(pw);
             }
         }

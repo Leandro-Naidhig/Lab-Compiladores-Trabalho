@@ -47,8 +47,7 @@ public class LocalDec extends Statement {
     public void genJava(PW pw) {
         int contador = 0;
         pw.printIdent(tipo.getName() + " ");
-        
-        //Caso houver uma expressao
+    
         if(expr != null) {
             ArrayList<Id> ids = idList.getArray();
 

@@ -14,14 +14,14 @@ public class NotFactor extends Factor{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-      pw.printIdent("!(");
+      pw.print("!(");
       factor.genJava(pw);
       pw.print(")");
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-      pw.printIdent("!(");
+      pw.print("!(");
       factor.genJava(pw);
       pw.print(")");
     }

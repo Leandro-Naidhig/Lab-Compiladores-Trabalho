@@ -26,6 +26,10 @@ class A
         Out.print: self.k ++ " " ++ n ++ " ";
     }
 
+    func getK -> Int {
+        return self.k;
+    }
+
 end
 
 open
@@ -37,6 +41,11 @@ class B extends A
         self.k = 2;
         super.m1: 1;
         Out.print: self.k ++ " " ++ n ++ " ";
+    }
+
+    override
+    func getK -> Int {
+        return self.k;
     }
 
 end

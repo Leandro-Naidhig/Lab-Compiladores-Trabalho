@@ -399,21 +399,20 @@ public class Compiler {
 				error("Identifier expected");
 			} else {
 				name = lexer.getStringValue();
-				Id id = new Id(name); 
-				ids.add(id);
 
-				/*Análise Semânica (verificacao de existencia do identificador)*/
-				/*if(lexer.get_keywords(name) != null) {
+				/*Análise Semânica (verificacao se é uma palavra chave)*/
+				if(lexer.get_keywords(name) != null) {
 					error(name + " is a keyword");
 				
+					/*Análise Semânica (verificacao de declaracao de variavel)*/
 				} else  if (symbolTable.getInLocal(name) != null) {
-					//error("Identifier '" + name + "' has already been declared in class");
+					error("Identifier '" + name + "' has already been declared in class");
 				
 				} else {
 					Id id = new Id(name); 
 					ids.add(id);
 					symbolTable.putInLocal(name, id);
-				}*/
+				}
 			}
 			next();
 		}
@@ -444,7 +443,7 @@ public class Compiler {
 			id = new Id(name);
 			symbolTable.putInLocal(name, id);
 
-			/*Análise Semânica (verificacao de existencia do identificador*)*/
+			/*Análise Semânica (verificacao se é uma palavra chave*)*/
 			/*if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			

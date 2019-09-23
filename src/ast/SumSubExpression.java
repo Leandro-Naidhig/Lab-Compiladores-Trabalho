@@ -31,12 +31,19 @@ public class SumSubExpression {
 
         while(termo.hasNext()) {
             termo1 = termo.next();
-            termo1.genJava(pw);
 
             if(operador.hasNext()) {
+                pw.print("(");
+                termo1.genJava(pw);
                 operador1 = operador.next();
+                pw.print(" ");
                 pw.print(operador1.toString());
+                pw.print(" ");
                 termo1 = termo.next();
+                termo1.genJava(pw);
+                pw.print(")");
+            
+            } else {
                 termo1.genJava(pw);
             }
         }

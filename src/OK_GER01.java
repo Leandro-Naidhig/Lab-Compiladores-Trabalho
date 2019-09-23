@@ -53,11 +53,11 @@ public class Program {
       Scanner variable = new Scanner(System.in);
       A a;
       System.out.println("" + "7 0 1 2 3 4 5 6 7");
-a = new A();
-   }
+      a = new A();
+         }
 }
 public class OK_GER01 {
    public static void main(String []args) {
-      new Program().run;
+      new Program().run();
    }
 }
