@@ -20,7 +20,6 @@ public class SimpleExpression {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
 
-        //System.out.println(arraySumSub);
         Boolean flag = true;
         for(SumSubExpression s : arraySumSub) {
             if(flag) {

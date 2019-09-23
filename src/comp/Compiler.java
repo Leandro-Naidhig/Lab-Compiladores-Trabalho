@@ -921,7 +921,7 @@ public class Compiler {
 		} else if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 			id = new Id(name);
-			classe = (ClassDec)symbolTable.getInGlobal(id);
+			classe = (ClassDec)symbolTable.getInGlobal(name);
 			if(classe == null) {
 				error("There is no class with name" + name);
 			}

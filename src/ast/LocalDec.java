@@ -46,9 +46,7 @@ public class LocalDec extends Statement {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         int contador = 0;
-
-        //Arrumar isso depois
-       // pw.printIdent(tipo.getName() + " ");
+        pw.printIdent(tipo.getName() + " ");
         
         //Caso houver uma expressao
         if(expr != null) {

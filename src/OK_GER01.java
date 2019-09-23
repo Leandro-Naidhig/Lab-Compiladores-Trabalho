@@ -51,6 +51,7 @@ public class A {
 public class Program {
    public void run() {
       Scanner variable = new Scanner(System.in);
+      A a;
       System.out.println("" + "7 0 1 2 3 4 5 6 7");
 a = new A;
    }
