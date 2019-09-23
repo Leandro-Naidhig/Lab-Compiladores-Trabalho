@@ -374,8 +374,6 @@ public class Compiler {
 			error("Identifier expected");
 		} else {
 			name = lexer.getStringValue();
-			Id id = new Id(name); 
-			ids.add(id);
 
 			/*Análise Semânica (verificacao se é uma palavra chave)*/
 			if(lexer.get_keywords(name) != null) {
