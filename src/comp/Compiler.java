@@ -186,14 +186,15 @@ public class Compiler {
 			className = lexer.getStringValue();
 		}
 
-		/*
+		/*Análise Semânica (verificacao se é uma palavra chave)*/
 		if(lexer.get_keywords(className) != null) {
 			error(className + " is a keyword");
 		}
 
+		/*Análise Semânica (verificacao de existencia da classe)*/
 		if (symbolTable.getInGlobal(className) != null) {
 			error("Class '" + className + "' has already been declared");
-		}*/
+		}
 		
 		next();
 
@@ -202,16 +203,17 @@ public class Compiler {
 			superclassName = lexer.getStringValue();
 			next();
 
-			/*
+			/*Análise Semânica (verificacao se é uma palavra chave)*/
 			if(lexer.get_keywords(superclassName) != null) {
 				error(superclassName + " is a keyword");
 			}
 			
 			superclass = (ClassDec)symbolTable.getInGlobal(superclassName);
 			
+			/*Análise Semânica (verificacao de existencia da superclasse)*/
 			if(superclass == null) {
 				error("Class '" + superclassName + "' has not been declared");
-			}*/
+			}
 			
 		}
 
@@ -306,20 +308,20 @@ public class Compiler {
 			name = lexer.getStringValue();
 			id_idColon = new Id(name);
 
-			/*
+			/*Análise Semânica (verificacao de existecia da funcao)*/
 			if(symbolTable.getInLocal(name) != null) {
 				error("Function '" + name + "' has already been declared");
-			}*/
+			}
 			next();
 
 		} else if(lexer.token == Token.IDCOLON) {
 			name = lexer.getStringValue();
 			id_idColon = new Id(name);
 			
-			/*
+			/*Análise Semânica (verificacao de existecia da funcao)*/
 			if(symbolTable.getInLocal(name) != null) {
 				error("Function '" + name + "' has already been declared");
-			}*/
+			}
 			next();
 			formparaDec = formalParamDec();
 
@@ -375,10 +377,11 @@ public class Compiler {
 			Id id = new Id(name); 
 			ids.add(id);
 
-			/*Análise Semânica (verificacao de existencia do identificador)*/
-			/*if(lexer.get_keywords(name) != null) {
+			/*Análise Semânica (verificacao se é uma palavra chave)*/
+			if(lexer.get_keywords(name) != null) {
 				error(name + " is a keyword");
 			
+			/*Análise Semânica (verificacao se já existe o identificador)*/
 			} else  if (symbolTable.getInLocal(name) != null) {
 				error("Identifier '" + name + "' has already been declared in class");
 			
@@ -386,7 +389,7 @@ public class Compiler {
 				Id id = new Id(name); 
 				ids.add(id);
 				symbolTable.putInLocal(name, id);
-			}*/
+			}
 		}
 
 		next();

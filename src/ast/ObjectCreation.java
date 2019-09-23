@@ -19,7 +19,7 @@ public class ObjectCreation extends Factor{
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
       pw.print("new ");
-      pw.print(classe.getCname());
+      pw.print(classe.getCname() + "()");
     }
 
     //Atributos da classe
