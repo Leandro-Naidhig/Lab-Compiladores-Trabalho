@@ -16,7 +16,6 @@ public class Compiler {
 		symbolTable = new SymbolTable();
 		lexer = new Lexer(input, signalError);
 		signalError.setLexer(lexer);
-
 		Program program = null;
 		next();
 		program = program(compilationErrorList);
@@ -223,7 +222,6 @@ public class Compiler {
 		classe = new ClassDec(className, superclass, memberlist, isopen);
 		symbolTable.putInGlobal(className, classe);
 		return classe;
-		
 	}
 
 	private MemberList memberList() {
@@ -698,17 +696,15 @@ public class Compiler {
 			id = new Id(name);
 			ids.add(id);
 			next();
-
 			if(lexer.token == Token.DOT) {
 				next();
 				if(lexer.getStringValue().equals("new")) {
 					next();
-					/*
-					ClassDec classe = (ClassDec)symbolTable.getInGlobal(id);
+					ClassDec classe = (ClassDec)symbolTable.getInGlobal(name);
 					if(classe == null) {
 						error("Class " + name + " has not been declared");
-					}*/
-					return new ObjectCreation(id);
+					}
+					return new ObjectCreation(classe);
 				} else {
 					if(lexer.token == Token.ID) {
 						name = lexer.getStringValue();

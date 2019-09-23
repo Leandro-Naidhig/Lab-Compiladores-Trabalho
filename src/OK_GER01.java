@@ -52,8 +52,8 @@ public class Program {
    public void run() {
       Scanner variable = new Scanner(System.in);
       System.out.println("" + "7 0 1 2 3 4 5 6 7");
-      a = ;
-         }
+a = new A;
+   }
 }
 public class OK_GER01 {
    public static void main(String []args) {

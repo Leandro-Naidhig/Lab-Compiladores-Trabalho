@@ -48,9 +48,7 @@ public class LocalDec extends Statement {
         int contador = 0;
 
         //Arrumar isso depois
-        if(tipo != null) {
-            pw.printIdent(tipo.getName() + " ");
-        }
+       // pw.printIdent(tipo.getName() + " ");
         
         //Caso houver uma expressao
         if(expr != null) {

@@ -8,8 +8,8 @@ package ast;
 public class ObjectCreation extends Factor{
 
     //Construtor da classe
-    public ObjectCreation(Id id) {
-      this.id = id;
+    public ObjectCreation(ClassDec classe) {
+      this.classe = classe;
     }
 
     //Metodo para geracao do codigo em C
@@ -18,8 +18,10 @@ public class ObjectCreation extends Factor{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+      pw.print("new ");
+      pw.print(classe.getCname());
     }
 
     //Atributos da classe
-    private Id id;
+    private ClassDec classe;
 }

@@ -4,8 +4,8 @@ import java.util.*;
 public class SymbolTable {
 
     public SymbolTable() {
-		globalTable = new Hashtable();
-		localTable = new Hashtable();
+		globalTable = new Hashtable<>();
+		localTable = new Hashtable<>();
 	}
 
 	public Object putInGlobal( String key, Object value ) {
