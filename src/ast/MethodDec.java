@@ -38,10 +38,19 @@ public class MethodDec {
         }
         pw.println(" {");
         pw.add();
-        pw.printlnIdent("Scanner variable = new Scanner(System.in);");
         statementList.genJava(pw);
         pw.sub();
         pw.printlnIdent("}");
+    }
+
+    //Retorna o numero de parametros
+    public int getNumParam() {
+        return formParDec.getNumberParam();
+    }
+
+    //Retorna a descricao do metodo
+    public FormalParamDec getParamDec() {
+        return formParDec;
     }
 
     //Atributos da classe

@@ -5,21 +5,30 @@
  */
 package ast;
 
-public class ExpressionFactor extends Factor{
+public class ExpressionFactor extends Expr{
 
-    public ExpressionFactor(Expression expr) {
+    //Construtor da classe
+    public ExpressionFactor(Expr expr) {
         this.expr = expr;
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.print("(");
         expr.genJava(pw);
+        pw.print(")");
     }
 
-    private Expression expr;
+    //Metodo que retorna o tipo da expressao
+    public Type getType() {
+        return expr.getType();
+    }
+
+    //Atributos da classe
+    private Expr expr;
     
 }

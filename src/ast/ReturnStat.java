@@ -8,7 +8,7 @@ package ast;
 public class ReturnStat extends Statement {
 
     //Construtor da classe
-    public ReturnStat(Expression expr) {
+    public ReturnStat(Expr expr) {
         this.expr = expr;
     }
 
@@ -21,8 +21,11 @@ public class ReturnStat extends Statement {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.printIdent("return ");
+        expr.genJava(pw);
+        pw.println(";");
     }
 
     //Atributos da classe
-    private Expression expr;
+    private Expr expr;
 }

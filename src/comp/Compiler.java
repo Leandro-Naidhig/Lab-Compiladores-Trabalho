@@ -1,7 +1,12 @@
-package comp;
+/**
+    Integrantes:    Leandro Naidhig 726555
+                    Gustavo Buoro Branco de Souza 726533
 
+ */
+package comp;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import ast.*;
 import lexer.*;
 
@@ -299,28 +304,25 @@ public class Compiler {
 
 	private MethodDec methodDec() {
 		
-		Id id_idColon = null;
-		String name = "";
+		Id name = null;
 		Type tipo = null;
 		FormalParamDec formparaDec = null;
 
 		if(lexer.token == Token.ID) {
-			name = lexer.getStringValue();
-			id_idColon = new Id(name);
+			name = new Id(lexer.getStringValue());
 
 			/*Análise Semânica (verificacao de existecia da funcao)*/
 			if(symbolTable.getInLocal(name) != null) {
-				error("Function '" + name + "' has already been declared");
+				error("Function '" + name.getName() + "' has already been declared");
 			}
 			next();
 
 		} else if(lexer.token == Token.IDCOLON) {
-			name = lexer.getStringValue();
-			id_idColon = new Id(name);
+			name = new Id(lexer.getStringValue());
 			
 			/*Análise Semânica (verificacao de existecia da funcao)*/
-			if(symbolTable.getInLocal(name) != null) {
-				error("Function '" + name + "' has already been declared");
+			if(symbolTable.getInLocal(lexer.getStringValue()) != null) {
+				error("Function '" + name.getName() + "' has already been declared");
 			}
 			next();
 			formparaDec = formalParamDec();
@@ -340,7 +342,7 @@ public class Compiler {
 		StatementList statlist = statementList();
 		check(Token.RIGHTCURBRACKET, "'}' expected");
 		next();
-		return new MethodDec(id_idColon, formparaDec, tipo, statlist);
+		return new MethodDec(name, formparaDec, tipo, statlist);
 	}
 
 	private FieldDec fieldDec() {
@@ -368,25 +370,23 @@ public class Compiler {
 	private IdList idList() {
 
 		ArrayList<Id> ids = new ArrayList<>();
-		String name = "";
 			
 		if(lexer.token != Token.ID) {
 			error("Identifier expected");
 		} else {
-			name = lexer.getStringValue();
 
 			/*Análise Semânica (verificacao se é uma palavra chave)*/
-			if(lexer.get_keywords(name) != null) {
-				error(name + " is a keyword");
+			if(lexer.get_keywords(lexer.getStringValue()) != null) {
+				error(lexer.getStringValue() + " is a keyword");
 			
 			/*Análise Semânica (verificacao se já existe o identificador)*/
-			} else  if (symbolTable.getInLocal(name) != null) {
-				error("Identifier '" + name + "' has already been declared in class");
+			} else  if (symbolTable.getInLocal(lexer.getStringValue()) != null) {
+				error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
 			
 			} else {
-				Id id = new Id(name); 
+				Id id = new Id(lexer.getStringValue()); 
 				ids.add(id);
-				symbolTable.putInLocal(name, id);
+				symbolTable.putInLocal(lexer.getStringValue(), id);
 			}
 		}
 
@@ -398,20 +398,19 @@ public class Compiler {
 			if(lexer.token != Token.ID) {
 				error("Identifier expected");
 			} else {
-				name = lexer.getStringValue();
 
 				/*Análise Semânica (verificacao se é uma palavra chave)*/
-				if(lexer.get_keywords(name) != null) {
-					error(name + " is a keyword");
+				if(lexer.get_keywords(lexer.getStringValue()) != null) {
+					error(lexer.getStringValue() + " is a keyword");
 				
 					/*Análise Semânica (verificacao de declaracao de variavel)*/
-				} else  if (symbolTable.getInLocal(name) != null) {
-					error("Identifier '" + name + "' has already been declared in class");
+				} else  if (symbolTable.getInLocal(lexer.getStringValue()) != null) {
+					error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
 				
 				} else {
-					Id id = new Id(name); 
+					Id id = new Id(lexer.getStringValue()); 
 					ids.add(id);
-					symbolTable.putInLocal(name, id);
+					symbolTable.putInLocal(lexer.getStringValue(), id);
 				}
 			}
 			next();
@@ -433,34 +432,27 @@ public class Compiler {
 
 	private ParamDec paramDec() {
 
-		Id id = null;
-		String name = "";
+		Variable name = null;
 		Type tipo = type();
 		next();
 
 		if(lexer.token == Token.ID) {
-			name = lexer.getStringValue();
-			id = new Id(name);
-			symbolTable.putInLocal(name, id);
 
-			/*Análise Semânica (verificacao se é uma palavra chave*)*/
-			/*if(lexer.get_keywords(name) != null) {
-				error(name + " is a keyword");
-			
-			} else  if (symbolTable.getInLocal(name) != null) {
-				error("Identifier '" + name + "' has already been declared in class");
+			/*Análise Semânica (verificacao se é uma palavra chave)*/
+			if(lexer.get_keywords(lexer.getStringValue()) != null) {
+				error(lexer.getStringValue() + " is a keyword");
 			
 			} else {
-				id = new Id(name);
-				symbolTable.putInLocal(name, id);
-			}*/
+				name = new Variable(lexer.getStringValue(), tipo);
+				symbolTable.putInLocal(lexer.getStringValue(), name);
+			}
 
 		} else {
 			error("An identifier was expected after type");
 		}
 
 		next();
-		return new ParamDec(tipo, id);
+		return new ParamDec(name);
 	}
 
 	private StatementList statementList() {
@@ -526,7 +518,13 @@ public class Compiler {
 		ArrayList<Statement> statIf = new ArrayList<>();
 		ArrayList<Statement> statElse = null;
 		next();
-		Expression expressao = expression();
+		Expr expressao = expression();
+
+		/*
+		if (expressao.getType() != Type.booleanType) {
+			error("É esperada uma expressão do tipo 'Boolean'");
+		}*/
+
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
 		
@@ -553,19 +551,35 @@ public class Compiler {
 
 	private AssignExpr assignExpr() {
 
-		Expression exprLeft = expression();
-		Expression exprRight = null;
+		Expr exprLeft = expression();
+		Expr exprRight = null;
+		Token Op = null;
 
 		if(lexer.token == Token.ASSIGN) {
+			Op = lexer.token;
 			next();
 			exprRight = expression();
-		}
+
+			/*
+			if(Op == Symbol.READINT && ExpDir.getType() != Type.integerType) {
+				error("Tipo da variável " + v.getName() + " incompátivel com 'readInt'. Deve ser do tipo 'Int'");
+	
+			} else if(Op == Symbol.READSTRING && ExpDir.getType() != Type.stringType) {
+				error("Tipo da variável " + v.getName() + " incompátivel com 'readString'. Deve ser do tipo 'String'");
+			}
+	
+			if(ExpEsq.getType() == Type.integerType && ExpDir.getType() != Type.integerType) {
+				error("Função 'readInt' requer parâmetro do tipo Int");
+			} else if(ExpEsq.getType() == Type.stringType && ExpDir.getType() != Type.stringType)   {
+				error("Função 'readString' requer parâmetro do tipo String");
+			}*/
+		}	
 		return new AssignExpr(exprLeft, exprRight); 
 	}
 
 	private ExpressionList expressionList() {
 
-		ArrayList<Expression> exprList = new ArrayList<>();
+		ArrayList<Expr> exprList = new ArrayList<>();
 		exprList.add(expression());
 
 		while(lexer.token == Token.COMMA) {
@@ -575,83 +589,120 @@ public class Compiler {
 		return new ExpressionList(exprList);
 	}
 
-	private Expression expression() {
+	private Expr expression() {
 
 		Token relation = null;
-		SimpleExpression exprLeft = simpleExpression();
-		SimpleExpression exprRight = null;
+		Expr exprRight = null;
+		Expr exprLeft = simpleExpression();
 
 		if(lexer.token == Token.EQ || lexer.token == Token.GT || lexer.token == Token.LT || 
 		lexer.token == Token.GE || lexer.token == Token.LE || lexer.token == Token.NEQ) {
 			relation = lexer.token;
 			next();
 			exprRight = simpleExpression();
+
+			/*Analise Semantica*/
+			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
+				error("Tipo de expressões incompátiveis para relação");
+			}*/
+			exprLeft = new CompositeExpr(exprLeft, relation, exprRight);
 		}
-		return new Expression(exprLeft, relation, exprRight); 
+		return exprLeft;
 	}
 
-	private SimpleExpression simpleExpression() {
+	private Expr simpleExpression() {
 
-		ArrayList<SumSubExpression> arraySumSub = new ArrayList<>();
-		arraySumSub.add(sumSubExpression());
-
+		Token token = null;
+		Expr exprRight = null;
+		Expr exprLeft = sumSubExpression();
+		
 		while(lexer.token == Token.PLUSPLUS) {
+			token = lexer.token;
 			next();
-			arraySumSub.add(sumSubExpression());
+			exprRight = sumSubExpression();
+
+			/*Analise Semantica*/
+			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
+				error("Tipo de expressões incompátiveis para relação");
+			}*/
+
+			exprLeft = new CompositeExpr(exprLeft, token, exprRight);
 		}
-		return new SimpleExpression(arraySumSub);
+		return exprLeft;
 	}
 
-	private SumSubExpression sumSubExpression() {
+	private Expr sumSubExpression() {
 
-		ArrayList<Term> terms = new ArrayList<>();
-		ArrayList<Token> operators = new ArrayList<>();
-
-		terms.add(term());
+		Token Lowoperator = null;
+		Expr exprLeft = term();
+		Expr exprRight = null;
 
 		while(lexer.token == Token.PLUS || lexer.token == Token.MINUS || lexer.token == Token.OR) {
-			operators.add(lexer.token);
+			Lowoperator = lexer.token;
 			next();
-			terms.add(term());
+			exprRight = term();
+
+			/*Analise Semantica*/
+			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
+				error("Tipo de expressões incompátiveis para relação");
+			}*/
+			
+			exprLeft = new CompositeExpr(exprLeft, Lowoperator, exprRight);
 		}
-		return new SumSubExpression(terms, operators);
+		return exprLeft;
 	}
 
-	private Term term() {
+	private Expr term() {
 
-		ArrayList<SignalFactor> signalfactor = new ArrayList<>();
-		ArrayList<Token> highOperator = new ArrayList<>();
-
-		signalfactor.add(signalFactor());
+		Token highOperator = null;
+		Expr exprRight = null;
+		Expr exprLeft = signalFactor();
 
 		while(lexer.token == Token.MULT || lexer.token == Token.DIV || lexer.token == Token.AND) {
-			highOperator.add(lexer.token);
+			highOperator = lexer.token;
 			next();
-			signalfactor.add(signalFactor());
+			exprRight = signalFactor();
+
+			/*Analise Semantica*/
+			/*if (!checkMathExpr(ExpEsq.getType(), ExpDir.getType())) {
+				error("Expression do tipo 'Int' esperada para realizar a operação");
+			}*/
+			exprLeft = new CompositeExpr(exprLeft, highOperator, exprRight);
 		}
-		return new Term(signalfactor, highOperator);
+		
+		return exprLeft;
 	}
 
-	private SignalFactor signalFactor() {
+	private Expr signalFactor() {
 
 		Token signal = null;
+		Expr exprRight = null;
+		Expr expression = null;
 
 		if(lexer.token == Token.PLUS || lexer.token == Token.MINUS) {
 			signal = lexer.token;
-		}
+			next();
+			exprRight = factor();
+			
+			/*Analise Semantica*/
+			/*if (ExpDir.getType() != Type.integerType) {
+				error("Expressão do tipo 'Int' é esperada para a operação");
+			}*/
 
-		Factor fac = factor();
-		return new SignalFactor(signal, fac);
+			expression = new CompositeExpr(exprRight, signal, exprRight);
+		}
+		expression = factor();
+		return expression;
 	}
 
-	private Factor factor() {
+	private Expr factor() {
 
-		Expression expressao = null;
+		Expr expressao = null;
 		String name = "";
 		Id id = null;
 		ArrayList<Id> ids = new ArrayList<>();
+		Expr primexpr = null;
 		ExpressionList exprList = null;
-		Factor primexpr = null;
 		LiteralInt value = null;
 		LiteralBoolean bool = null;
 		LiteralString str = null;
@@ -711,14 +762,14 @@ public class Compiler {
 						id = new Id(name);
 						ids.add(id);
 						next();
-						primexpr = new PrimaryExpr(null, ids, null, null, null);	
+						primexpr = new PrimaryExpr(null, ids, null, null);	
 						
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						next();
 						exprList = expressionList();
-						primexpr = new PrimaryExpr(null, ids, id, exprList, null);
+						primexpr = new PrimaryExpr(null, ids, id, exprList);
 
 					} else {
 						error("An identifier or identifer: was expected after '.'");
@@ -726,7 +777,7 @@ public class Compiler {
 					return primexpr;
 				}
 			}
-			primexpr = new PrimaryExpr(null, ids, null, null, null);
+			primexpr = new PrimaryExpr(null, ids, null, null);
 			return primexpr;
 
 		} else if(lexer.token == Token.NIL) {
@@ -739,12 +790,13 @@ public class Compiler {
 		}
 	}
 
-	private Factor primaryExpr() {
+	private Expr primaryExpr() {
 
 		ArrayList<Id> ids = new ArrayList<>();
 		String name = "";
 		Id id = null;
 		ExpressionList exprList = null;
+		MethodDec metodo = null;
 
 		switch(lexer.token) {
 			case SUPER:
@@ -759,13 +811,13 @@ public class Compiler {
 						id = new Id(name);
 						ids.add(id);
 						next();
-						return new PrimaryExpr("super", ids, null, null, null);
+						return new PrimaryExpr("super", ids, null, null);
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						next();
 						exprList = expressionList();
-						return new PrimaryExpr("super", null, id, exprList, null);
+						return new PrimaryExpr("super", null, id, exprList);
 					}
 				}
 				break;
@@ -785,44 +837,77 @@ public class Compiler {
 								id = new Id(name);
 								ids.add(id);
 								next();
-								return new PrimaryExpr("self", ids, null, null, null);
+								return new PrimaryExpr("self", ids, null, null);
 							} else if(lexer.token == Token.IDCOLON) {
 								name = lexer.getStringValue();
 								id = new Id(name);
+
+								/*Analise Semantica(verificacao da existencia do metodo ou construtor)*/
+								metodo = (MethodDec)symbolTable.getInGlobal(name);
+								
+								/*Verifica se o metodo existe */
+								if(metodo == null) {
+									error("There is no method" + name + " with this statement");
+								}
+
 								next();
 								exprList = expressionList();
-								return new PrimaryExpr("self", ids, id, exprList, null);			
+
+								/*Verifica se o numero de argumentos é igual do metodo */
+								if(metodo != null && (metodo.getNumParam() != exprList.getNumberExpr())) {
+									error("The number of parameters of the method call is" + metodo.getNumParam() + ", while the number of expressions is " + exprList.getNumberExpr());
+								
+								/*Verifica se os tipos dos argumentos é igual da descricao do metodo */
+								} else {
+									ArrayList<ParamDec> parametros = metodo.getParamDec().getParamDec();
+									ArrayList<Expr> expressoes = exprList.getArrayList();
+
+									Iterator<ParamDec> param = parametros.iterator();
+									Iterator<Expr> expr = expressoes.iterator();
+									ParamDec param1 = null;
+									Expr expr1 = null;
+
+									while(param.hasNext() && expr.hasNext()) {
+										param1 = param.next();
+										expr1 = expr.next();
+										if(expr1.getType() != param1.getType()) {
+											error("Expression and parameter have distinct types");
+										}
+									}
+								}
+								return new PrimaryExpr("self", ids, id, exprList);			
+							
 							} else {
 								error("An identifier or identifer: was expected after '.'");		
 							}
 						}
-						return new PrimaryExpr("self", ids, null, null, null);
+						return new PrimaryExpr("self", ids, null, null);
 
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						next();
 						exprList = expressionList();
-						return new PrimaryExpr("self", null, id, exprList, null);
+						return new PrimaryExpr("self", null, id, exprList);
 
 					} else {
 						error("An identifier or identifer: was expected after '.'");
 					}
 				} else {
-					return new PrimaryExpr("self", null, null, null, null);
+					return new PrimaryExpr("self", null, null, null);
 				}
 				break;
 			case IN:
 				next();
-				Factor readexpr = readExpr();
-				return new PrimaryExpr(null, null, null, null, readexpr);
+				Expr readexpr = readExpr();
+				return readexpr;
 			default:
 				break;
 		}
 		return null;
 	}
 
-	private Factor readExpr() {
+	private Expr readExpr() {
 
 		String name = "";
 		check(Token.DOT, "'.' expected after the 'In'");
@@ -842,7 +927,7 @@ public class Compiler {
 
 	private LocalDec localDec() {
 		
-		Expression expressao = null;
+		Expr expressao = null;
 		next();
 		Type tipo = type();
 		next();
@@ -863,7 +948,7 @@ public class Compiler {
 		StatementList statList = statementList();
 		check(Token.UNTIL, "missing keyword 'until'");
 		next();
-		Expression expressao = expression();
+		Expr expressao = expression();
 		return new RepeatStat(statList, expressao);
 	}
 
@@ -873,14 +958,14 @@ public class Compiler {
 
 	private ReturnStat returnStat() {
 		next();
-		Expression expressao = expression();
+		Expr expressao = expression();
 		return new ReturnStat(expressao);
 	}
 
 	private WhileStat whileStat() {
 
 		next();
-		Expression expressao = expression();
+		Expr expressao = expression();
 		check(Token.LEFTCURBRACKET, "missing '{' after the 'while' expression");
 		next();
 		StatementList statList = statementList();
@@ -889,10 +974,28 @@ public class Compiler {
 		return new WhileStat(statList, expressao);
 	}
 
+	 /*Método para verificar a expressao no médotodo WhileStat*/
+	private boolean checkWhileExpr(Type exprType) {
+		if (exprType == Type.undefinedType || exprType == Type.booleanType) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/*Método para verificar a expressao é booleana*/
+	private boolean checkRelExpr(Type left, Type right) {
+		if (left == Type.undefinedType || right == Type.undefinedType) {
+			return true;
+		} else {
+			return left == right;
+		}
+	}
+	
+
 	private WriteStat writeStat() {
-		
 		next();
-		check(Token.DOT, "a '.' was expected after 'Out'");
+		check(Token.DOT, "'.' was expected after 'Out'");
 		next();
 		check(Token.IDCOLON, "'print:' or 'println:' was expected after 'Out.'");
 		String printName = lexer.getStringValue();
@@ -923,7 +1026,7 @@ public class Compiler {
 			id = new Id(name);
 			classe = (ClassDec)symbolTable.getInGlobal(name);
 			if(classe == null) {
-				error("There is no class with name" + name);
+				error("There is no class with name " + name);
 			}
 			return classe;
 			
@@ -937,7 +1040,7 @@ public class Compiler {
 
 		next();
 		int lineNumber = lexer.getLineNumber();
-		Expression expressao = expression();
+		Expr expressao = expression();
 		check(Token.COMMA, "',' expected after the expression of the 'assert' statement");
 		next();
 		check(Token.LITERALSTRING, "A literal string expected after the ',' of the 'assert' statement");

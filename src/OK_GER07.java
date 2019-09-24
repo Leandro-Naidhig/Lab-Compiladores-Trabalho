@@ -1,21 +1,22 @@
-package comp;
 import java.util.*;
-public class A {
+public class OK_GER07 {
+   public static void main(String []args) {
+      new Program().run();
+   }
+}
+class Scan {
+   public static Scanner imputValue = new Scanner(System.in);
+}
+class A {
    public void m() {
-      Scanner variable = new Scanner(System.in);
       System.out.println("" + 0);
    }
 }
-public class Program {
+class Program {
    public void run() {
-      Scanner variable = new Scanner(System.in);
       A a;
       System.out.println("" + "0");
-a = new A();
-   }
-}
-public class OK_GER01 {
-   public static void main(String []args) {
-      new Program().run();
+      a = new A();
+      a.m();
    }
 }

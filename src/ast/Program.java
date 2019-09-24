@@ -21,15 +21,10 @@ public class Program {
 	public void genJava(PW pw) {
 
 		//Bibliotecas do Java
-		pw.println("package comp;");
+		//pw.println("package comp;");
 		pw.println("import java.util.*;");
 
-		for(ClassDec s : classList) {
-			pw.print("public class ");	
-			s.genJava(pw);
-		}
-
-		pw.println("public class " + "OK_GER01" + " {");
+		pw.println("public class " + mainJavaClassName + " {");
 		pw.add();
 		pw.printlnIdent("public static void main(String []args) {");
 		pw.add();
@@ -39,6 +34,16 @@ public class Program {
 		pw.sub();
 		pw.printlnIdent("}");
 
+		pw.println("class Scan {");
+		pw.add();
+		pw.printlnIdent("public static Scanner imputValue = new Scanner(System.in);");
+		pw.sub();
+		pw.printlnIdent("}");
+
+		for(ClassDec s : classList) {
+			pw.print("class ");	
+			s.genJava(pw);
+		}
 	}
 
 	//Metodo responsavel pela geracao do codigo em C
@@ -48,6 +53,11 @@ public class Program {
 		pw.println("#include<malloc.h>");
 		pw.println("#include<stdlib.h>");
 		pw.println("#include<stdio.h>");	
+	}
+
+	//Recupera o nome do teste que será executado o Program
+	public void setMainJavaClassName(String mainJavaClassName) {
+		this.mainJavaClassName = mainJavaClassName;
 	}
 	
 	//Compõe uma lista da classe TypeCianetoClass (ClassDec na gramatica)
@@ -74,4 +84,5 @@ public class Program {
 	private ArrayList<ClassDec> classList;
 	private ArrayList<MetaobjectAnnotation> metaobjectCallList;	
 	ArrayList<CompilationError> compilationErrorList;
+	private String mainJavaClassName;
 }

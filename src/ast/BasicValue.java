@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class BasicValue extends Factor{
+public class BasicValue extends Expr{
 
     public BasicValue(LiteralString StringValue, LiteralInt IntValue, LiteralBoolean BooleanValue) {
         this.StringValue = StringValue;
@@ -14,7 +14,7 @@ public class BasicValue extends Factor{
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, boolean op) {
     }
 
     //Metodo para geracao do codigo em Java
@@ -25,6 +25,17 @@ public class BasicValue extends Factor{
             BooleanValue.genJava(pw);
         } else {
             IntValue.genJava(pw);
+        }
+    }
+
+    //Metodo para retornar o tipo
+    public Type getType() {
+        if(StringValue != null) {
+            return Type.stringType;
+        } else if(BooleanValue != null) {
+            return Type.booleanType;
+        } else {
+            return Type.booleanType;
         }
     }
 

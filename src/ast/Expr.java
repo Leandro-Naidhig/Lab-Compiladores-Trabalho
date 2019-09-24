@@ -16,9 +16,8 @@ abstract public class Expr extends Statement {
 		this.genC(pw, false);
     }
     
-    //Metodo para geracao do codigo em Java
-    public void genJava(PW pw) {
-    }
+    //Metodo abstrato para retornar o tipo da expressao
+    abstract public void genJava(PW pw);
 
     //Metodo abstrato para retornar o tipo da expressao
     abstract public Type getType();

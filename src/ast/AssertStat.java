@@ -8,7 +8,7 @@ package ast;
 public class AssertStat extends Statement{
 
     //Construtor da classe WhileStat
-    public AssertStat(String str, Expression expr) {
+    public AssertStat(String str, Expr expr) {
         this.str = str;
         this.expr = expr;
     }
@@ -23,5 +23,5 @@ public class AssertStat extends Statement{
 
     //Atributos da Classe
     private String str;
-    private Expression expr;
+    private Expr expr;
 }

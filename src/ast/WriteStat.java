@@ -24,7 +24,7 @@ public class WriteStat extends Statement {
             pw.printIdent("System.out.print(\"\" + ");
             exprListArray = exprList.getArrayList();
             int contador = 0;
-            for(Expression s : exprListArray) {
+            for(Expr s : exprListArray) {
                 
                 if((exprListArray.size()-1) != contador) {
                     s.genJava(pw);
@@ -39,7 +39,7 @@ public class WriteStat extends Statement {
             pw.printIdent("System.out.println(\"\" + ");
             exprListArray = exprList.getArrayList();
             int contador = 0;
-            for(Expression s : exprListArray) {
+            for(Expr s : exprListArray) {
                 if((exprListArray.size()-1) != contador) {
                     s.genJava(pw);
                     pw.print(" + ");
@@ -55,7 +55,7 @@ public class WriteStat extends Statement {
 
     // Atributos da classe
     private ExpressionList exprList;
-    private ArrayList<Expression> exprListArray;
+    private ArrayList<Expr> exprListArray;
     private String mode;
 
 }

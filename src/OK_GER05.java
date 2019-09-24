@@ -1,15 +1,21 @@
-package comp;
 import java.util.*;
-public class A {
+public class OK_GER05 {
+   public static void main(String []args) {
+      new Program().run();
+   }
+}
+class Scan {
+   public static Scanner imputValue = new Scanner(System.in);
+}
+class A {
    public void m() {
-      Scanner variable = new Scanner(System.in);
       int a, b, c, d, e, f;
-a = variable.nextInt();
-b = variable.nextInt();
-c = variable.nextInt();
-d = variable.nextInt();
-e = variable.nextInt();
-f = variable.nextInt();
+      a = Scan.imputValue.nextInt();
+      b = Scan.imputValue.nextInt();
+      c = Scan.imputValue.nextInt();
+      d = Scan.imputValue.nextInt();
+      e = Scan.imputValue.nextInt();
+      f = Scan.imputValue.nextInt();
       System.out.print("" + a);
       System.out.print("" + b);
       System.out.print("" + c);
@@ -18,19 +24,14 @@ f = variable.nextInt();
       System.out.print("" + f);
    }
 }
-public class Program {
+class Program {
    public void run() {
-      Scanner variable = new Scanner(System.in);
       A a;
       System.out.println("" + "");
       System.out.println("" + "Ok-ger05");
       System.out.println("" + "The output should be what you give as input.");
       System.out.println("" + "Type in six numbers");
-a = new A();
-   }
-}
-public class OK_GER01 {
-   public static void main(String []args) {
-      new Program().run();
+      a = new A();
+      a.m();
    }
 }

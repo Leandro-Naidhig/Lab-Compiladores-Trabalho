@@ -9,7 +9,12 @@ public class Id {
 
     //Construtor da classe
     public Id(String name) {
-        this.name = name;
+        if(name.indexOf(":") != -1) {
+            int tamanho = name.length()-1;
+            this.name = name.substring(0, tamanho);
+        } else {
+            this.name = name;
+        }
     }
 
     //Metodo para geracao do codigo em C
@@ -19,13 +24,12 @@ public class Id {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        if(name.indexOf(":") != -1) {
-            int tamanho = name.length()-1;
-            name = this.name.substring(0, tamanho);
-            pw.print(name);
-        } else {
-            pw.print(name);
-        }
+        pw.print(name);
+    }
+
+    //Metodo que retorna o nome do Id
+    public String getName() {
+        return name;
     }
 
     // Atributos da classe

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class LocalDec extends Statement {
 
     //Construtor da classe
-    public LocalDec(Type tipo, IdList idList, Expression expr) {
+    public LocalDec(Type tipo, IdList idList, Expr expr) {
         this.tipo = tipo;
         this.idList = idList;
         this.expr = expr;
@@ -81,5 +81,5 @@ public class LocalDec extends Statement {
     //Atributos da classe
     private Type tipo;
     private IdList idList;
-    private Expression expr;
+    private Expr expr;
 }

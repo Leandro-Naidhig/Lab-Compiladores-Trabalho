@@ -8,27 +8,25 @@ package ast;
 public class ParamDec {
 
     //Construtor da classe
-    public ParamDec(Type type, Id id) {
-        this.type = type;
-        this.id = id;
+    public ParamDec(Variable name) {
+        this.name = name;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.print(type.getName());
-        pw.print(" ");
-        id.genJava(pw);
+        name.genJava(pw);
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print(type.getName());
-        pw.print(" ");
-        id.genJava(pw);
+        name.genJava(pw);
+    }
+
+    //Metodo para retornar o tipo
+    public Type getType() {
+        return name.getType();
     }
 
     //Atributos da classe
-    private Type type;
-    private Id id;
-
+    private Variable name;
 }

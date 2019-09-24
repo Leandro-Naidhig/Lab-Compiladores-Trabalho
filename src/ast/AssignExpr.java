@@ -8,14 +8,13 @@ package ast;
 public class AssignExpr extends Statement{
 
     //Construtor da classe WhileStat
-    public AssignExpr(Expression exprLeft, Expression exprRight) {
+    public AssignExpr(Expr exprLeft, Expr exprRight) {
         this.exprLeft = exprLeft;
         this.exprRight = exprRight;
     }
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-    
         exprLeft.genC(pw);
 		if (exprRight != null) {
             pw.print(" = ");
@@ -26,17 +25,17 @@ public class AssignExpr extends Statement{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-
+        pw.printIdent("");
         exprLeft.genJava(pw);
 		if (exprRight != null) {
             pw.print(" = ");
             exprRight.genJava(pw);
             pw.println(";");
         }
-
+        pw.printNotIdent("");
     }
 
     //Atributos da Classe
-    private Expression exprLeft;
-    private Expression exprRight;
+    private Expr exprLeft;
+    private Expr exprRight;
 }

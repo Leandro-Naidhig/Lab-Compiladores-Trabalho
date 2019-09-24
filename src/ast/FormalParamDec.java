@@ -41,6 +41,16 @@ public class FormalParamDec {
         }
     }
 
+    //Metodo para retornar o numero de parametros
+    public int getNumberParam() {
+        return paramDec.size();
+    }
+
+    //Metodo para retornar os parametros
+    public ArrayList<ParamDec> getParamDec() {
+        return paramDec;
+    }
+
     //Atributos da classe
     private ArrayList<ParamDec> paramDec;
 

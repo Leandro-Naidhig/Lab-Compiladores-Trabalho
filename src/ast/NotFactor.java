@@ -5,15 +5,15 @@
  */
 package ast;
 
-public class NotFactor extends Factor{
+public class NotFactor extends Expr{
 
     //Construtor da classe
-    public NotFactor(Factor factor) {
+    public NotFactor(Expr factor) {
       this.factor = factor;
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, boolean value) {
       pw.print("!(");
       factor.genJava(pw);
       pw.print(")");
@@ -26,6 +26,11 @@ public class NotFactor extends Factor{
       pw.print(")");
     }
 
+    //Metodo que retorna o tipo do fator
+    public Type getType() {
+      return factor.getType();
+    }
+
     //Atributos da classe
-    private Factor factor;
+    private Expr factor;
 }

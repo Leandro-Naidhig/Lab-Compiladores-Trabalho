@@ -1,24 +1,17 @@
-package comp;
 import java.util.*;
-public class A {
+public class OK_GER09 {
+   public static void main(String []args) {
+      new Program().run();
+   }
+}
+class Scan {
+   public static Scanner imputValue = new Scanner(System.in);
+}
+class A {
    public void m1(int n) {
-      Scanner variable = new Scanner(System.in);
-      System.out.print("" +       ("1 " + n) +       (" "));
+      System.out.print("" + ("1 " + n) + " ");
    }
 }
-public class B {
+class B extends A {
    public void m2(int n) {
-      Scanner variable = new Scanner(System.in);
-      System.out.print("" +       (" 2 " + n) +       (" "));
-   }
-}
-public class C {
-   public void m3(int n) {
-      Scanner variable = new Scanner(System.in);
-      System.out.print("" +       (" 3 " + n) +       (" "));
-   }
-   public void m4(int n) {
-      Scanner variable = new Scanner(System.in);
-      System.out.println("" +      (" 4 " + n) +       (" "));
-   }
-}
+      

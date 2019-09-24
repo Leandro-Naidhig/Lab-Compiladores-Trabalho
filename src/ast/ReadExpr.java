@@ -5,24 +5,31 @@
  */
 package ast;
 
-public class ReadExpr extends Factor{
+public class ReadExpr extends Expr{
 
+    //Construtor da classe
     public ReadExpr(String name) {
         this.name = name;
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         if(name.equals("readInt")) {
-            pw.print("variable.nextInt()");
+            pw.print("Scan.imputValue.nextInt()");
         } else {
-            pw.print("variable.readLine()");
+            pw.print("Scan.imputValue.readLine()");
         }
     }
 
+    //Metodo que retorna o tipo
+    public Type getType() {
+        return Type.undefinedType;
+    }
+
+    //Atributos da classe
     private String name;
 }
