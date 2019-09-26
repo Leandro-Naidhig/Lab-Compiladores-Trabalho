@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 
 public class PW {
 
+	//Construtor da classe
 	public PW(PrintWriter out) {
 		this.out = out;
 		currentIndent = 0;
@@ -56,6 +57,7 @@ public class PW {
 		out.println("");
 	}
 
+	//Atributos da classe
 	int currentIndent = 0;
 	public int step = 3;
 	private PrintWriter out;

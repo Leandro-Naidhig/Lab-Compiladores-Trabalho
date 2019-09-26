@@ -232,12 +232,7 @@ public class Compiler {
 	}
 
 	private MemberList memberList() {
-		
-		int pos = 0;
-		String first = "";
-		String second = "";
-		String third = "";
-		String qual = "";
+
 		ArrayList<Integer> qualifierspos = new ArrayList<>();
 		ArrayList<String> qualifiers = new ArrayList<>(); 
 		ArrayList<Member> members = new ArrayList<>();
@@ -251,6 +246,11 @@ public class Compiler {
 			if(lexer.token == Token.PRIVATE || lexer.token == Token.PUBLIC || 
 			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
 			   lexer.token == Token.SHARED) {
+
+				String first = "";
+				String second = "";
+				String third = "";
+				String qual = "";
 
 				first = lexer.getStringValue();
 				next();
@@ -277,8 +277,7 @@ public class Compiler {
 
 				qual = first + second + third;
 				qualifiers.add(qual);
-				qualifierspos.add(pos);
-				pos++;
+				
 			} else {
 				qual = "public";
 				qualifiers.add(qual);
@@ -299,7 +298,7 @@ public class Compiler {
 			membro = new Member(field, method);
 			members.add(membro);
 		}
-		return new MemberList(qualifierspos, qualifiers, members);
+		return new MemberList(qualifiers, members);
 	}
 
 	private MethodDec methodDec() {
@@ -797,6 +796,8 @@ public class Compiler {
 		Id id = null;
 		ExpressionList exprList = null;
 		MethodDec metodo = null;
+		Variable variavel = null;
+		Boolean isMethod = false;
 
 		switch(lexer.token) {
 			case SUPER:
@@ -829,6 +830,18 @@ public class Compiler {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						ids.add(id);
+						
+						/*Análise Semânica (verificacao de existecia do metodo ou variavel)*/
+						if(symbolTable.getInLocal(name) == null) {
+							error("Method or variable '" + name + "' has not declared in class");
+						} else {
+							if(symbolTable.getInLocal(name) instanceof MethodDec) {
+								metodo = (MethodDec)symbolTable.getInLocal(name);
+								isMethod = true;
+							} else {
+								variavel = (Variable)symbolTable.getInLocal(name);
+							}
+						}
 						next();
 						if(lexer.token == Token.DOT) {
 							next();
@@ -837,7 +850,20 @@ public class Compiler {
 								id = new Id(name);
 								ids.add(id);
 								next();
-								return new PrimaryExpr("self", ids, null, null);
+
+								/*Análise Semânica (verificacao de existecia do metodo ou variavel)*/
+								if(symbolTable.getInLocal(name) == null) {
+									error("Method or variable '" + name + "' has not declared in class");
+								} else {
+									if(symbolTable.getInLocal(name) instanceof MethodDec) {
+										metodo = (MethodDec)symbolTable.getInLocal(name);
+										isMethod = true;
+										
+									} else {
+										variavel = (Variable)symbolTable.getInLocal(name);
+									}
+								}
+								return new PrimaryExpr("self", ids, null, null, isMethod);
 							} else if(lexer.token == Token.IDCOLON) {
 								name = lexer.getStringValue();
 								id = new Id(name);
@@ -861,7 +887,6 @@ public class Compiler {
 								} else {
 									ArrayList<ParamDec> parametros = metodo.getParamDec().getParamDec();
 									ArrayList<Expr> expressoes = exprList.getArrayList();
-
 									Iterator<ParamDec> param = parametros.iterator();
 									Iterator<Expr> expr = expressoes.iterator();
 									ParamDec param1 = null;
@@ -875,26 +900,26 @@ public class Compiler {
 										}
 									}
 								}
-								return new PrimaryExpr("self", ids, id, exprList);			
+								return new PrimaryExpr("self", ids, id, exprList, isMethod);			
 							
 							} else {
 								error("An identifier or identifer: was expected after '.'");		
 							}
 						}
-						return new PrimaryExpr("self", ids, null, null);
+						return new PrimaryExpr("self", ids, null, null, isMethod);
 
 					} else if(lexer.token == Token.IDCOLON) {
 						name = lexer.getStringValue();
 						id = new Id(name);
 						next();
 						exprList = expressionList();
-						return new PrimaryExpr("self", null, id, exprList);
+						return new PrimaryExpr("self", null, id, exprList, isMethod);
 
 					} else {
 						error("An identifier or identifer: was expected after '.'");
 					}
 				} else {
-					return new PrimaryExpr("self", null, null, null);
+					return new PrimaryExpr("self", null, null, null, isMethod);
 				}
 				break;
 			case IN:

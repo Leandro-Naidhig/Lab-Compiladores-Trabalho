@@ -3,6 +3,7 @@ import java.util.*;
 
 public class SymbolTable {
 
+	//Construtor da classe
     public SymbolTable() {
 		globalTable = new Hashtable<>();
 		localTable = new Hashtable<>();
@@ -25,23 +26,20 @@ public class SymbolTable {
 	}
 
 	public Object get( String key ) {
-		// returns the object corresponding to the key.
 		Object result;
 		if ( (result = localTable.get(key)) != null ) {
-			// found local identifier
 			return result;
 		}
 		else {
-			// global identifier, if it is in globalTable
 			return globalTable.get(key);
 		}
 	}
 
 	public void removeLocalIdent() {
-		// remove all local identifiers from the table
 		localTable.clear();
 	}
 
+	//Atributos da classe
 	private Hashtable globalTable, localTable;
 
 }

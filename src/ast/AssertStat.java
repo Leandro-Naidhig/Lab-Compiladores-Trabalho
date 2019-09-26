@@ -19,6 +19,7 @@ public class AssertStat extends Statement{
     
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        pw.printlnIdent("assert " + expr + " : " + "\"" + str + "\"");
     }
 
     //Atributos da Classe

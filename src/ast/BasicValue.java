@@ -7,6 +7,7 @@ package ast;
 
 public class BasicValue extends Expr{
 
+    //Construtor da classe
     public BasicValue(LiteralString StringValue, LiteralInt IntValue, LiteralBoolean BooleanValue) {
         this.StringValue = StringValue;
         this.IntValue = IntValue;
@@ -28,7 +29,7 @@ public class BasicValue extends Expr{
         }
     }
 
-    //Metodo para retornar o tipo
+    //Metodo para retornar o tipo do valor
     public Type getType() {
         if(StringValue != null) {
             return Type.stringType;
@@ -39,6 +40,7 @@ public class BasicValue extends Expr{
         }
     }
 
+    //Atributos da classe
     private LiteralString StringValue;
     private LiteralInt IntValue;
     private LiteralBoolean BooleanValue;

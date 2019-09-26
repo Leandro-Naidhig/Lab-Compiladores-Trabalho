@@ -9,11 +9,12 @@ import java.util.ArrayList;
 public class PrimaryExpr extends Expr{
 
     //Construtor da classe
-    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist) {
+    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist, Boolean isMethod) {
         this.qualifier = qualifier;
         this.ids = ids;
         this.idc = idc;
         this.exprlist = exprlist;
+        this.isMethod = isMethod;
     }
 
     //Metodo para geracao do codigo em C
@@ -22,7 +23,7 @@ public class PrimaryExpr extends Expr{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        if(ids.size() == 2) {
+        if(ids.size() == 2 && qualifier == null) {
             int contador = 0;
             for(Id s: ids) {
                 s.genJava(pw);
@@ -33,7 +34,7 @@ public class PrimaryExpr extends Expr{
             }
             pw.println("();");
 
-        } else if(ids.size() == 1 && idc == null) {
+        } else if(ids.size() == 1 && idc == null && qualifier == null) {
             for(Id s: ids) {
                 s.genJava(pw);
             }
@@ -50,8 +51,7 @@ public class PrimaryExpr extends Expr{
         
         } else if(qualifier.equals("self")) {
             pw.printIdent("this");
-
-            if(ids.size() == 1) {
+            if(ids.size() == 1 && idc == null) {
                 pw.print(".");
                 for(Id s: ids) {
                     s.genJava(pw);
@@ -87,14 +87,21 @@ public class PrimaryExpr extends Expr{
                 pw.print("(");
                 exprlist.genJava(pw);
                 pw.println(");");
-            
             }
         
         } else if(qualifier.equals("super")) {
             if(idc != null) {
-
+                pw.print("super.");
+                for(Id s: ids) {
+                    s.genJava(pw);
+                }
+                pw.println("();");
             } else {
-
+                pw.print("super.");
+                idc.genJava(pw);
+                pw.print("(");
+                exprlist.genJava(pw);
+                pw.println(");");
             }
         }
     }
@@ -109,4 +116,5 @@ public class PrimaryExpr extends Expr{
     private ArrayList<Id> ids;
     private Id idc;
     private ExpressionList exprlist;
+    private Boolean isMethod;
 }

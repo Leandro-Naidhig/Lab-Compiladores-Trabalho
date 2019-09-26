@@ -10,9 +10,8 @@ import java.util.Iterator;
 public class MemberList {
 
   // Construtor da classe
-    public MemberList(ArrayList<Integer> qualifierPos, ArrayList<String> qualifier, ArrayList<Member> member) {
+    public MemberList(ArrayList<String> qualifier, ArrayList<Member> member) {
       this.qualifier = qualifier;
-      this.qualifierPos = qualifierPos;
       this.member = member;
     }
 
@@ -32,8 +31,18 @@ public class MemberList {
         Member m1 = m.next();
 
         if(!(q1.equals(""))) {
+
+          String[] arraysplit = q1.split(" ", 2);
+  
+          for (String a : arraysplit) {
+            if(a.equals("override")) {
+              pw.printlnIdent("@Override");
+            }
+          }
+          
           pw.printIdent(q1);
           pw.print(" "); 
+       
         } else {
           pw.printIdent("public");
           pw.print(" ");
@@ -44,6 +53,5 @@ public class MemberList {
 
     //Atributos da classe
     private ArrayList<String> qualifier;
-    private ArrayList<Integer> qualifierPos;
     private ArrayList<Member> member;
 }
