@@ -943,8 +943,8 @@ public class Comp {
 						++lineCount;
 					}
 				}
-				String result = removeExtraSpacesFirstLine(firstLine);
-				alloutput = removeExtraSpaces(alloutput);
+				String result = removeExtraSpacesFirstLine(firstLine).trim();
+				alloutput = removeExtraSpaces(alloutput).trim();
 
 
 				if ( result.equals(alloutput) ) {

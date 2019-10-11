@@ -10,10 +10,14 @@ import java.util.Iterator;
 public class MemberList {
 
   // Construtor da classe
-    public MemberList(ArrayList<String> qualifier, ArrayList<Member> member) {
-      this.qualifier = qualifier;
+    public MemberList(ArrayList<Member> member) {
       this.member = member;
     }
+
+    //Metodo para retornar o arraylist de membros
+    public ArrayList<Member> getArray() {
+      return member;
+    } 
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
@@ -22,15 +26,13 @@ public class MemberList {
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
       
-      Iterator<String> q = qualifier.iterator();
       Iterator<Member> m = member.iterator();
       
-      while (q.hasNext() && m.hasNext()) {
+      while (m.hasNext()) {
 
-        String q1 = q.next();
         Member m1 = m.next();
 
-        if(!(q1.equals(""))) {
+        if(!(q1.equals("public"))) {
 
           String[] arraysplit = q1.split(" ", 2);
   
@@ -52,6 +54,5 @@ public class MemberList {
     }
 
     //Atributos da classe
-    private ArrayList<String> qualifier;
     private ArrayList<Member> member;
 }

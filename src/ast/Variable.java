@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class Variable {
+public class Variable extends Member{
 
     //Construtor da classe
 	public Variable(String name, Type type) {
@@ -39,11 +39,13 @@ public class Variable {
 	}
 
 	//Metodo para geracao do codigo em Java
-	public void genJava(PW pw) {
-		pw.print(type.getName());
-		pw.print(" ");
+	public void genC(PW pw) {
 		pw.print(name);
+	}
 
+	//Metodo para geracao do codigo em Java
+	public void genJava(PW pw) {
+		pw.print(name);
 	}
 
     //Atributos da classe

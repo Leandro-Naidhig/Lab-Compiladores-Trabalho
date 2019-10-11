@@ -5,14 +5,15 @@
  */
 package ast;
 
-public class MethodDec {
+public class MethodDec extends Member{
 
     //Construtor da classe 
-    public MethodDec(Id id_idColon, FormalParamDec formParDec, Type type, StatementList statementList) {
+    public MethodDec(Id id_idColon, FormalParamDec formParDec, Type type, StatementList statementList, String qualifier) {
         this.id_idColon = id_idColon;
         this.formParDec = formParDec;
         this.type = type;
         this.statementList = statementList;
+        this.qualifier = qualifier;
     }
 
     //Metodo para geracao do codigo em C
@@ -53,9 +54,25 @@ public class MethodDec {
         return formParDec;
     }
 
+    //Metodo para retornar o qualificador do metodo
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    //Metodo para retornar o nome do metodo
+    public String getName() {
+        return id_idColon.getName();
+    }
+
+    //Metodo para retornar o tipo do metodo
+    public Type getType() {
+        return type;
+    }
+
     //Atributos da classe
     private Id id_idColon;
     private FormalParamDec formParDec;
     private Type type;
     private StatementList statementList;
+    private String qualifier;
 }

@@ -9,12 +9,11 @@ import java.util.ArrayList;
 public class PrimaryExpr extends Expr{
 
     //Construtor da classe
-    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist, Boolean isMethod) {
+    public PrimaryExpr(String qualifier, ArrayList<Id> ids, Id idc, ExpressionList exprlist) {
         this.qualifier = qualifier;
         this.ids = ids;
         this.idc = idc;
         this.exprlist = exprlist;
-        this.isMethod = isMethod;
     }
 
     //Metodo para geracao do codigo em C
@@ -116,5 +115,4 @@ public class PrimaryExpr extends Expr{
     private ArrayList<Id> ids;
     private Id idc;
     private ExpressionList exprlist;
-    private Boolean isMethod;
 }

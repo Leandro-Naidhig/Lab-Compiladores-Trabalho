@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public class IdList {
 
     //Construtor da classe
-    public IdList(ArrayList<Id> ids) {
-        this.ids = ids;
+    public IdList(ArrayList<Variable> identifiers) {
+        this.identifiers = identifiers;
     }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
         
         int contador = 0;
-        for(Id s : ids) {
+        for(Variable s : ids) {
             s.genC(pw);
             contador++;
             
@@ -31,21 +31,21 @@ public class IdList {
     public void genJava(PW pw) {
         
         int contador = 0;
-        for(Id s : ids) {
+        for(Variable s : identifiers) {
             s.genJava(pw);
             contador++;
 
-            if((ids.size()-1) != contador) {
+            if((identifiers.size()-1) != contador) {
                 pw.print(", ");
             }
         }
     }
 
     //Metodo para recuperacao do array de ids
-    public ArrayList<Id> getArray() {
-        return ids;
+    public ArrayList<Variable> getArray() {
+        return identifiers;
     }
 
     //Atributos da classe
-    private ArrayList<Id> ids;
+    private ArrayList<Variable> identifiers;
 }

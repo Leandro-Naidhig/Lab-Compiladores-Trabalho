@@ -5,33 +5,17 @@
  */
 package ast;
 
-public class Member {
-
-    //Construtor da classe
-    public Member(FieldDec field, MethodDec method) {
-      this.field = field;
-      this.method = method;
-    }
+abstract public class Member {
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
-      if(field != null) {
-        field.genC(pw);
-      } else {
-        method.genC(pw);
-      }
-    }
+    abstract public void genC(PW pw);
 
     //Metodo para geracao do codigo em Java
-    public void genJava(PW pw) {
-      if(field != null) {
-        field.genJava(pw);
-      } else {
-        method.genJava(pw);
-      }
-    }
+    abstract public void genJava(PW pw);
 
-    //Atributos da classe
-    private MethodDec method;
-    private FieldDec field;
+    //Metodo para retornar o tipo
+    abstract public Type getType();
+
+    //Metodo para retornar o tipo
+    abstract public String getName();
 }

@@ -5,13 +5,19 @@
  */
 package ast;
 
-public class FieldDec {
+public class FieldDec extends Member{
 
     //Construtor da classe 
-    public FieldDec(Type type, IdList idList, Boolean isSemiColon) {
+    public FieldDec(Type type, IdList idList, Boolean isSemiColon, String qualifier) {
         this.type = type;
         this.idList = idList;
         this.isSemiColon = isSemiColon;
+        this.qualifier = qualifier;
+    }
+
+    //Metodo para retornar o qualificador dos atributos
+    public String getQualifier() {
+        return qualifier;
     }
     
     //Metodo para geracao do codigo em C
@@ -31,8 +37,19 @@ public class FieldDec {
         pw.print(";");
     }
 
+    //Metodo para retornar o tipo
+    public Type getType() {
+        return type;
+    }
+
+    //Metodo para retornar o nome
+    public String getName() { 
+        return null;       
+    }
+
     //Atributos da classe
     private Boolean isSemiColon;
     private Type type;
     private IdList idList;
+    private String qualifier;
 }
