@@ -9,6 +9,7 @@ public class SymbolTable {
 		localTableMethodFieldClass = new Hashtable<>();
 		localTableMethodVariablesClass = new Hashtable<>();
 		localTableMethodParents = new Hashtable<>();
+		localTableMethodCurrentClass = new Hashtable<>();
 	}
 
 	/*METODOS PUT*/
@@ -33,6 +34,11 @@ public class SymbolTable {
 		return localTableMethodParents.put(key, value);
 	}
 
+	//Insercao de variaveis de forma local(metodo)
+	public Object putInLocalMethodCurrentClass(String key, Object value) {
+		return localTableMethodCurrentClass.put(key, value);
+	}
+
 	/*METODOS GET*/
 
 	//Recupera o valor globalmente
@@ -55,12 +61,18 @@ public class SymbolTable {
 		return localTableMethodParents.get(key);
 	}
 
+	//Recupera os metodos da classe atual
+	public Object getInLocalTableMethodCurrentClass(Object key) {
+		return localTableMethodCurrentClass.get(key);
+	}
+
 	//Recupe o valor
 	public Object get(String key) {
 		Object result;
 		if ((result = localTableMethodFieldClass.get(key)) != null 
 		 || (result = localTableMethodVariablesClass.get(key)) != null
-		 || (result = localTableMethodParents.get(key)) != null) {
+		 || (result = localTableMethodParents.get(key)) != null
+		 || (result = localTableMethodCurrentClass.get(key)) != null) {
 			return result;
 		}
 		else {
@@ -85,7 +97,12 @@ public class SymbolTable {
 		localTableMethodParents.clear();
 	}
 
+	//Remove os elementos da tabela local(do metodo)
+	public void removeLocalIdentMethodCurrentClass() {
+		localTableMethodCurrentClass.clear();
+	}
+
 	//Atributos da classe
-	private Hashtable globalTable, localTableMethodFieldClass, localTableMethodVariablesClass, localTableMethodParents;
+	private Hashtable globalTable, localTableMethodFieldClass, localTableMethodVariablesClass, localTableMethodParents, localTableMethodCurrentClass;
 
 }
