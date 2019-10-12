@@ -221,36 +221,10 @@ public class Compiler {
 			//Analise Semanica (verificacao de existencia da superclasse)
 			if(superclass == null) {
 				error("Class '" + superclassName + "' has not been declared");
-			
-			} else {
-
-				//Vamos recuperar todos os metodos das classes da hierarquia
-				while(superclass.getSuperClass() != null) {
-
-					//Recupera a classe pai
-					superclass = superclass.getSuperClass();
-
-					//Se a classe puder ser herdada
-					if(superclass.getOpen()){
-						
-						memberlist = superclass.getMembros();
-						ArrayList<Member> membrosSuperClass = memberlist.getArray();
-
-						//Procura todos os metodos publicos da superclasse
-						for(Member s: membrosSuperClass) {
-							if(s instanceof MethodDec){
-								if(((MethodDec)s).getQualifier().equals("public")){
-
-									//Coloca o metodo na tabela de simbolos locais da classe em relacao a superclasse
-									symbolTable.putInLocalMethodParents(((MethodDec)s).getName(), ((MethodDec)s));
-								}
-							}
-						}
-					}
-				}	
 			}
 		}
 
+		currentClass = new ClassDec(className, superclass, memberlist, isopen);
 		memberlist = memberList();
 		symbolTable.removeLocalIdentMethodFieldClass();
 		symbolTable.removeLocalIdentMethodVariablesClass();
@@ -906,7 +880,7 @@ public class Compiler {
 					classe = (ClassDec)symbolTable.getInGlobal(name1);
 					
 					if(classe == null) {
-						error("Class " + name1 + " has not been declared in class method");
+						error("Class " + name1 + " has not been declared in method");
 					}
 					return new ObjectCreation(classe);
 
@@ -925,8 +899,31 @@ public class Compiler {
 							//Recupera a classe
 							classe = (ClassDec)symbolTable.getInGlobal(name1);
 
-							//Recupera o metodos da classe referente
-							
+							//Vamos recuperar todos os metodos das classes da hierarquia
+							while(superclass.getSuperClass() != null) {
+
+								//Recupera a classe pai
+								superclass = superclass.getSuperClass();
+
+								//Se a classe puder ser herdada
+								if(superclass.getOpen()){
+									
+									memberlist = superclass.getMembros();
+									ArrayList<Member> membrosSuperClass = memberlist.getArray();
+
+									//Procura todos os metodos publicos da superclasse
+									for(Member s: membrosSuperClass) {
+										if(s instanceof MethodDec){
+											if(((MethodDec)s).getQualifier().equals("public")){
+
+												//Coloca o metodo na tabela de simbolos locais da classe em relacao a superclasse
+												symbolTable.putInLocalMethodParents(((MethodDec)s).getName(), ((MethodDec)s));
+											}
+										}
+									}
+								}
+							}
+
 							//membro2 = (MethodDec)symbolTable.getInLocal(name2);
 						}
 
@@ -971,8 +968,10 @@ public class Compiler {
 		String name1 = "";
 		String name2 = "";
 		ExpressionList exprList = null;
+		ClassDec superclass = null;
 		Member membro1 = null;
 		Member membro2 = null;
+		MethodDec metodo = null;
 
 		switch(lexer.token) {
 
@@ -989,15 +988,35 @@ public class Compiler {
 						name1 = lexer.getStringValue();
 						next();
 
-						//Analise Semantica (verificacao de existencia da variavel na classe)
-						if(symbolTable.getInLocal(name1) == null) {
-							error("variable or Method '" + name1 + "' has not declared in class");
+						//Analise Semanica (verificacao se e uma palavra chave)
+						if(lexer.get_keywords(name1) != null) {
+							error(name1 + " is a keyword");
+						}
+
+						//Recupera a superclasse da clase atual
+						superclass = currentClass.getSuperClass();
+
+						//Analise Semantica (verificacao de existencia de uma superclasse na classe atual)
+						if(symbolTable.getInGlobal(superclass.getCname()) == null) {
+							error("Class '" + superclass.getCname() + "' does not inherit from a superclass");
+						
+						//Recupera todos os metodos da superclasse
 						} else {
-							if(symbolTable.getInLocal(name1) instanceof Variable) {
-								membro1 = (Variable)symbolTable.getInLocal(name1);
-							} else if(symbolTable.getInLocal(name1) instanceof MethodDec) {
-								membro1 = (MethodDec)symbolTable.getInLocal(name1);
-							}  
+							checkMethodsSuperClasses(superclass);
+							
+							//Caso nao existir um metodo unario com esse nome
+							if(symbolTable.getInLocalMethodParents(name1) == null) {
+								error("There is no method " + name1 + " in the superclasse of class " + currentClass.getCname());
+						
+							//Recupera o metodo correspondente
+							} else {
+								membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name1);
+
+								//Verifica se o metodo e unario
+								if(metodo.getNumParam() != 0) {
+									error("The method found has a different description than the statement of the same method");				
+								}
+							}
 						}
 
 						return new SuperExpr(membro1, null);
@@ -1006,22 +1025,35 @@ public class Compiler {
 						name1 = lexer.getStringValue();
 						next();
 
-						//Analise Semantica (verificacao de existecia do metodo unario)
-						if(symbolTable.getInLocal(name1) == null) {
-							error("Method'" + name1 + "' has not declared in class");
-				
+						//Analise Semanica (verificacao se e uma palavra chave)
+						if(lexer.get_keywords(name1) != null) {
+							error(name1 + " is a keyword");
+						}
+
+						//Recupera a superclasse da clase atual
+						superclass = currentClass.getSuperClass();
+
+						//Analise Semantica (verificacao de existencia de uma superclasse na classe atual)
+						if(symbolTable.getInGlobal(superclass.getCname()) == null) {
+							error("Class '" + superclass.getCname() + "' does not inherit from a superclass");
+						
+						//Recupera todos os metodos da superclasse
 						} else {
-				
-							if(symbolTable.getInLocal(name2) instanceof MethodDec) {
-								membro1 = (MethodDec)symbolTable.getInLocal(name1);	
-							} else {
-								error("Identifier'" + name1 + "' has not a method");
-							}
+							checkMethodsSuperClasses(superclass);
 						}
 
 						exprList = expressionList();
-						MethodDec metodo = (MethodDec)membro2;
-						checkDescMethods(metodo, exprList);
+
+						//Caso nao existir um metodo unario com esse nome
+						if(symbolTable.getInLocalMethodParents(name1) == null) {
+							error("There is no method " + name1 + " in the superclasse of class " + currentClass.getCname());
+					
+						//Recupera o metodo correspondente
+						} else {
+							membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name1);
+							checkDescMethods(metodo, exprList);
+						}
+
 						return new SuperExpr(membro1, exprList);
 					}
 				}
@@ -1029,6 +1061,7 @@ public class Compiler {
 			
 			case SELF:
 				next();
+				
 				if(lexer.token == Token.DOT){
 					next();
 					
@@ -1037,13 +1070,17 @@ public class Compiler {
 						next();
 
 						//Analise Semantica (verificacao de existencia da variavel na classe)
-						if(symbolTable.getInLocal(name1) == null) {
+						if(symbolTable.getInLocalMethodFieldClass(name1) == null) {
 							error("variable or Method '" + name1 + "' has not declared in class");
 						} else {
-							if(symbolTable.getInLocal(name1) instanceof Variable) {
-								membro1 = (Variable)symbolTable.getInLocal(name1);
-							} else if(symbolTable.getInLocal(name1) instanceof MethodDec) {
-								membro1 = (MethodDec)symbolTable.getInLocal(name1);
+							
+							//Caso for uma variavel
+							if(symbolTable.getInLocalMethodVariablesClass(name1) instanceof Variable) {
+								membro1 = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
+							
+							//Caso for um metodo
+							} else if(symbolTable.getInLocalMethodVariablesClass(name1) instanceof MethodDec) {
+								membro1 = (MethodDec)symbolTable.getInLocalMethodVariablesClass(name1);
 							}  
 						}
 
@@ -1053,6 +1090,8 @@ public class Compiler {
 							if(lexer.token == Token.ID) {
 								name2 = lexer.getStringValue();
 								next();
+
+								//Coloca a classe aqui para recuperar o metodo
 
 								//Analise Semantica (verificacao de existecia do metodo unario)*
 								if(symbolTable.getInLocal(name2) == null) {
@@ -1249,6 +1288,37 @@ public class Compiler {
 		}
 	}
 
+	//Metodo para encontrar todos os metodos das superclasses da classe corrente
+	private void checkMethodsSuperClasses(ClassDec superclass) {
+
+		MemberList memberlist = null;
+
+		//Vamos recuperar todos os metodos das classes da hierarquia
+		while(superclass.getSuperClass() != null) {
+
+			//Recupera a classe pai
+			superclass = superclass.getSuperClass();
+
+			//Se a classe puder ser herdada
+			if(superclass.getOpen()){
+				
+				memberlist = superclass.getMembros();
+				ArrayList<Member> membrosSuperClass = memberlist.getArray();
+
+				//Procura todos os metodos publicos da superclasse
+				for(Member s: membrosSuperClass) {
+					if(s instanceof MethodDec){
+						if(((MethodDec)s).getQualifier().equals("public")){
+
+							//Coloca o metodo na tabela de simbolos locais da classe em relacao a superclasse
+							symbolTable.putInLocalMethodParents(((MethodDec)s).getName(), ((MethodDec)s));
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private WriteStat writeStat() {
 		next();
 		check(Token.DOT, "'.' was expected after 'Out'");
@@ -1326,6 +1396,7 @@ public class Compiler {
 
 	}
 
+	private ClassDec		currentClass; //Recupera a classe atual
 	private SymbolTable		symbolTable;
 	private Lexer			lexer;
 	private ErrorSignaller	signalError;
