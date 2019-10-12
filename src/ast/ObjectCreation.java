@@ -8,8 +8,8 @@ package ast;
 public class ObjectCreation extends Expr{
 
     //Construtor da classe
-    public ObjectCreation(ClassDec classe) {
-      this.classe = classe;
+    public ObjectCreation(Variable var) {
+      this.var = var;
     }
 
     //Metodo para geracao do codigo em C
@@ -19,14 +19,14 @@ public class ObjectCreation extends Expr{
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
       pw.print("new ");
-      pw.print(classe.getCname() + "()");
+      pw.print(var.getName() + "()");
     }
 
     //Metodo que retorna o tipo da classe
     public Type getType() {
-      return classe;
+      return var.getType();
     }
 
     //Atributos da classe
-    private ClassDec classe;
+    private Variable var;
 }

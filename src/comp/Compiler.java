@@ -815,10 +815,13 @@ public class Compiler {
 		Member membro1 = null;
 		Member membro2 = null;
 		ClassDec classe = null;
+		MemberList memberlist = null;
+		ClassDec superclasse = null;
 		ExpressionList exprList = null;
 		LiteralInt value = null;
 		LiteralBoolean bool = null;
 		LiteralString str = null;
+		Variable variavel = null;
 
 		if(lexer.token == Token.LITERALINT || lexer.token == Token.LITERALSTRING 
 	    || lexer.token == Token.TRUE|| lexer.token == Token.FALSE) {
@@ -861,15 +864,15 @@ public class Compiler {
 			name1 = lexer.getStringValue();
 			next();
 
-			//Analise Semantica (verifica se e um variavel local ou parametro)
-			if(symbolTable.getInLocalMethodFieldClass(name1) != null){
-				error("Not allowed to use object methods or fields without use 'this'");				
-
-			} else if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
+			//Analise Semantica (verifica se e um variavel local ou parametro)				
+			if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
 				error("Variable or Parameter" + name1 + "has not been declared in Method");
 
-			} else {
-				membro1 = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
+			} else if(symbolTable.getInLocalMethodFieldClass(name1) != null ){
+					error("Not allowed to use object methods or fields without use 'self', illegal acess");
+
+			} else if(symbolTable.getInLocalMethodVariablesClass(name1) != null){
+				membro1 = variavel = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
 			}
 
 			if(lexer.token == Token.DOT) {
@@ -877,12 +880,13 @@ public class Compiler {
 				
 				if(lexer.getStringValue().equals("new")) {
 					next();
-					classe = (ClassDec)symbolTable.getInGlobal(name1);
-					
-					if(classe == null) {
-						error("Class " + name1 + " has not been declared in method");
+
+					//Caso a classe nao existir
+					if(symbolTable.getInGlobal(name1) == null) {
+						error("Class " + name1 + " was not declared");
 					}
-					return new ObjectCreation(classe);
+
+					return new ObjectCreation(variavel);
 
 				} else {
 					
@@ -899,16 +903,18 @@ public class Compiler {
 							//Recupera a classe
 							classe = (ClassDec)symbolTable.getInGlobal(name1);
 
+							//Recupera seus metodos
+
 							//Vamos recuperar todos os metodos das classes da hierarquia
-							while(superclass.getSuperClass() != null) {
+							while(classe.getSuperClass() != null) {
 
 								//Recupera a classe pai
-								superclass = superclass.getSuperClass();
+								superclasse = classe.getSuperClass();
 
 								//Se a classe puder ser herdada
-								if(superclass.getOpen()){
+								if(superclasse.getOpen()){
 									
-									memberlist = superclass.getMembros();
+									memberlist = superclasse.getMembros();
 									ArrayList<Member> membrosSuperClass = memberlist.getArray();
 
 									//Procura todos os metodos publicos da superclasse
@@ -925,6 +931,11 @@ public class Compiler {
 							}
 
 							//membro2 = (MethodDec)symbolTable.getInLocal(name2);
+							if(symbolTable.getInLocalMethodParents(name2) == null){
+								error("Method " + name2 + " not found in class or superclass");
+							} else {
+								membro2 = (MethodDec)symbolTable.getInLocalMethodParents(name2);
+							}
 						}
 
 						primexpr = new IdExpr(membro1, membro2, null);	
@@ -1396,9 +1407,9 @@ public class Compiler {
 
 	}
 
-	private ClassDec		currentClass; //Recupera a classe atual
-	private SymbolTable		symbolTable;
-	private Lexer			lexer;
-	private ErrorSignaller	signalError;
+	private ClassDec		currentClass; //Atributo para a classe atual
+	private SymbolTable		symbolTable; //Atributo para as tabelas de simbolos
+	private Lexer			lexer; //Atributo para acessar o lexer
+	private ErrorSignaller	signalError; //Atributo para insercao de erros
 
 }
