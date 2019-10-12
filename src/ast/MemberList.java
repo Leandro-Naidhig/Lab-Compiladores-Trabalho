@@ -27,29 +27,46 @@ public class MemberList {
     public void genJava(PW pw) {
       
       Iterator<Member> m = member.iterator();
+      MethodDec metodo = null;
+      FieldDec atributos = null;
       
+      //Recupera todos os membros do array
       while (m.hasNext()) {
 
         Member m1 = m.next();
 
-        if(!(q1.equals("public"))) {
-
-          String[] arraysplit = q1.split(" ", 2);
-  
-          for (String a : arraysplit) {
-            if(a.equals("override")) {
-              pw.printlnIdent("@Override");
-            }
-          }
-          
-          pw.printIdent(q1);
-          pw.print(" "); 
-       
+        //Verifica qual o tipo do membro
+        if(m1 instanceof MethodDec) {
+          metodo = (MethodDec)m1;
         } else {
-          pw.printIdent("public");
-          pw.print(" ");
+          atributos = (FieldDec)m1;
         }
-        m1.genJava(pw);
+
+        //Caso o membro for um FieldDec
+        if(atributos != null) {
+          pw.printIdent("private ");
+          atributos.genJava(pw);
+        
+        //Caso o membro for um MethodDec
+        } else {
+          
+          if(!(metodo.getQualifier().equals("public"))) {
+
+            String[] arraysplit = metodo.getQualifier().split(" ", 2);
+    
+            for (String a : arraysplit) {
+              if(a.equals("override")) {
+                pw.printlnIdent("@Override");
+              }
+            }
+            
+            pw.printIdent(metodo.getQualifier() + " ");
+         
+          } else {
+            pw.printIdent("public ");
+          }
+          m1.genJava(pw);
+        }
       }
     }
 

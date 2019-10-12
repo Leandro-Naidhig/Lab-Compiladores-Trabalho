@@ -23,9 +23,9 @@ public class LocalDec extends Statement {
 
         //Caso houver uma expressao
         if(expr != null) {
-            ArrayList<Id> ids = idList.getArray();
+            ArrayList<Variable> ids = idList.getArray();
 
-            for(Id s : ids) {
+            for(Variable s : ids) {
                 s.genC(pw);
                 pw.print(" = ");
                 expr.genC(pw);
@@ -49,9 +49,9 @@ public class LocalDec extends Statement {
         pw.printIdent(tipo.getName() + " ");
     
         if(expr != null) {
-            ArrayList<Id> ids = idList.getArray();
+            ArrayList<Variable> ids = idList.getArray();
 
-            for(Id s : ids) {
+            for(Variable s : ids) {
                 s.genJava(pw);
                 pw.print(" = ");
                 expr.genJava(pw);
@@ -64,9 +64,9 @@ public class LocalDec extends Statement {
             pw.println(";");
         
         } else {
-            ArrayList<Id> ids = idList.getArray();
+            ArrayList<Variable> ids = idList.getArray();
 
-            for(Id s : ids) {
+            for(Variable s : ids) {
                 s.genJava(pw);
                 contador++;
                 

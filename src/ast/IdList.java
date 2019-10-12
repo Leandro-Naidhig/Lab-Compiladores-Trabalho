@@ -17,11 +17,11 @@ public class IdList {
     public void genC(PW pw) {
         
         int contador = 0;
-        for(Variable s : ids) {
+        for(Variable s : identifiers) {
             s.genC(pw);
             contador++;
             
-            if((ids.size()-1) != contador) {
+            if((identifiers.size()-1) != contador) {
                 pw.print(", ");
             }
         }

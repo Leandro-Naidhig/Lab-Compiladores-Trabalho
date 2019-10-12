@@ -239,7 +239,7 @@ public class Compiler {
 								if(((MethodDec)s).getQualifier().equals("public")){
 
 									//Coloca o metodo na tabela de simbolos locais da classe em relacao a superclasse
-									symbolTable.putInLocal(((MethodDec)s).getName(), ((MethodDec)s));
+									symbolTable.putInLocalMethodParents(((MethodDec)s).getName(), ((MethodDec)s));
 								}
 							}
 						}
@@ -249,7 +249,9 @@ public class Compiler {
 		}
 
 		memberlist = memberList();
-		symbolTable.removeLocalIdent();
+		symbolTable.removeLocalIdentMethodFieldClass();
+		symbolTable.removeLocalIdentMethodVariablesClass();
+		symbolTable.removeLocalIdentMethodParents();
 		check(Token.END, "'end' expected");
 		next();
 		classe = new ClassDec(className, superclass, memberlist, isopen);
@@ -330,7 +332,7 @@ public class Compiler {
 			name = lexer.getStringValue();
 
 			//Analise Semanica (verificacao de existencia da funcao)
-			if(symbolTable.getInLocal(name) != null) {
+			if(symbolTable.getInLocalClass(name) != null) {
 				error("Function '" + name + "' has already been declared");
 			
 			} else {
@@ -415,7 +417,7 @@ public class Compiler {
 			error("A field name was expected");
 		
 		} else {
-			idlist = idList(tipo);
+			idlist = idList(tipo, false);
 		}
 
 		if(lexer.token == Token.SEMICOLON) {
@@ -426,10 +428,10 @@ public class Compiler {
 		return new FieldDec(tipo, idlist, isSemiColon, qualificador);
 	}
 
-	private IdList idList(Type tipo) {
+	private IdList idList(Type tipo, Boolean varLocal) {
 
-		ArrayList<Variable> identifiers = new ArrayList<>();
-			
+		ArrayList<Variable> identifiers = new ArrayList<>();	
+		
 		if(lexer.token != Token.ID) {
 			error("Identifier expected");
 		} else {
@@ -446,7 +448,13 @@ public class Compiler {
 			} else {
 				Variable id = new Variable(lexer.getStringValue(), tipo); 
 				identifiers.add(id);
-				symbolTable.putInLocal(lexer.getStringValue(), id);
+
+				//Caso for variaveis locais do metodo, muda a tabela de simbolos para insercao
+				if(varLocal) {	
+					symbolTable.putInLocalMethod(lexer.getStringValue(), id);
+				} else {
+					symbolTable.putInLocal(lexer.getStringValue(), id);
+				}
 			}
 		}
 
@@ -471,7 +479,13 @@ public class Compiler {
 				} else {
 					Variable id = new Variable(lexer.getStringValue(), tipo); 
 					identifiers.add(id);
-					symbolTable.putInLocal(lexer.getStringValue(), id);
+					
+					//Caso for variaveis locais do metodo, muda a tabela de simbolos para insercao
+					if(varLocal) {	
+						symbolTable.putInLocalMethod(lexer.getStringValue(), id);
+					} else {
+						symbolTable.putInLocal(lexer.getStringValue(), id);
+					}
 				}
 			}
 			next();
@@ -759,10 +773,13 @@ public class Compiler {
 	private Expr factor() {
 
 		Expr expressao = null;
-		String name = "";
+		String name1 = "";
+		String name2 = "";
 		Id id = null;
 		ArrayList<Id> ids = new ArrayList<>();
 		Expr primexpr = null;
+		Member membro1 = null;
+		Member membro2 = null;
 		ExpressionList exprList = null;
 		LiteralInt value = null;
 		LiteralBoolean bool = null;
@@ -788,6 +805,7 @@ public class Compiler {
 			return new BasicValue(str, value, bool);
 			
 		} else if(lexer.token == Token.LEFTPAR) {
+			
 			next();
 			expressao = expression();
 			check(Token.RIGHTPAR, "')' expected");
@@ -796,6 +814,7 @@ public class Compiler {
 
 		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER 
 		|| lexer.token == Token.IN) {
+
 			primexpr = primaryExpr();
 			return primexpr;
 
@@ -804,33 +823,52 @@ public class Compiler {
 			return new NotFactor(factor());
 			
 		} else if(lexer.token == Token.ID) {
-			name = lexer.getStringValue();
-			id = new Id(name);
-			ids.add(id);
+			name1 = lexer.getStringValue();
 			next();
+
+			//Analise Semantica (verifica se e um variavel de instancia ou um metodo)
+			if(symbolTable.getInLocal(name1) instanceof Variable) {
+				membro1 = (Variable)symbolTable.getInLocal(name1);
+			} else if(symbolTable.getInLocal(name1) instanceof MethodDec) {
+				membro1 = (MethodDec)symbolTable.getInLocal(name1);
+			}
+
 			if(lexer.token == Token.DOT) {
 				next();
 				if(lexer.getStringValue().equals("new")) {
 					next();
-					ClassDec classe = (ClassDec)symbolTable.getInGlobal(name);
+					ClassDec classe = (ClassDec)symbolTable.getInGlobal(name1);
 					if(classe == null) {
-						error("Class " + name + " has not been declared");
+						error("Class " + name1 + " has not been declared");
 					}
 					return new ObjectCreation(classe);
 				} else {
 					if(lexer.token == Token.ID) {
-						name = lexer.getStringValue();
-						id = new Id(name);
-						ids.add(id);
+						name2 = lexer.getStringValue();
 						next();
-						primexpr = new PrimaryExpr(null, ids, null, null);	
+
+						//Analise Semantica (verifica se e um variavel de instancia ou um metodo)
+						if(symbolTable.getInLocal(name2) instanceof Variable) {
+							membro2 = (Variable)symbolTable.getInLocal(name2);
+						} else if(symbolTable.getInLocal(name2) instanceof MethodDec) {
+							membro2 = (MethodDec)symbolTable.getInLocal(name2);
+						}
+
+						primexpr = new IdExpr(membro1, membro2, null);	
 						
 					} else if(lexer.token == Token.IDCOLON) {
-						name = lexer.getStringValue();
-						id = new Id(name);
+						name1 = lexer.getStringValue();
 						next();
+
+						//Analise Semantica (verifica se e um metodo)
+						if(symbolTable.getInLocal(name1) instanceof MethodDec) {
+							membro1 = (MethodDec)symbolTable.getInLocal(name1);
+						} else {
+							error("Identifier'" + name1 + "' has not a method");
+						}
+
 						exprList = expressionList();
-						primexpr = new PrimaryExpr(null, ids, id, exprList);
+						primexpr = new IdExpr(membro1, membro2, exprList);
 
 					} else {
 						error("An identifier or identifer: was expected after '.'");
@@ -838,7 +876,7 @@ public class Compiler {
 					return primexpr;
 				}
 			}
-			primexpr = new PrimaryExpr(null, ids, null, null);
+			primexpr = new IdExpr(membro1, null, null);
 			return primexpr;
 
 		} else if(lexer.token == Token.NIL) {
@@ -873,12 +911,40 @@ public class Compiler {
 					if(lexer.token == Token.ID) {
 						name1 = lexer.getStringValue();
 						next();
+
+						//Analise Semantica (verificacao de existencia da variavel na classe)
+						if(symbolTable.getInLocal(name1) == null) {
+							error("variable or Method '" + name1 + "' has not declared in class");
+						} else {
+							if(symbolTable.getInLocal(name1) instanceof Variable) {
+								membro1 = (Variable)symbolTable.getInLocal(name1);
+							} else if(symbolTable.getInLocal(name1) instanceof MethodDec) {
+								membro1 = (MethodDec)symbolTable.getInLocal(name1);
+							}  
+						}
+
 						return new SuperExpr(membro1, null);
 			
 					} else if(lexer.token == Token.IDCOLON) {
 						name1 = lexer.getStringValue();
 						next();
+
+						//Analise Semantica (verificacao de existecia do metodo unario)
+						if(symbolTable.getInLocal(name1) == null) {
+							error("Method'" + name1 + "' has not declared in class");
+				
+						} else {
+				
+							if(symbolTable.getInLocal(name2) instanceof MethodDec) {
+								membro1 = (MethodDec)symbolTable.getInLocal(name1);	
+							} else {
+								error("Identifier'" + name1 + "' has not a method");
+							}
+						}
+
 						exprList = expressionList();
+						MethodDec metodo = (MethodDec)membro2;
+						checkDescMethods(metodo, exprList);
 						return new SuperExpr(membro1, exprList);
 					}
 				}
@@ -928,6 +994,7 @@ public class Compiler {
 						
 							} else if(lexer.token == Token.IDCOLON) {
 								name2 = lexer.getStringValue();
+								next();
 
 								//Analise Semantica (verificacao de existecia do metodo unario)*
 								if(symbolTable.getInLocal(name2) == null) {
@@ -942,32 +1009,9 @@ public class Compiler {
 									}
 								}
 
-								next();
 								exprList = expressionList();
 								MethodDec metodo = (MethodDec)membro2;
-
-								/*Verifica se o numero de argumentos é igual do metodo */
-								if(metodo != null && (metodo.getNumParam() != exprList.getNumberExpr())) {
-									error("The number of parameters of the method call is" + metodo.getNumParam() + ", while the number of expressions is " + exprList.getNumberExpr());
-								
-								/*Verifica se os tipos dos argumentos é igual da descricao do metodo */
-								} else {
-									ArrayList<ParamDec> parametros = metodo.getParamDec().getParamDec();
-									ArrayList<Expr> expressoes = exprList.getArrayList();
-									Iterator<ParamDec> param = parametros.iterator();
-									Iterator<Expr> expr = expressoes.iterator();
-									ParamDec param1 = null;
-									Expr expr1 = null;
-
-									while(param.hasNext() && expr.hasNext()) {
-										param1 = param.next();
-										expr1 = expr.next();
-										if(expr1.getType() != param1.getType()) {
-											error("Expression and parameter have distinct types");
-											break;
-										}
-									}
-								}
+								checkDescMethods(metodo, exprList);
 								return new SelfExpr(membro1, membro2, exprList);			
 							
 							} else {
@@ -977,10 +1021,27 @@ public class Compiler {
 						return new SelfExpr(membro1, null, null);
 
 					} else if(lexer.token == Token.IDCOLON) {
-						name = lexer.getStringValue();
+						name1 = lexer.getStringValue();
 						next();
+
+						//Analise Semantica (verificacao de existecia do metodo unario)*
+						if(symbolTable.getInLocal(name1) == null) {
+							error("Method'" + name1 + "' has not declared in class");
+				
+						} else {
+				
+							if(symbolTable.getInLocal(name1) instanceof MethodDec) {
+								membro1 = (MethodDec)symbolTable.getInLocal(name1);	
+							} else {
+								error("Identifier'" + name1 + "' has not a method");
+							}
+						}
+
 						exprList = expressionList();
-						return new PrimaryExpr("self", null, id, exprList);
+						MethodDec metodo = (MethodDec)membro1;
+						checkDescMethods(metodo, exprList);
+
+						return new SelfExpr(null, membro1, exprList);
 
 					} else {
 						error("An identifier or identifer: was expected after '.'");
@@ -1023,7 +1084,7 @@ public class Compiler {
 		next();
 		Type tipo = type();
 		next();
-		IdList idlist = idList();
+		IdList idlist = idList(tipo, true);
 
 		if(lexer.token == Token.ASSIGN) {
 			next();
@@ -1081,6 +1142,33 @@ public class Compiler {
 			return true;
 		} else {
 			return left == right;
+		}
+	}
+
+	//Metodo para verificar se dois metodos possuem a mesma descricao
+	private void checkDescMethods(MethodDec metodo, ExpressionList exprList){
+		
+		//Verifica se o numero de argumentos da lista de expressao é igual do metodo
+		if(metodo != null && (metodo.getNumParam() != exprList.getNumberExpr())) {
+			error("The number of parameters of the method call is" + metodo.getNumParam() + ", while the number of expressions is " + exprList.getNumberExpr());
+		
+		//Verifica se os tipos dos argumentos é igual da descricao do metodo 
+		} else {
+			ArrayList<ParamDec> parametros = metodo.getParamDec().getParamDec();
+			ArrayList<Expr> expressoes = exprList.getArrayList();
+			Iterator<ParamDec> param = parametros.iterator();
+			Iterator<Expr> expr = expressoes.iterator();
+			ParamDec param1 = null;
+			Expr expr1 = null;
+
+			while(param.hasNext() && expr.hasNext()) {
+				param1 = param.next();
+				expr1 = expr.next();
+				if(expr1.getType() != param1.getType()) {
+					error("Expression and parameter have distinct types");
+					break;
+				}
+			}
 		}
 	}
 
