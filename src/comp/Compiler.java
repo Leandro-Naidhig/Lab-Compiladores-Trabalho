@@ -7,6 +7,9 @@ package comp;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.ibm.oti.reflect.Method;
+
 import ast.*;
 import lexer.*;
 
@@ -331,9 +334,15 @@ public class Compiler {
 		if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 
-			//Analise Semanica (verificacao de existencia da funcao)
-			if(symbolTable.getInLocalClass(name) != null) {
-				error("Function '" + name + "' has already been declared");
+			//Analise Semanica (verificacao de existencia da funcao ou de uma variavel com o mesmo nome)
+			if(symbolTable.getInLocalMethodFieldClass(name) != null) {
+
+				if(symbolTable.getInLocalMethodFieldClass(name) instanceof Variable) {
+					error("Cannot declare a unary method with the same name as instance variable");
+			
+				} else {
+					error("Function '" + name + "' has already been declared");
+				}
 			
 			} else {
 				id = new Id(name);
@@ -346,39 +355,41 @@ public class Compiler {
 			next();
 			formparaDec = formalParamDec();
 
-			//Analise Semanica (verificacao de existencia da funcao)
-			if(symbolTable.getInLocal(name) != null) {
+			//Analise Semanica (verificacao de existencia da funcao com a mesma descricao)
+			if(symbolTable.getInLocalMethodFieldClass(name) != null) {
 				
-				metodo = (MethodDec)symbolTable.getInLocal(name);
-				
-				//Verifica o numero de parametros entre o metodo recuperado e o atual
-				if(metodo.getNumParam() == formparaDec.getNumberParam()) {
+				if(symbolTable.getInLocalMethodFieldClass(name) instanceof MethodDec) {
 					
-					//Vetores de parametros
-					ArrayList<ParamDec> parMetodo = new ArrayList<>();
-					ArrayList<ParamDec> parMetodoAtual = new ArrayList<>();
+					metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(name);
+				
+					//Verifica o numero de parametros entre o metodo recuperado e o atual
+					if(metodo.getNumParam() == formparaDec.getNumberParam()) {
+						
+						//Vetores de parametros
+						ArrayList<ParamDec> parMetodo = new ArrayList<>();
+						ArrayList<ParamDec> parMetodoAtual = new ArrayList<>();
 
-					//Transforma em iteradores
-					Iterator<ParamDec>parsMetodo = parMetodo.iterator();
-					Iterator<ParamDec>parsMetodoAtual = parMetodoAtual.iterator();
+						//Transforma em iteradores
+						Iterator<ParamDec>parsMetodo = parMetodo.iterator();
+						Iterator<ParamDec>parsMetodoAtual = parMetodoAtual.iterator();
 
-					//flag de verificacao da igualdade de tipos
-					boolean equals = false;
+						//flag de verificacao da igualdade de tipos
+						boolean equals = false;
 
-					//Percorre os dois vetores verificando se sao similares em seus tipos
-					while(parsMetodo.hasNext() && parsMetodoAtual.hasNext()){
-						if(parsMetodo.next().getType() != parsMetodoAtual.next().getType()) {
-							equals = true;
-							break;
+						//Percorre os dois vetores verificando se sao similares em seus tipos
+						while(parsMetodo.hasNext() && parsMetodoAtual.hasNext()){
+							if(parsMetodo.next().getType() != parsMetodoAtual.next().getType()) {
+								equals = true;
+								break;
+							}
+						}
+
+						//Caso tiverem a mesma descricao os metodos
+						if(equals){
+							error("Function '" + name + "' has already been declared with the same parameters");
 						}
 					}
-
-					//Caso tiverem a mesma descricao os metodos
-					if(equals){
-						error("Function '" + name + "' has already been declared with the same parameters");
-					}
 				}			
-			
 			}
 
 		} else {
@@ -401,7 +412,7 @@ public class Compiler {
 		metodo = new MethodDec(id, formparaDec, tipo, statlist, qualificador);
 
 		//Coloca o metodo na tabela de simbolos locais da classe
-		symbolTable.putInLocal(id.getName(), metodo);
+		symbolTable.putInLocalMethodFieldClass(id.getName(), metodo);
 		
 		return metodo;
 	}
@@ -431,6 +442,8 @@ public class Compiler {
 	private IdList idList(Type tipo, Boolean varLocal) {
 
 		ArrayList<Variable> identifiers = new ArrayList<>();	
+		Variable id = null;
+		MethodDec metodo = null;
 		
 		if(lexer.token != Token.ID) {
 			error("Identifier expected");
@@ -439,23 +452,46 @@ public class Compiler {
 			//Analise Semantica (verificacao se e uma palavra chave)
 			if(lexer.get_keywords(lexer.getStringValue()) != null) {
 				error(lexer.getStringValue() + " is a keyword");
-			
-			//Analise Semantica (verificacao se ja existe o identificador)
-			} else if (symbolTable.getInLocal(lexer.getStringValue()) != null) {
-				error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
-			
-			//Analise Semantica (caso estiver livre)
-			} else {
-				Variable id = new Variable(lexer.getStringValue(), tipo); 
-				identifiers.add(id);
 
-				//Caso for variaveis locais do metodo, muda a tabela de simbolos para insercao
-				if(varLocal) {	
-					symbolTable.putInLocalMethod(lexer.getStringValue(), id);
+			} else if(!varLocal) {
+				
+				//Analise Semantica (verificacao se ja existe o identificador)
+				if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
+
+					//Caso for uma variavel
+					if(symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) instanceof Variable) {
+						error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
+
+					//Caso for um metodo
+					} else {
+						metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(lexer.getStringValue());
+
+						//Caso for um metodo unario
+						if(metodo.getNumParam() == 0) {
+							error("Cannot declare a unary method with the same name as instance variable");
+						}
+					}
+				
+				//Caso a variavel de instancia ainda nao foi declarada
 				} else {
-					symbolTable.putInLocal(lexer.getStringValue(), id);
+					id = new Variable(lexer.getStringValue(), tipo); 
+					identifiers.add(id);
+					symbolTable.putInLocalMethodFieldClass(lexer.getStringValue(), id);
 				}
-			}
+			
+			} else {
+				
+				//Analise Semantica (verificacao se ja existe o identificador)
+				if (symbolTable.getInLocalMethodVariablesClass(lexer.getStringValue()) != null) {
+					error("Identifier '" + lexer.getStringValue() + "' has already been declared in method");
+				
+				//Caso a variavel local ainda nao foi declarada
+				} else {
+					id = new Variable(lexer.getStringValue(), tipo); 
+					identifiers.add(id);
+					symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), id);
+				}
+			}	
 		}
 
 		next();
@@ -463,30 +499,54 @@ public class Compiler {
 		while(lexer.token == Token.COMMA) {
 
 			next();
+			
 			if(lexer.token != Token.ID) {
 				error("Identifier expected");
 			} else {
-
+	
 				//Analise Semantica (verificacao se e uma palavra chave)
 				if(lexer.get_keywords(lexer.getStringValue()) != null) {
 					error(lexer.getStringValue() + " is a keyword");
-				
-				//Analise Semantica (verificacao de declaracao de variavel)
-				} else  if (symbolTable.getInLocal(lexer.getStringValue()) != null) {
-					error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
-				
-				//Analise Semantica (caso estiver livre)
-				} else {
-					Variable id = new Variable(lexer.getStringValue(), tipo); 
-					identifiers.add(id);
+	
+				} else if(!varLocal) {
 					
-					//Caso for variaveis locais do metodo, muda a tabela de simbolos para insercao
-					if(varLocal) {	
-						symbolTable.putInLocalMethod(lexer.getStringValue(), id);
+					//Analise Semantica (verificacao se ja existe o identificador)
+					if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
+	
+						//Caso for uma variavel
+						if(symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) instanceof Variable) {
+							error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
+	
+						//Caso for um metodo
+						} else {
+							metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(lexer.getStringValue());
+	
+							//Caso for um metodo unario
+							if(metodo.getNumParam() == 0) {
+								error("Cannot declare a unary method with the same name as instance variable");
+							}
+						}
+					
+					//Caso a variavel de instancia ainda nao foi declarada
 					} else {
-						symbolTable.putInLocal(lexer.getStringValue(), id);
+						id = new Variable(lexer.getStringValue(), tipo); 
+						identifiers.add(id);
+						symbolTable.putInLocalMethodFieldClass(lexer.getStringValue(), id);
 					}
-				}
+				
+				} else {
+					
+					//Analise Semantica (verificacao se ja existe o identificador)
+					if (symbolTable.getInLocalMethodVariablesClass(lexer.getStringValue()) != null) {
+						error("Identifier '" + lexer.getStringValue() + "' has already been declared in method");
+					
+					//Caso a variavel local ainda nao foi declarada
+					} else {
+						id = new Variable(lexer.getStringValue(), tipo); 
+						identifiers.add(id);
+						symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), id);
+					}
+				}	
 			}
 			next();
 		}
@@ -519,7 +579,7 @@ public class Compiler {
 			
 			} else {
 				name = new Variable(lexer.getStringValue(), tipo);
-				symbolTable.putInLocalMethod(lexer.getStringValue(), name);
+				symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), name);
 			}
 
 		} else {
@@ -780,6 +840,7 @@ public class Compiler {
 		Expr primexpr = null;
 		Member membro1 = null;
 		Member membro2 = null;
+		ClassDec classe = null;
 		ExpressionList exprList = null;
 		LiteralInt value = null;
 		LiteralBoolean bool = null;
@@ -826,37 +887,53 @@ public class Compiler {
 			name1 = lexer.getStringValue();
 			next();
 
-			//Analise Semantica (verifica se e um variavel de instancia ou um metodo)
-			if(symbolTable.getInLocal(name1) instanceof Variable) {
-				membro1 = (Variable)symbolTable.getInLocal(name1);
-			} else if(symbolTable.getInLocal(name1) instanceof MethodDec) {
-				membro1 = (MethodDec)symbolTable.getInLocal(name1);
+			//Analise Semantica (verifica se e um variavel local ou parametro)
+			if(symbolTable.getInLocalMethodFieldClass(name1) != null){
+				error("Not allowed to use object methods or fields without use 'this'");				
+
+			} else if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
+				error("Variable or Parameter" + name1 + "has not been declared in Method");
+
+			} else {
+				membro1 = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
 			}
 
 			if(lexer.token == Token.DOT) {
 				next();
+				
 				if(lexer.getStringValue().equals("new")) {
 					next();
-					ClassDec classe = (ClassDec)symbolTable.getInGlobal(name1);
+					classe = (ClassDec)symbolTable.getInGlobal(name1);
+					
 					if(classe == null) {
-						error("Class " + name1 + " has not been declared");
+						error("Class " + name1 + " has not been declared in class method");
 					}
 					return new ObjectCreation(classe);
+
 				} else {
+					
 					if(lexer.token == Token.ID) {
 						name2 = lexer.getStringValue();
 						next();
 
-						//Analise Semantica (verifica se e um variavel de instancia ou um metodo)
-						if(symbolTable.getInLocal(name2) instanceof Variable) {
-							membro2 = (Variable)symbolTable.getInLocal(name2);
-						} else if(symbolTable.getInLocal(name2) instanceof MethodDec) {
-							membro2 = (MethodDec)symbolTable.getInLocal(name2);
+						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
+						if(symbolTable.getInLocalMethodVariablesClass(name2) instanceof Variable) {
+							error("Acess the attribute in class " + name1 + "is not allowed (private acess)");
+
+						} else if(symbolTable.getInLocalMethodVariablesClass(name2) instanceof MethodDec) {
+
+							//Recupera a classe
+							classe = (ClassDec)symbolTable.getInGlobal(name1);
+
+							//Recupera o metodos da classe referente
+							
+							//membro2 = (MethodDec)symbolTable.getInLocal(name2);
 						}
 
 						primexpr = new IdExpr(membro1, membro2, null);	
 						
 					} else if(lexer.token == Token.IDCOLON) {
+						
 						name1 = lexer.getStringValue();
 						next();
 
