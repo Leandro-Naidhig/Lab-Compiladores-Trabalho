@@ -7,9 +7,6 @@ package comp;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import com.ibm.oti.reflect.Method;
-
 import ast.*;
 import lexer.*;
 
@@ -50,8 +47,8 @@ public class Compiler {
 		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
 		boolean thereWasAnError = false;
 		while ( lexer.token == Token.CLASS ||
-				(lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
-				lexer.token == Token.ANNOT ) {
+			   (lexer.token == Token.ID && lexer.getStringValue().equals("open") ) ||
+			    lexer.token == Token.ANNOT ) {
 			try {
 				while ( lexer.token == Token.ANNOT ) {
 					metaobjectAnnotation(metaobjectCallList);
@@ -215,7 +212,8 @@ public class Compiler {
 			if(lexer.get_keywords(superclassName) != null) {
 				error("Superclass name " + superclassName + " is a keyword");
 			}
-			
+		
+			//Verifica se a classe existe na tabela de simbolos
 			superclass = (ClassDec)symbolTable.getInGlobal(superclassName);
 			
 			//Analise Semanica (verificacao de existencia da superclasse)
@@ -226,9 +224,13 @@ public class Compiler {
 
 		currentClass = new ClassDec(className, superclass, memberlist, isopen);
 		memberlist = memberList();
+		
+		//Limpeza de todas as tabelas de simbolos
 		symbolTable.removeLocalIdentMethodFieldClass();
 		symbolTable.removeLocalIdentMethodVariablesClass();
 		symbolTable.removeLocalIdentMethodParents();
+		symbolTable.removeLocalIdentMethodCurrentClass();
+
 		check(Token.END, "'end' expected");
 		next();
 		classe = new ClassDec(className, superclass, memberlist, isopen);
@@ -257,9 +259,9 @@ public class Compiler {
 
 				if( (first.equals("shared") && (!(lexer.token == Token.PRIVATE) || !(lexer.token == Token.PUBLIC))) 
 				    ||  (first.equals("final") && (!(lexer.token == Token.PUBLIC) || !(lexer.token == Token.OVERRIDE)))
-				    ||  (first.equals("override") && !(lexer.token != Token.PUBLIC)) ) {
+				    ||  (first.equals("override") && !(lexer.token == Token.PUBLIC)) ) {
 
-					error("Qualifier illegal");
+					error("Illegal qualifier ");
 				
 				//Recupera o segundo qualificador
 				} else if(lexer.token != Token.VAR && lexer.token != Token.FUNC) { 
@@ -267,8 +269,8 @@ public class Compiler {
 			   		second = lexer.getStringValue();
 					next();
 
-					if(first.equals("") && second.equals("") && !(lexer.token == Token.PUBLIC)) {
-						error("Qualifier illegal");
+					if(first.equals("final") && second.equals("override") && !(lexer.token == Token.PUBLIC)) {
+						error("Illegal qualifier ");
 
 					//Recupera o terceiro qualificador
 					} else if(lexer.token == Token.PUBLIC) {
@@ -287,7 +289,12 @@ public class Compiler {
 
 			} else if(lexer.token == Token.FUNC) {
 				next();
+
+				if(first.equals("final") && (currentClass.getOpen() == false)) {
+					error("Can not declare a final because class " + currentClass.getCname() + " is final");
+				}
 				membro = methodDec(qual);
+	
 			} else {
 				break;
 			}
@@ -387,6 +394,9 @@ public class Compiler {
 
 		//Coloca o metodo na tabela de simbolos locais da classe
 		symbolTable.putInLocalMethodFieldClass(id.getName(), metodo);
+
+		//Limpeza da tabela de simbolos do metodo
+		symbolTable.removeLocalIdentMethodVariablesClass();
 		
 		return metodo;
 	}
@@ -438,6 +448,7 @@ public class Compiler {
 
 					//Caso for um metodo
 					} else {
+
 						metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(lexer.getStringValue());
 
 						//Caso for um metodo unario
@@ -863,10 +874,10 @@ public class Compiler {
 
 			//Analise Semantica (verifica se e um variavel local ou parametro)				
 			if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
-				error("Variable or Parameter" + name1 + "has not been declared in Method");
+				error("Variable or Parameter '" + name1 + "' has not been declared in Method");
 
 			} else if(symbolTable.getInLocalMethodFieldClass(name1) != null ){
-					error("Not allowed to use object methods or fields without use 'self', illegal acess");
+				error("Not allowed to use object methods or fields without use 'self', illegal access");
 
 			} else if(symbolTable.getInLocalMethodVariablesClass(name1) != null){
 				membro1 = variavel = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
@@ -880,7 +891,7 @@ public class Compiler {
 
 					//Caso a classe nao existir
 					if(symbolTable.getInGlobal(name1) == null) {
-						error("Class " + name1 + " was not declared");
+						error("Class '" + name1 + "' was not declared");
 					}
 
 					return new ObjectCreation(variavel);
@@ -891,25 +902,27 @@ public class Compiler {
 						name2 = lexer.getStringValue();
 						next();
 
+						//Recupera a classe
+						classe = (ClassDec)symbolTable.getInGlobal(name1);
+
+						//Recupera todos os metodos da propria classe
+						checkMethodsCurrentClass(classe);
+
+						//Analise Semantica(verifica se existe na tabela de metodos da classe)
+						if(symbolTable.getInLocalTableMethodCurrentClass(name2) == null){
+							error("Method '" + name2 + "' not found in class");
+					
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
-						if(symbolTable.getInLocalMethodVariablesClass(name2) instanceof Variable) {
-							error("Acess the attribute in class " + name1 + "is not allowed (private acess)");
+						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof Variable) {
+							error("Acess the attribute in class '" + name1 + "' is not allowed (private acess)");
 
-						} else if(symbolTable.getInLocalMethodVariablesClass(name2) instanceof MethodDec) {
+						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof MethodDec) {
 
-							//Recupera a classe
-							classe = (ClassDec)symbolTable.getInGlobal(name1);
-
-							//Recupera todos os metodos da superclasse e da propria
-							checkMethodsSuperClasses(classe);
-
-							if(symbolTable.getInLocalMethodParents(name2) == null){
-								error("Method " + name2 + " not found in class or superclass");
-							} else {
-								membro2 = (MethodDec)symbolTable.getInLocalMethodParents(name2);
-							}
+							membro2 = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(name2);
 						}
 
+						//Realiza a limpeza da tabela dos metodos da classe
+						symbolTable.removeLocalIdentMethodCurrentClass();
 						primexpr = new IdExpr(membro1, membro2, null);	
 						
 					} else if(lexer.token == Token.IDCOLON) {
@@ -918,23 +931,28 @@ public class Compiler {
 						next();
 						exprList = expressionList();
 
+						//Recupera a classe
+						classe = (ClassDec)symbolTable.getInGlobal(name1);
+
+						//Recupera todos os metodos da superclasse e da propria
+						checkMethodsCurrentClass(classe);
+
+						if(symbolTable.getInLocalTableMethodCurrentClass(name2) == null){
+							error("Method '" + name2 + "' not found in class");
+						
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
-						if(symbolTable.getInLocalMethodVariablesClass(name2) instanceof MethodDec) {
+						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof Variable) {
+							error("identifier '" + name2 + "' is a variable, but a method is expected (<parameters>)");
+							
+						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
+						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof MethodDec) {
 
-							//Recupera a classe
-							classe = (ClassDec)symbolTable.getInGlobal(name1);
-
-							//Recupera todos os metodos da superclasse e da propria
-							checkMethodsSuperClasses(classe);
-
-							if(symbolTable.getInLocalMethodParents(name2) == null){
-								error("Method " + name2 + " not found in class or superclass");
-							} else {
-								membro2 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name2);
-								checkDescMethods(metodo, exprList);	
-							}
+							membro2 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name2);
+							checkDescMethods(metodo, exprList);	
 						}
 
+						//Realiza a limpeza da tabela dos metodos da classe
+						symbolTable.removeLocalIdentMethodCurrentClass();
 						primexpr = new IdExpr(membro1, membro2, exprList);
 
 					} else {
@@ -984,23 +1002,24 @@ public class Compiler {
 
 						//Analise Semanica (verificacao se e uma palavra chave)
 						if(lexer.get_keywords(name1) != null) {
-							error(name1 + " is a keyword");
+							error("'" + name1 + "' is a keyword");
 						}
 
 						//Recupera a superclasse da clase atual
 						superclass = currentClass.getSuperClass();
 
 						//Analise Semantica (verificacao de existencia de uma superclasse na classe atual)
-						if(symbolTable.getInGlobal(superclass.getCname()) == null) {
-							error("Class '" + superclass.getCname() + "' does not inherit from a superclass");
+						if(superclass == null) {
+							error("Class '" + currentClass.getCname() + "' does not inherit from a superclass");
 						
 						//Recupera todos os metodos da superclasse
 						} else {
+
 							checkMethodsSuperClasses(superclass);
 							
 							//Caso nao existir um metodo unario com esse nome
-							if(symbolTable.getInLocalMethodParents(name1) == null) {
-								error("There is no method " + name1 + " in the superclasse of class " + currentClass.getCname());
+							if(symbolTable.getInLocalMethodParents(name1) == null ) {
+								error("There is no method '" + name1 + "' in the superclasse of class '" + currentClass.getCname() + "'");
 						
 							//Recupera o metodo correspondente
 							} else {
@@ -1008,10 +1027,13 @@ public class Compiler {
 
 								//Verifica se o metodo e unario
 								if(metodo.getNumParam() != 0) {
-									error("The method found has a different description than the statement of the same method");				
+									error("Method '" + metodo.getName() + "' have a different description previously declared");				
 								}
 							}
 						}
+						
+						//Limpeza da tabela de simbolos da superclasse
+						symbolTable.removeLocalIdentMethodParents();
 
 						return new SuperExpr(membro1, null);
 			
@@ -1021,7 +1043,7 @@ public class Compiler {
 
 						//Analise Semanica (verificacao se e uma palavra chave)
 						if(lexer.get_keywords(name1) != null) {
-							error(name1 + " is a keyword");
+							error("'" + name1 + "' is a keyword");
 						}
 
 						//Recupera a superclasse da clase atual
@@ -1029,7 +1051,7 @@ public class Compiler {
 
 						//Analise Semantica (verificacao de existencia de uma superclasse na classe atual)
 						if(symbolTable.getInGlobal(superclass.getCname()) == null) {
-							error("Class '" + superclass.getCname() + "' does not inherit from a superclass");
+							error("Class '" + currentClass.getCname() + "' does not inherit from a superclass");
 						
 						//Recupera todos os metodos da superclasse
 						} else {
@@ -1040,7 +1062,7 @@ public class Compiler {
 
 						//Caso nao existir um metodo unario com esse nome
 						if(symbolTable.getInLocalMethodParents(name1) == null) {
-							error("There is no method " + name1 + " in the superclasse of class " + currentClass.getCname());
+							error("There is no method '" + name1 + "' in the superclasse of class '" + currentClass.getCname() + "'");
 					
 						//Recupera o metodo correspondente
 						} else {
@@ -1048,6 +1070,8 @@ public class Compiler {
 							checkDescMethods(metodo, exprList);
 						}
 
+						//Limpeza da tabela de simbolos da superclasse
+						symbolTable.removeLocalIdentMethodParents();
 						return new SuperExpr(membro1, exprList);
 					}
 				}
@@ -1065,7 +1089,7 @@ public class Compiler {
 
 						//Analise Semantica (verificacao de existencia da variavel na classe)
 						if(symbolTable.getInLocalMethodFieldClass(name1) == null) {
-							error("variable or Method '" + name1 + "' has not declared in class");
+							error("Variable or method '" + name1 + "' has not being declared in class");
 						} else {
 							
 							//Caso for uma variavel
@@ -1074,7 +1098,7 @@ public class Compiler {
 							
 							//Caso for um metodo
 							} else if(symbolTable.getInLocalMethodFieldClass(name1) instanceof MethodDec) {
-								membro1 = (MethodDec)symbolTable.getInLocalMethodFieldClass(name1);
+								membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(name1);
 							}  
 						}
 
@@ -1091,18 +1115,26 @@ public class Compiler {
 								//Pega os metodos da class atual
 								checkMethodsCurrentClass(classe);
 
-								//Analise Semantica (verificacao de existecia do metodo unario)*
+								//Analise Semantica (verificacao de existecia do metodo unario)
 								if(symbolTable.getInLocalTableMethodCurrentClass(name2) == null) {
-									error("Method unary'" + name2 + "' has not declared in " + name1);
+									error("Method '" + name2 + "' has not being declared in class " + name1);
 								} else {
 						
 									if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof Variable) {
-										error("Acess the attribute in class " + name1 + "is not allowed (private acess)");
+										error("Access the attribute in class '" + name1 + "' is not allowed (private access)");
 
 									} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof MethodDec) {
-										membro2 = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(name2);	
+										membro2 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(name2);
+										
+										//Verifica se o metodo e unario
+										if(metodo.getNumParam() != 0) {
+											error("Method '" + metodo.getName() + "' have a different description previously declared");				
+										}
 									}
 								}
+								
+								//Limpeza da tabela de simbolos da classe
+								symbolTable.removeLocalIdentMethodCurrentClass();
 								return new SelfExpr(membro1, membro2, null);
 						
 							} else if(lexer.token == Token.IDCOLON) {
@@ -1117,7 +1149,7 @@ public class Compiler {
 
 								//Analise Semantica (verificacao de existecia do metodo unario)*
 								if(symbolTable.getInLocalTableMethodCurrentClass(name2) == null) {
-									error("Method'" + name2 + "' has not declared in " + name1);
+									error("Method '" + name2 + "' has not being declared in " + name1);
 						
 								} else {
 						
@@ -1125,19 +1157,28 @@ public class Compiler {
 										membro2 = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(name2);		
 
 									} else {
-										error("Identifier'" + name2 + "' has not a method");
+										error("Identifier '" + name2 + "' has not a method");
 									}
 								}
 
 								exprList = expressionList();
 								metodo = (MethodDec)membro2;
 								checkDescMethods(metodo, exprList);
+								
+								//Limpeza da tabela de simbolos da classe
+								symbolTable.removeLocalIdentMethodCurrentClass();								
 								return new SelfExpr(membro1, membro2, exprList);			
 							
 							} else {
 								error("An identifier or identifer: was expected after '.'");		
 							}
 						}
+						
+						//Verifica se ao for um atributo, e um metodo unario
+						if(metodo != null && metodo.getNumParam() != 0) {
+							error("Current class method '" + metodo.getName() + "' has a different description previously declared");				
+						}
+
 						return new SelfExpr(membro1, null, null);
 
 					} else if(lexer.token == Token.IDCOLON) {
@@ -1146,21 +1187,20 @@ public class Compiler {
 
 						//Analise Semantica (verificacao de existecia do metodo unario)*
 						if(symbolTable.getInLocalMethodFieldClass(name1) == null) {
-							error("Method'" + name1 + "' has not declared in class");
+							error("Method '" + name1 + "' has not being declared in class");
 				
 						} else {
 				
 							if(symbolTable.getInLocalMethodFieldClass(name1) instanceof MethodDec) {
 								membro1 = (MethodDec)symbolTable.getInLocalMethodFieldClass(name1);	
 							} else {
-								error("Identifier'" + name1 + "' has not a method");
+								error("Identifier '" + name1 + "' is not a method");
 							}
 						}
 
 						exprList = expressionList();
 						metodo = (MethodDec)membro1;
 						checkDescMethods(metodo, exprList);
-
 						return new SelfExpr(null, membro1, exprList);
 
 					} else {
