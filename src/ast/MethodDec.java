@@ -23,7 +23,7 @@ public class MethodDec extends Member{
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         if(type != null) {
-            type.getName();
+            pw.print(type.getName());
         } else {
             pw.print("void");
         }

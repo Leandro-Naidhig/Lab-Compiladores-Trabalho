@@ -473,7 +473,7 @@ public class Compiler {
 				error(lexer.getStringValue() + " is a keyword");
 
 			} else if(!varLocal) {
-				
+
 				//Analise Semantica (verificacao se ja existe o identificador)
 				if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
 
@@ -1408,13 +1408,33 @@ public class Compiler {
 			Iterator<Expr> expr = expressoes.iterator();
 			ParamDec param1 = null;
 			Expr expr1 = null;
+			Type tipo = null;
+			ClassDec classe = null;
 
 			while(param.hasNext() && expr.hasNext()) {
 				param1 = param.next();
 				expr1 = expr.next();
 				if(expr1.getType() != param1.getType()) {
-					error("Expression and parameter have distinct types");
-					break;
+					tipo = expr1.getType();
+					
+					if(symbolTable.getInGlobal(tipo.getCname()) != null) {
+						classe = (ClassDec)symbolTable.getInGlobal(tipo.getCname());
+						
+						while(classe.getSuperClass() != null) {
+							classe = classe.getSuperClass();
+
+							if(classe.getCname().equals(param1.getType().getCname())) {
+								break;
+							} else if(classe.getSuperClass() == null) {
+								error("Expression type is a class and the same inherits no class with the same expression type"); 
+								break;
+							} 
+						}
+					
+					} else {
+						error("Expression and parameter have distinct types");
+						break;
+					}
 				}
 			}
 		}
@@ -1504,10 +1524,17 @@ public class Compiler {
 		} else if(lexer.token == Token.ID) {
 			name = lexer.getStringValue();
 			id = new Id(name);
+
+			if(currentClass.getName().equals(id.getName())){
+				classe = currentClass;
+				return classe;
+			}
+
 			classe = (ClassDec)symbolTable.getInGlobal(name);
+			
 			if(classe == null) {
 				error("There is no class with name " + name);
-			}
+			} 
 			return classe;
 			
 		} else {
