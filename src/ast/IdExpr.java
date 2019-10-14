@@ -20,6 +20,7 @@ public class IdExpr extends Expr{
     
     //Metodo para geracao do codigo em java
     public void genJava(PW pw) {
+        
         id1.genJava(pw);
 
         if(id2 != null) {
@@ -34,7 +35,7 @@ public class IdExpr extends Expr{
                 pw.print(".");
                 pw.print(id2.getName());
                     
-                if(id1 instanceof MethodDec) {
+                if(id2 instanceof MethodDec) {
                     pw.println("();");
                 }
             }

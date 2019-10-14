@@ -30,11 +30,11 @@ public class FieldDec extends Member{
     
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print("private ");
-        type.getName();
+        pw.printIdent("private ");
+        pw.print(type.getName());
         pw.print(" ");
         idList.genJava(pw);
-        pw.print(";");
+        pw.println(";");
     }
 
     //Metodo para retornar o tipo

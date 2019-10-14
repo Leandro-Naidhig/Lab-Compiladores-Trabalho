@@ -36,7 +36,7 @@ public class BasicValue extends Expr{
         } else if(BooleanValue != null) {
             return Type.booleanType;
         } else {
-            return Type.booleanType;
+            return Type.intType;
         }
     }
 

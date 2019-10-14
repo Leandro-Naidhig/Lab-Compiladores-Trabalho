@@ -23,7 +23,7 @@ public class CompositeExpr extends Expr {
     public void genJava(PW pw) {
         
         if(exprLeft != null) {
-			pw.print("(");
+            pw.print("(");
 			exprLeft.genJava(pw);
 
 			if(Op != null) {

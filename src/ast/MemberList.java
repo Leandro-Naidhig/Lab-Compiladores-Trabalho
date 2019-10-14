@@ -44,7 +44,6 @@ public class MemberList {
 
         //Caso o membro for um FieldDec
         if(atributos != null) {
-          pw.printIdent("private ");
           atributos.genJava(pw);
         
         //Caso o membro for um MethodDec

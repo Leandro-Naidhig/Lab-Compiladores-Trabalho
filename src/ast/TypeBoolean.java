@@ -13,7 +13,7 @@ public class TypeBoolean extends Type {
    //Retornar o nome do tipo em C
    @Override
    public String getCname() {
-      return "int";
+      return "boolean";
    }
 
 }

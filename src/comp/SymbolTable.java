@@ -53,7 +53,7 @@ public class SymbolTable {
 
 	//Recupera o valor localmente(metodo)
 	public Object getInLocalMethodVariablesClass(Object key) {
-		return localTableMethodFieldClass.get(key);
+		return localTableMethodVariablesClass.get(key);
 	}
 
 	//Recupera o valor localmente(parentes)

@@ -16,36 +16,13 @@
 
   */
 
-open
-class A
-
-    var Int k;
-
-    func m1: Int n {
-        self.k = 1;
-        Out.print: self.k ++ " " ++ n ++ " ";
-    }
-
-    func getK -> Int {
-        return self.k;
-    }
-
-end
 
 open
-class B extends A
+class B
 
     var Int k;
 
     func m2:Int n {
-        self.k = 2;
-        super.m1: 1;
-        Out.print: self.k ++ " " ++ n ++ " ";
-    }
-
-    override
-    func getK -> Int {
-        return self.k;
     }
 
 end

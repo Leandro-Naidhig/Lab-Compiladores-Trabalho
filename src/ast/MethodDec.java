@@ -46,7 +46,12 @@ public class MethodDec extends Member{
 
     //Retorna o numero de parametros
     public int getNumParam() {
-        return formParDec.getNumberParam();
+
+        if(formParDec == null) {
+            return 0;
+        } else {
+            return formParDec.getNumberParam();
+        }
     }
 
     //Retorna a descricao do metodo

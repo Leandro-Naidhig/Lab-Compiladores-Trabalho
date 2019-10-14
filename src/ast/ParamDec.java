@@ -19,7 +19,7 @@ public class ParamDec {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        name.genJava(pw);
+        pw.print(name.getType().getCname() + " " + name.getName());
     }
 
     //Metodo para retornar o tipo

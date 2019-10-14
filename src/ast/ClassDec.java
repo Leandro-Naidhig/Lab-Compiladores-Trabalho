@@ -43,9 +43,14 @@ public class ClassDec extends Type{
         return classname;
     }
 
-    //Metodo para retornar os membros da class
+    //Metodo para retornar os membros da classe
     public MemberList getMembros(){
         return memberList;
+    }
+
+    //Metodo para setar os membros da classe
+    public void setMembros(MemberList memberList) {
+        this.memberList = memberList;
     }
 
     //Metodo para geracao do codigo em C

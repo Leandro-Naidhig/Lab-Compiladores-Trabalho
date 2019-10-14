@@ -35,7 +35,7 @@ public class IdList {
             s.genJava(pw);
             contador++;
 
-            if((identifiers.size()-1) != contador) {
+            if((identifiers.size()) != contador) {
                 pw.print(", ");
             }
         }

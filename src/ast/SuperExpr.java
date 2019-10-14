@@ -19,8 +19,8 @@ public class SuperExpr extends Expr{
     
     //Metodo para geracao do codigo em java
     public void genJava(PW pw) {
-        pw.printIdent("super.");
-        id1.genJava(pw);
+        pw.print("super.");
+        pw.print(((MethodDec)id1).getName());
         
         if(exprlist != null) {
             pw.print("(");
@@ -28,10 +28,6 @@ public class SuperExpr extends Expr{
             pw.println(");");
                     
         } else {
-            pw.println("();");
-        }
-
-        if(id1 instanceof MethodDec) {
             pw.println("();");
         }
     } 

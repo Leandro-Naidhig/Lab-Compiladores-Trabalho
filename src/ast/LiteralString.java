@@ -27,6 +27,10 @@ public class LiteralString extends Expr {
         return Type.stringType;
     }
 
+    public String getName() {
+        return literalString    ;
+    }
+
     //Atributos da classe
     private String literalString;
 }
