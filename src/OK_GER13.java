@@ -68,5 +68,25 @@ class Program {
 ;
       b = this.m(b);
 ;
-   }
+      b.p1();
+      a = this.p(0);
+;
+      a.print();
+      a = this.p(1);
+;
+      a.print();
+      a = null;
+      b = null;
+      a2 = new A();
+      if((a == b)) {
+         System.out.print("" + 0 + " ");
+      }
+      if((b == a)) {
+         System.out.print("" + 1 + " ");
+      }
+      if((a == a2)) {
+         System.out.print("" + 2 + " ");
+      }
+      this.program = new Program();
+      this.program.print();   }
 }

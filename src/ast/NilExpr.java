@@ -14,6 +14,7 @@ public class NilExpr extends Expr {
 
    //Metodo para geracao do codigo em Java
    public void genJava(PW pw) {
+      pw.print("null");
    }
    
    //Retorna o tipo

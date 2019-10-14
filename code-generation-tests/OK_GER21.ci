@@ -15,24 +15,30 @@
 
 class A
     var Int n;
-    func set: Int n { self.n = n; }
-    func get -> Int { return self.n; }
+    func set: Int n { 
+        self.n = n; 
+    }
+    func get -> Int { 
+        return self.n; 
+    }
    
 end
 
 class Program
     var A a;
-    public func print { Out.print: self.a.get; }
-    private func set: A a { self.a = a; }
-    public func get -> A { return self.a; }
+    public func print { 
+        Out.print: self.a.get; 
+    }
+    private func set: A a { 
+        self.a = a; 
+    }
+    public func get -> A { 
+        return self.a; 
+    }
     
     public func run {
-
         Out.println: "0";
-
         Out.println: "0";
-       
-
     }
 
 end

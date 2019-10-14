@@ -31,6 +31,31 @@ public class SuperExpr extends Expr{
             pw.println("();");
         }
     } 
+
+    //Metodo para geracao do codigo em java
+    public void genJava(PW pw, boolean print) {
+        pw.print("super.");
+        pw.print(((MethodDec)id1).getName());
+        
+        if(exprlist != null) {
+            pw.print("(");
+            exprlist.genJava(pw);
+        
+            if(print) {
+                pw.print(")");
+            } else {
+                pw.println(");");
+            }
+                    
+        } else {
+
+            if(print) {
+                pw.print("()");
+            } else {
+                pw.println("();");    
+            }
+        }
+    } 
      
     //Metodo que retorna o tipo
     public Type getType() {

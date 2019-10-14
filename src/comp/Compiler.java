@@ -675,10 +675,9 @@ public class Compiler {
 		next();
 		Expr expressao = expression();
 
-		/*
 		if (expressao.getType() != Type.booleanType) {
 			error("É esperada uma expressão do tipo 'Boolean'");
-		}*/
+		}
 
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
@@ -756,10 +755,10 @@ public class Compiler {
 			next();
 			exprRight = simpleExpression();
 
-			/*Analise Semantica*/
-			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
+			//Analise Semantica (verifica a expressao dos dois lados)
+			if (!checkRelExpr(exprLeft.getType(), exprRight.getType())) {
 				error("Tipo de expressões incompátiveis para relação");
-			}*/
+			}
 			exprLeft = new CompositeExpr(exprLeft, relation, exprRight);
 		}
 		return exprLeft;
@@ -915,7 +914,16 @@ public class Compiler {
 
 					//Caso a classe nao existir
 					if(symbolTable.getInGlobal(name1) == null) {
-						error("Class '" + name1 + "' was not declared");
+
+						//Verifica se a classe e a classe atual
+						if(currentClass.getCname().equals(name1)) {
+							classe = currentClass;
+							variavel = new Variable(classe.getCname(), classe);
+
+						} else {
+							error("Class '" + name1 + "' was not declared");
+						}
+						
 					} else {
 						classe = (ClassDec)symbolTable.getInGlobal(name1);
 						variavel = new Variable(classe.getCname(), classe);
@@ -943,20 +951,22 @@ public class Compiler {
 						//Recupera a classe
 						classe = (ClassDec)symbolTable.getInGlobal(tipo.getCname());
 
-						//Recupera todos os metodos da propria classe
-						checkMethodsCurrentClass(classe);
+						System.out.println(classe.getCname());
+
+						//Recupera todos os metodos da propria class e dos parentes
+						checkMethodsSuperClasses(classe);
 
 						//Analise Semantica(verifica se existe na tabela de metodos da classe)
-						if(symbolTable.getInLocalTableMethodCurrentClass(name2) == null){
+						if(symbolTable.getInLocalMethodParents(name2) == null){
 							error("Method '" + name2 + "' not found in class");
 					
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
-						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof Variable) {
+						} else if(symbolTable.getInLocalMethodParents(name2) instanceof Variable) {
 							error("Acess the attribute in class '" + name1 + "' is not allowed (private acess)");
 
-						} else if(symbolTable.getInLocalTableMethodCurrentClass(name2) instanceof MethodDec) {
+						} else if(symbolTable.getInLocalMethodParents(name2) instanceof MethodDec) {
 
-							membro2 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(name2);
+							membro2 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name2);
 
 							//Verifica se o metodo e unario
 							if(metodo.getNumParam() != 0) {
@@ -965,7 +975,7 @@ public class Compiler {
 						}
 
 						//Realiza a limpeza da tabela dos metodos da classe
-						symbolTable.removeLocalIdentMethodCurrentClass();
+						symbolTable.removeLocalIdentMethodParents();
 						primexpr = new IdExpr(membro1, membro2, null);	
 						
 					} else if(lexer.token == Token.IDCOLON) {
@@ -1037,7 +1047,7 @@ public class Compiler {
 
 		} else if(lexer.token == Token.NIL) {
 			next();
-			return null;
+			return new NilExpr();
 	
 		} else {
 			error("identifier, '(', super, In, '!', nil, string, int or boolean expected");
@@ -1168,7 +1178,20 @@ public class Compiler {
 
 						//Analise Semantica (verificacao de existencia da variavel na classe)
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
-							error("Variable or method '" + id.getName() + "' has not being declared in class");
+							
+							//Se herdar de alguma classe, verifica a superclasse
+							if(currentClass.getSuperClass() != null) {
+								
+								checkMethodsSuperClasses(currentClass);
+
+								if(symbolTable.getInLocalMethodParents(id.getName()) != null) {
+									membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(id.getName());
+
+								} else {
+									error("Variable or method '" + id.getName() + "' has not being declared in class or method has not being declared in superclass");
+								}
+							}
+							
 						} else {
 							
 							//Caso for uma variavel
@@ -1191,13 +1214,30 @@ public class Compiler {
 								//Recupera a classe
 								classe = (ClassDec)symbolTable.getInGlobal(name1);
 
+								//Se a classe nao existe, entao e a classe atual
+								if(classe == null) {
+									classe = currentClass;
+								}
+
 								//Pega os metodos da class atual
 								checkMethodsCurrentClass(classe);
 								id = new Id(name2);
 
 								//Analise Semantica (verificacao de existecia do metodo unario)
 								if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
-									error("Method '" + id.getName() + "' has not being declared in class " + name1);
+
+									//Se herdar de alguma classe, verifica a superclasse
+									if(classe.getSuperClass() != null) {
+										
+										checkMethodsSuperClasses(classe);
+
+										if(symbolTable.getInLocalMethodParents(id.getName()) != null) {
+											membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(id.getName());
+
+										} else {
+											error("method '" + id.getName() + "' has not being declared in class " + name1 + " or method has not being declared in superclass");
+										}
+									}
 								} else {
 						
 									if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
@@ -1215,6 +1255,8 @@ public class Compiler {
 								
 								//Limpeza da tabela de simbolos da classe
 								symbolTable.removeLocalIdentMethodCurrentClass();
+								symbolTable.removeLocalIdentMethodParents();
+
 								return new SelfExpr(membro1, membro2, null);
 						
 							} else if(lexer.token == Token.IDCOLON) {
@@ -1248,6 +1290,8 @@ public class Compiler {
 								
 								//Limpeza da tabela de simbolos da classe
 								symbolTable.removeLocalIdentMethodCurrentClass();								
+								symbolTable.removeLocalIdentMethodParents();
+								
 								return new SelfExpr(membro1, membro2, exprList);			
 							
 							} else {
@@ -1289,6 +1333,8 @@ public class Compiler {
 
 						//Limpeza da tabela de simbolos da classe
 						symbolTable.removeLocalIdentMethodCurrentClass();
+						symbolTable.removeLocalIdentMethodParents();
+
 						return new SelfExpr(membro1, null, exprList);
 
 					} else {
@@ -1444,18 +1490,23 @@ public class Compiler {
 	private void checkMethodsSuperClasses(ClassDec superclass) {
 
 		MemberList memberlist = null;
+		int flag = 1;
 
 		//Recupera todos os metodos das classes da hierarquia
 		do{
 			//Se a classe puder ser herdada
-			if(superclass.getOpen()){
+			if(superclass.getOpen() || flag == 1){
 				
+				flag = 0;
 				memberlist = superclass.getMembros();
 				ArrayList<Member> membrosSuperClass = memberlist.getArray();
 
 				//Procura todos os metodos publicos da superclasse
 				for(Member s: membrosSuperClass) {
 					if(s instanceof MethodDec){
+
+						System.out.println(s.getName());
+
 						if(((MethodDec)s).getQualifier().equals("public")){
 
 							//Coloca o metodo na tabela de simbolos locais da classe em relacao a superclasse

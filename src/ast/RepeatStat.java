@@ -19,11 +19,11 @@ public class RepeatStat extends Statement{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.println("do {");
+        pw.printlnIdent("do {");
         pw.add();
         statementList.genJava(pw);
         pw.sub();
-        pw.print("} while(");
+        pw.printIdent("} while(");
         expr.genJava(pw);
         pw.println(");");
     }

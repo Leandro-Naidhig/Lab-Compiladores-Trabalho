@@ -24,8 +24,6 @@ public class SelfExpr extends Expr{
 
         if(id1 != null) {
 
-            System.out.println(id1);
-
             if(id1 instanceof MethodDec) {
                 pw.print("." + ((MethodDec)id1).getName());
             } else {
@@ -55,6 +53,66 @@ public class SelfExpr extends Expr{
                     pw.println("();");
                 }
                 
+            }
+        }
+    }
+
+    //Metodo para geracao do codigo em java
+    public void genJava(PW pw, boolean print) {
+        pw.print("this");
+
+        if(id1 != null) {
+
+            if(id1 instanceof MethodDec) {
+                pw.print("." + ((MethodDec)id1).getName());
+            } else {
+                pw.print("." + ((Variable)id1).getName());
+            }
+
+            if(id2 != null) {
+                if(exprlist != null) {
+                    pw.print(".");
+                    pw.print(((MethodDec)id2).getName());
+                    pw.print("(");
+                    exprlist.genJava(pw);
+
+                    if(print) {
+                        pw.print(")");
+                    } else {
+                        pw.println(");");    
+                    } 
+                    
+                } else {
+
+                    if(print) {
+                        pw.print(".");
+                        pw.print(((MethodDec)id2).getName() + "()");
+                    } else {
+                        pw.print(".");
+                        pw.println(((MethodDec)id2).getName() + "();");
+                    }
+                }
+            }
+
+            if(id1 instanceof MethodDec) {
+                if(exprlist != null) {
+                    pw.print("(");
+                    exprlist.genJava(pw);
+
+                    if(print) {
+                        pw.print(")");
+                    } else {
+                        pw.println(");");
+                    }
+                    
+                } else {
+
+                    if(print) {
+                        pw.print("()");
+                    } else {
+                        pw.println("();");
+                    }
+                }
             }
         }
     } 
