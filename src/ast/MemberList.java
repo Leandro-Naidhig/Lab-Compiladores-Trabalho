@@ -64,8 +64,11 @@ public class MemberList {
           } else {
             pw.printIdent("public ");
           }
-          m1.genJava(pw);
+          metodo.genJava(pw);
         }
+
+        metodo = null;
+        atributos = null;
       }
     }
 

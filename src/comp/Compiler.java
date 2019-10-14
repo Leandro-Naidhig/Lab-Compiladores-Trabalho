@@ -412,10 +412,9 @@ public class Compiler {
 		//Coloca o metodo na tabela de simbolos locais da classe
 		symbolTable.putInLocalMethodFieldClass(id.getName(), metodo);
 
-
 		//Limpeza da tabela de simbolos do metodo
 		symbolTable.removeLocalIdentMethodVariablesClass();
-		
+
 		return metodo;
 	}
 
@@ -1145,25 +1144,26 @@ public class Compiler {
 						name1 = lexer.getStringValue();
 						next();
 
-						//Recupera a classe
-						classe = (ClassDec)symbolTable.getInGlobal(this.currentClass);
+						System.out.println(currentClass);
 
 						//Pega os metodos da class atual
-						checkMethodsCurrentClass(classe);
+						checkMethodsCurrentClass(currentClass);
 						id = new Id(name1);
 
+						System.out.println("LOL");
+
 						//Analise Semantica (verificacao de existencia da variavel na classe)
-						if(symbolTable.getInLocalMethodFieldClass(id.getName()) == null) {
+						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
 							error("Variable or method '" + id.getName() + "' has not being declared in class");
 						} else {
 							
 							//Caso for uma variavel
 							if(symbolTable.getInLocalMethodFieldClass(id.getName()) instanceof Variable) {
-								membro1 =(Variable)symbolTable.getInLocalMethodFieldClass(id.getName());
+								membro1 = (Variable)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
 							
 							//Caso for um metodo
-							} else if(symbolTable.getInLocalMethodFieldClass(id.getName()) instanceof MethodDec) {
-								membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(id.getName());
+							} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
+								membro1 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
 							}  
 						}
 
@@ -1241,7 +1241,7 @@ public class Compiler {
 							}
 						}
 						
-						//Verifica se ao for um atributo, e um metodo unario
+						//Verifica se for um atributo, e um metodo unario
 						if(metodo != null && metodo.getNumParam() != 0) {
 							error("Current class method '" + metodo.getName() + "' has a different description previously declared");				
 						}
@@ -1441,13 +1441,19 @@ public class Compiler {
 	private void checkMethodsCurrentClass(ClassDec classe) {
 
 		MemberList membros = null;
+		ArrayList<Variable> ids = null;
 		membros = classe.getMembros();
-
+		
 		for(Member s: membros.getArray()) {
 			if(s instanceof MethodDec) {
 				symbolTable.putInLocalMethodCurrentClass(((MethodDec)s).getName(), (MethodDec)s);
 			} else {
-				symbolTable.putInLocalMethodCurrentClass(((Variable)s).getName(), (Variable)s);
+
+				//Inseri todas as variaveis na tabela de simbolos da classe
+				ids = ((FieldDec)s).getIdList().getArray();
+				for(Variable v: ids) {
+					symbolTable.putInLocalMethodCurrentClass(((Variable)v).getName(), (Variable)v);
+				}
 			}
 		}
 	}

@@ -19,6 +19,21 @@ public class FieldDec extends Member{
     public String getQualifier() {
         return qualifier;
     }
+
+    //Metodo para retornar o tipo
+    public Type getType() {
+        return type;
+    }
+
+    //Metodo para retornar o nome
+    public String getName() { 
+        return null;       
+    }
+
+    //Metodo para retornar a lista de ids
+    public IdList getIdList() {
+        return idList;
+    }
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
@@ -35,16 +50,6 @@ public class FieldDec extends Member{
         pw.print(" ");
         idList.genJava(pw);
         pw.println(";");
-    }
-
-    //Metodo para retornar o tipo
-    public Type getType() {
-        return type;
-    }
-
-    //Metodo para retornar o nome
-    public String getName() { 
-        return null;       
     }
 
     //Atributos da classe

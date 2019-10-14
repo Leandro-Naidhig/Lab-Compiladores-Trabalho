@@ -7,9 +7,16 @@ public class OK_GER10 {
 class Scan {
    public static Scanner imputValue = new Scanner(System.in);
 }
-class B {
+class A {
+   private int a;
+   public void m1(int n) {
+   }
+}
+class B extends A {
    private int k;
-   private int k;
+   public void m2(int n) {
+            this      super.m1(1);
+   }
 }
 class C extends B {
    public void m3(int n) {
@@ -17,7 +24,7 @@ class C extends B {
       System.out.print("" + (("3 " + n) + " "));
    }
    public void m4(int n) {
-      this.m3(3);
+            this.m3(3);
       System.out.print("" + ("4 " + n) + " ");
    }
 }
