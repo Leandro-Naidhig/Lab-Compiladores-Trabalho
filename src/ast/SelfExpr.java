@@ -20,9 +20,12 @@ public class SelfExpr extends Expr{
     
     //Metodo para geracao do codigo em java
     public void genJava(PW pw) {
-        pw.printIdent("this");
+        pw.print("this");
 
         if(id1 != null) {
+
+            System.out.println(id1);
+
             if(id1 instanceof MethodDec) {
                 pw.print("." + ((MethodDec)id1).getName());
             } else {
@@ -52,8 +55,6 @@ public class SelfExpr extends Expr{
                     pw.println("();");
                 }
                 
-            } else {
-                pw.println(";");
             }
         }
     } 

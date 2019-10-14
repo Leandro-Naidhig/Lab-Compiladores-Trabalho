@@ -250,39 +250,57 @@ public class Compiler {
 		while(true) {
 
 			//Recupera o primeiro qualificador
-			if(lexer.token == Token.PRIVATE || lexer.token == Token.PUBLIC || 
-			   lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL || 
-			   lexer.token == Token.SHARED) {
-
+			if (lexer.token == Token.PRIVATE) {
 				first = lexer.getStringValue();
 				next();
-
-				if( (first.equals("shared") && (!(lexer.token == Token.PRIVATE) || !(lexer.token == Token.PUBLIC))) 
-				    ||  (first.equals("final") && (!(lexer.token == Token.PUBLIC) || !(lexer.token == Token.OVERRIDE)))
-				    ||  (first.equals("override") && !(lexer.token == Token.PUBLIC)) ) {
-
-					error("Illegal qualifier ");
+			
+			} else if (lexer.token == Token.PUBLIC) {
+				first = lexer.getStringValue();
+				next();
+			
+			} else if (lexer.token == Token.OVERRIDE) {
+				first = lexer.getStringValue();
+				next();
 				
-				//Recupera o segundo qualificador
-				} else if(lexer.token != Token.VAR && lexer.token != Token.FUNC) { 
-
-			   		second = lexer.getStringValue();
+				if (lexer.token == Token.PUBLIC) {
+					second = lexer.getStringValue();
 					next();
-
-					if(first.equals("final") && second.equals("override") && !(lexer.token == Token.PUBLIC)) {
-						error("Illegal qualifier ");
-
-					//Recupera o terceiro qualificador
-					} else if(lexer.token == Token.PUBLIC) {
+				
+				} else if(lexer.token == Token.PRIVATE || lexer.token == Token.OVERRIDE 
+					   || lexer.token == Token.FINAL){
+					error("Illegal qualifier");
+				}
+			
+			} else if (lexer.token == Token.FINAL) {
+				first = lexer.getStringValue();
+				next();
+				
+				if (lexer.token == Token.PUBLIC) {
+					second = lexer.getStringValue();
+					next();
+				
+				} else if (lexer.token == Token.OVERRIDE) {
+					second = lexer.getStringValue();
+					next();
+				
+					if ( lexer.token == Token.PUBLIC ) {
 						third = lexer.getStringValue();
 						next();
-					}
-				}
-
-				//Juncao do qualificador final
-				qual = first + second + third;	
-			
+					
+					} else if(lexer.token == Token.PRIVATE || lexer.token == Token.OVERRIDE 
+						   || lexer.token == Token.FINAL){
+						error("Illegal qualifier");
+			  		}
+				
+				} else if(lexer.token == Token.PRIVATE || lexer.token == Token.FINAL){
+			 		error("Illegal qualifier");
+		 		}
 			}
+
+			if(lexer.token == Token.PUBLIC || lexer.token == Token.PRIVATE
+			|| lexer.token == Token.OVERRIDE || lexer.token == Token.FINAL){
+		 		error("Illegal qualifier");
+	 		}
 			
 			if(lexer.token == Token.VAR) {
 
@@ -1144,13 +1162,9 @@ public class Compiler {
 						name1 = lexer.getStringValue();
 						next();
 
-						System.out.println(currentClass);
-
 						//Pega os metodos da class atual
 						checkMethodsCurrentClass(currentClass);
 						id = new Id(name1);
-
-						System.out.println("LOL");
 
 						//Analise Semantica (verificacao de existencia da variavel na classe)
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
@@ -1158,9 +1172,9 @@ public class Compiler {
 						} else {
 							
 							//Caso for uma variavel
-							if(symbolTable.getInLocalMethodFieldClass(id.getName()) instanceof Variable) {
+							if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
 								membro1 = (Variable)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
-							
+
 							//Caso for um metodo
 							} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
 								membro1 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());

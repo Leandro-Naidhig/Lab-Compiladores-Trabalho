@@ -19,9 +19,11 @@
 open
 class A
 
-    var Int a;
+    var Int k;
 
     func m1: Int n {
+        self.k = 1;
+        Out.print: self.k ++ " " ++ n ++ " ";
     }
 
 end
@@ -32,8 +34,9 @@ class B extends A
     var Int k;
 
     func m2:Int n {
-        self.k;
+        self.k = 2;
         super.m1: 1;
+        Out.print: self.k ++ " " ++ n ++ " ";
     }
 
 end

@@ -8,14 +8,18 @@ class Scan {
    public static Scanner imputValue = new Scanner(System.in);
 }
 class A {
-   private int a;
+   private int k;
    public void m1(int n) {
+      this.k = 1;
+      System.out.print("" + (((this.k + " ") + n) + " "));
    }
 }
 class B extends A {
    private int k;
    public void m2(int n) {
-            this      super.m1(1);
+      this.k = 2;
+      super.m1(1);
+      System.out.print("" + (((this.k + " ") + n) + " "));
    }
 }
 class C extends B {
@@ -24,7 +28,7 @@ class C extends B {
       System.out.print("" + (("3 " + n) + " "));
    }
    public void m4(int n) {
-            this.m3(3);
+      this.m3(3);
       System.out.print("" + ("4 " + n) + " ");
    }
 }
