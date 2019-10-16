@@ -56,10 +56,10 @@ public class MemberList {
             for (String a : arraysplit) {
               if(a.equals("override")) {
                 pw.printlnIdent("@Override");
+              } else {
+                pw.printIdent(a + " ");
               }
             }
-            
-            pw.printIdent(metodo.getQualifier() + " ");
          
           } else {
             pw.printIdent("public ");

@@ -101,7 +101,7 @@ class Program
         if a == b {
             Out.print: 0, " ";
         }
-        if b == a {
+        if b == a    {
             Out.print: 1, " ";
         }
         if a == a2 {

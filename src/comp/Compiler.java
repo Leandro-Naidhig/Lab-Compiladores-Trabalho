@@ -28,12 +28,12 @@ public class Compiler {
 	}
 
 	private void error(String msg) {
-		this.signalError.showError(msg);
+		this.signalError.showError(msg, true);
 	}
 
 	private void next() {
 		lexer.nextToken();
-	}
+	}	
 
 	private void check(Token shouldBe, String msg) {
 		if(lexer.token != shouldBe) {
@@ -60,6 +60,7 @@ public class Compiler {
 				thereWasAnError = true;
 		  }
 		}
+
 		if ( !thereWasAnError && lexer.token != Token.EOF ) {
 			try {
 				error("End of file expected");
@@ -67,6 +68,23 @@ public class Compiler {
 			catch( CompilerError e) {
 			}
 		}
+
+		/*int flag = 0;
+
+		//Verifica se existe a classe program
+		for(ClassDec c: CianetoClassList) {
+			if(c.getCname().equals("Program")){
+				//System.out.println("LOL");
+				flag = 1;
+			}
+		}
+
+		//Caso nao encontrar a classe Program
+		if(flag == 0) {
+			System.out.println("LOL");
+			error("Source code without a class 'Program'");
+		}
+		System.out.println("LOL");*/
 		return program;
 	}
 
@@ -193,7 +211,7 @@ public class Compiler {
 
 		//Analise Semanica (verificacao se e uma palavra chave)
 		if(lexer.get_keywords(className) != null) {
-			error(className + " is a keyword");
+			error("'" + className + "' is a keyword");
 		}
 
 		//Analise Semanica (verificacao de existencia da classe)
@@ -210,7 +228,7 @@ public class Compiler {
 
 			//Analise Semanica (verificacao se e uma palavra chave)
 			if(lexer.get_keywords(superclassName) != null) {
-				error("Superclass name " + superclassName + " is a keyword");
+				error("Superclass name '" + superclassName + "' is a keyword");
 			}
 		
 			//Verifica se a classe existe na tabela de simbolos
@@ -224,15 +242,33 @@ public class Compiler {
 
 		currentClass = new ClassDec(className, superclass, memberlist, isopen);
 		memberlist = memberList();
-		
+
+		check(Token.END, "'end' expected");
+		next();
+
+		//Verifica se existe o metodo run na classe Program
+		if(currentClass.getCname().equals("Program")) {
+			int flag = 0;
+			for(Member s: memberlist.getArray()) {
+				if(s instanceof MethodDec) {
+					//Caso tiver o metodo
+					if(((MethodDec)s).getName().equals("run")) {
+						flag = 1;
+					}
+				}
+			}
+			//Caso nao foi encontrado
+			if(flag == 0) {
+				error("Method 'run' was not found in class 'Program'");
+			}
+		}
+
 		//Limpeza de todas as tabelas de simbolos
 		symbolTable.removeLocalIdentMethodFieldClass();
 		symbolTable.removeLocalIdentMethodVariablesClass();
 		symbolTable.removeLocalIdentMethodParents();
 		symbolTable.removeLocalIdentMethodCurrentClass();
 
-		check(Token.END, "'end' expected");
-		next();
 		classe = new ClassDec(className, superclass, memberlist, isopen);
 		symbolTable.putInGlobal(className, classe);
 		return classe;
@@ -242,49 +278,61 @@ public class Compiler {
 
 		ArrayList<Member> members = new ArrayList<>();
 		Member membro = null;
-		String first = "";
-		String second = "";
-		String third = "";
-		String qual = null;
 
 		while(true) {
+
+			String first = "";
+			String second = "";
+			String third = "";
+			String qual = null;
 
 			//Recupera o primeiro qualificador
 			if (lexer.token == Token.PRIVATE) {
 				first = lexer.getStringValue();
+				qual = first;
 				next();
 			
 			} else if (lexer.token == Token.PUBLIC) {
 				first = lexer.getStringValue();
+				qual = first;
 				next();
 			
 			} else if (lexer.token == Token.OVERRIDE) {
 				first = lexer.getStringValue();
+				qual = first;
 				next();
 				
 				if (lexer.token == Token.PUBLIC) {
 					second = lexer.getStringValue();
+					qual = qual + " " + second;
 					next();
 				
 				} else if(lexer.token == Token.PRIVATE || lexer.token == Token.OVERRIDE 
 					   || lexer.token == Token.FINAL){
 					error("Illegal qualifier");
+				
+				} else {
+					qual = qual + " public";
 				}
 			
 			} else if (lexer.token == Token.FINAL) {
 				first = lexer.getStringValue();
+				qual = first;
 				next();
 				
 				if (lexer.token == Token.PUBLIC) {
 					second = lexer.getStringValue();
+					qual = qual + " " + second;
 					next();
 				
 				} else if (lexer.token == Token.OVERRIDE) {
 					second = lexer.getStringValue();
+					qual = qual + " " + second;
 					next();
 				
 					if ( lexer.token == Token.PUBLIC ) {
 						third = lexer.getStringValue();
+						qual = qual + " " + third;
 						next();
 					
 					} else if(lexer.token == Token.PRIVATE || lexer.token == Token.OVERRIDE 
@@ -317,7 +365,7 @@ public class Compiler {
 				next();
 
 				if(first.equals("final") && (currentClass.getOpen() == false)) {
-					error("Can not declare a final because class " + currentClass.getCname() + " is final");
+					error("Can not declare a final because class '" + currentClass.getCname() + "' is final");
 				}
 
 				if(qual == null) { //Qualificador padrao do cianeto
@@ -336,12 +384,14 @@ public class Compiler {
 			//Coloca os membros atuais na classe atual temporaria
 			currentClass.setMembros(membros);
 		}
+		
 		return new MemberList(members);
 	}
 
 	private MethodDec methodDec(String qualificador) {
 		
 		Id id = null;
+		int flag = 0;
 		String name = null;
 		Type tipo = null;
 		FormalParamDec formparaDec = null;
@@ -357,11 +407,49 @@ public class Compiler {
 					error("Cannot declare a unary method with the same name as instance variable");
 			
 				} else {
-					error("Function '" + name + "' has already been declared");
+					error("Method '" + name + "' has already been declared");
 				}
 			
 			} else {
 				id = new Id(name);
+			}
+
+			//Analise Semanica (verificacao de existencia da funcao com a mesma descricao na propria classe)
+			if(symbolTable.getInLocalMethodFieldClass(id.getName()) != null) {
+				if(symbolTable.getInLocalMethodFieldClass(id.getName()) instanceof MethodDec) {
+					error("Method '" + id.getName() + "' has already been declared");
+				}			
+			}
+
+			//Verificacao se existe um metodo com a mesma descricao na superclasse
+			if(currentClass.getSuperClass() != null && currentClass.getSuperClass().getOpen() == true) {
+				
+				//Pega os metodos e variaveis da superclasse
+				checkMethodsCurrentClass(currentClass.getSuperClass());
+
+				ClassDec classe = currentClass.getSuperClass();
+
+				if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) != null 
+				&& symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
+
+					metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
+					
+					//Caso tiverem a mesma descricao os metodos
+					if(classe.getSuperClass() == null) {
+						if(!(qualificador.equals("override")) && !(qualificador.equals("override public")) 
+						  && !(metodo.getQualifier().equals("private"))) {
+							error("'override' expected before overridden method '" + id.getName() + "'");
+						}
+					} else {
+						if((!(metodo.getQualifier().equals("override")) && !((metodo.getQualifier().equals("override public"))))) {
+							
+							//Se o metodo da superclasse nao for privado
+							if(!(metodo.getQualifier().equals("private"))) {
+								error("'override' expected before overridden method '" + id.getName() + "'");
+							}
+						}
+					}
+				}
 			}
 
 			next();
@@ -371,12 +459,19 @@ public class Compiler {
 			next();
 			formparaDec = formalParamDec();
 
-			//Analise Semanica (verificacao de existencia da funcao com a mesma descricao)
-			if(symbolTable.getInLocalMethodFieldClass(name) != null) {
+			id = new Id(name);
+
+			//Se a classe for program e o metodo run tiver parametros
+			if(id.getName().equals("run")) {
+				error("Method 'run' of class 'Program' cannot take parameters");
+			}
+
+			//Analise Semanica (verificacao de existencia da funcao com a mesma descricao na propria classe)
+			if(symbolTable.getInLocalMethodFieldClass(id.getName()) != null) {
 				
-				if(symbolTable.getInLocalMethodFieldClass(name) instanceof MethodDec) {
+				if(symbolTable.getInLocalMethodFieldClass(id.getName()) instanceof MethodDec) {
 					
-					metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(name);
+					metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(id.getName());
 				
 					//Verifica o numero de parametros entre o metodo recuperado e o atual
 					if(metodo.getNumParam() == formparaDec.getNumberParam()) {
@@ -402,17 +497,64 @@ public class Compiler {
 
 						//Caso tiverem a mesma descricao os metodos
 						if(equals){
-							error("Function '" + name + "' has already been declared with the same parameters");
+							error("Method '" + id.getName() + "' has already been declared with the same parameters");
 						}
 					}
 				}			
 			}
 
+			//Verificacao se existe um metodo com a mesma descricao na superclasse
+			if(currentClass.getSuperClass() != null && currentClass.getSuperClass().getOpen() == true) {
+				
+				//Pega os metodos e variaveis da superclasse
+				checkMethodsCurrentClass(currentClass.getSuperClass());
+
+				if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) != null 
+				&& symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
+
+
+					metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
+
+					//Verifica o numero de parametros entre o metodo recuperado e o atual
+					if(metodo.getNumParam() == formparaDec.getNumberParam()) {
+						
+						//Vetores de parametros
+						ArrayList<ParamDec> parMetodo = new ArrayList<>();
+						ArrayList<ParamDec> parMetodoAtual = new ArrayList<>();
+
+						//Transforma em iteradores
+						Iterator<ParamDec>parsMetodo = parMetodo.iterator();
+						Iterator<ParamDec>parsMetodoAtual = parMetodoAtual.iterator();
+
+						//flag de verificacao da igualdade de tipos
+						boolean equals = false;
+
+						//Percorre os dois vetores verificando se sao similares em seus tipos
+						while(parsMetodo.hasNext() && parsMetodoAtual.hasNext()){
+							if(parsMetodo.next().getType() != parsMetodoAtual.next().getType()) {
+								equals = true;
+								break;
+							}
+						}
+
+						//Caso tiverem a mesma descricao os metodos
+						if(equals && (!(metodo.getQualifier().equals("override")) || !((metodo.getQualifier().equals("override public"))) )) {
+							error("'override' expected before overridden method '" + id.getName() + "'");
+						}
+					}
+				}
+			}	
+
 		} else {
 			error("An identifier or identifer: was expected after 'func'");
 		}
 
-		id = new Id(name);
+		//Caso o metodo seja run e nao seja publico
+		if(id.getName().equals("run")) {
+			if(qualificador.equals("private")) {
+				error("Method 'run' of class 'Program' cannot be private");
+			}
+		}
 
 		if(lexer.token == Token.MINUS_GT) {
 			next();
@@ -425,6 +567,57 @@ public class Compiler {
 		StatementList statlist = statementList();
 		check(Token.RIGHTCURBRACKET, "'}' expected");
 		next();
+
+		//Flag com indicacao permanente
+		int flagPermElse = 0;
+		int flagPermIf = 0;
+		int flagIf = 0;
+		int flagElse = 0;
+
+		//Verifica se pelo menos existe um retorno no metodo
+		for(Statement s: statlist.getArray()) {
+			
+			//Para verificar se existe return em "IF"
+			if(s instanceof IfStat) {
+				flagIf = 1;
+				for(Statement m: ((IfStat)s).getArrayIf()) {
+					if(m instanceof ReturnStat) {
+						flagPermIf = 1;
+					}
+				}
+				if(((IfStat)s).getArrayElse() != null){
+					for(Statement m: ((IfStat)s).getArrayElse()) {
+						if(m instanceof ReturnStat) {
+							flagPermElse = 1;
+						}
+					}	
+				}
+			}
+			
+			if(s instanceof ReturnStat) {
+				flag = 1;
+			}
+		}
+
+		//Caso nao tenha sido encontrado
+		if(flag == 0 && tipo != null) {
+			if( (flagIf == 1 && flagPermIf == 1) && 
+				(flagElse == 1 && flagPermElse == 1) && 
+				currentClass.getCname().equals("run")) {
+				error("Method 'run' of class 'Program' with a return value type");
+
+			} else if( (flagIf == 1 && flagPermIf == 0) ||
+					   (flagElse == 1 && flagPermElse == 0) ||
+					   (flagIf == 0) ) {
+						error("Missing 'return' statement in method '" + id.getName()  + "'");
+				
+			} else if(flagIf == 0) {
+				error("Missing 'return' statement in method '" + id.getName()  + "'");
+			}
+		
+		} else if(flag == 1 && tipo == null) {
+			error("Illegal 'return' statement. Method '"+ id.getName() +"' of class '" + currentClass.getCname() + "' return void");
+		}
 		metodo = new MethodDec(id, formparaDec, tipo, statlist, qualificador);
 
 		//Coloca o metodo na tabela de simbolos locais da classe
@@ -470,7 +663,7 @@ public class Compiler {
 
 			//Analise Semantica (verificacao se e uma palavra chave)
 			if(lexer.get_keywords(lexer.getStringValue()) != null) {
-				error(lexer.getStringValue() + " is a keyword");
+				error("'" + lexer.getStringValue() + "' is a keyword");
 
 			} else if(!varLocal) {
 
@@ -526,7 +719,7 @@ public class Compiler {
 	
 				//Analise Semantica (verificacao se e uma palavra chave)
 				if(lexer.get_keywords(lexer.getStringValue()) != null) {
-					error(lexer.getStringValue() + " is a keyword");
+					error("'"+ lexer.getStringValue() + "' is a keyword");
 	
 				} else if(!varLocal) {
 					
@@ -617,7 +810,8 @@ public class Compiler {
 		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
 		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT || lexer.token == Token.ID
 		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || lexer.token == Token.SUPER 
-		   || lexer.token == Token.SELF || (lexer.token == Token.ID && lexer.getStringValue().equals("Out")) ) {
+		   || lexer.token == Token.SELF || lexer.token == Token.SEMICOLON ||
+		   (lexer.token == Token.ID && lexer.getStringValue().equals("Out")) ) {
 			statement(statements);
 		}
 		return new StatementList(statements);
@@ -642,7 +836,6 @@ public class Compiler {
 				statements.add(breakStat());
 				break;
 			case SEMICOLON:
-				next();
 				break;
 			case REPEAT:
 				statements.add(repeatStat());
@@ -676,7 +869,7 @@ public class Compiler {
 		Expr expressao = expression();
 
 		if (expressao.getType() != Type.booleanType) {
-			error("É esperada uma expressão do tipo 'Boolean'");
+			error("Expected 'Boolean' expression type");
 		}
 
 		check(Token.LEFTCURBRACKET, "'{' expected after the 'if' expression");
@@ -705,29 +898,73 @@ public class Compiler {
 
 	private AssignExpr assignExpr() {
 
+		Type classe = null;
+		int flag = 0; 
 		Expr exprLeft = expression();
 		Expr exprRight = null;
-		Token Op = null;
 
 		if(lexer.token == Token.ASSIGN) {
-			Op = lexer.token;
 			next();
 			exprRight = expression();
 
-			/*
-			if(Op == Symbol.READINT && ExpDir.getType() != Type.integerType) {
-				error("Tipo da variável " + v.getName() + " incompátivel com 'readInt'. Deve ser do tipo 'Int'");
-	
-			} else if(Op == Symbol.READSTRING && ExpDir.getType() != Type.stringType) {
-				error("Tipo da variável " + v.getName() + " incompátivel com 'readString'. Deve ser do tipo 'String'");
+			//Analise Semantica (primeiro caso de verificacao)
+			if( (exprLeft.getType() == Type.booleanType && exprLeft.getType() != exprRight.getType())
+			|| (exprLeft.getType() == Type.intType && exprLeft.getType() != exprRight.getType())
+			|| (exprLeft.getType() == Type.stringType && exprLeft.getType() != exprRight.getType()) ){
+				error("Assignment of different types");
 			}
-	
-			if(ExpEsq.getType() == Type.integerType && ExpDir.getType() != Type.integerType) {
-				error("Função 'readInt' requer parâmetro do tipo Int");
-			} else if(ExpEsq.getType() == Type.stringType && ExpDir.getType() != Type.stringType)   {
-				error("Função 'readString' requer parâmetro do tipo String");
-			}*/
-		}	
+
+			//Analise Semantica (segundo caso de verificacao)
+			if(exprRight.getType() instanceof ClassDec && exprLeft.getType() instanceof ClassDec) {
+				
+				classe = exprRight.getType();
+
+				while(exprLeft.getType() != classe) {
+					
+					//Se a classe herdar de outra classe
+					if(((ClassDec)classe).getSuperClass() != null) {
+						
+						//Se a classe puder ser herdada
+						if(((ClassDec)classe).getSuperClass().getOpen()) {
+							classe = ((ClassDec)classe).getSuperClass();
+
+							if(classe == exprLeft.getType()) {
+								flag = 1;
+							}
+
+						} else {
+							error("Right expression does not inherit from left expression");
+						}
+					
+					} else {
+						error("Right expression does not inherit from left expression");
+					}	
+				}
+
+				if(exprLeft.getType() == classe && flag == 0) {
+					flag = 1;
+				}
+			}
+
+			//Analise Semantica (terceiro caso de verificacao)
+			if(exprLeft.getType() instanceof ClassDec && !(exprRight instanceof NilExpr) && flag == 0) {
+				error("Was expected to right expression inherit from the left, or a 'nil' assignment");
+			}
+		}
+
+		//Analise Semantica (terceiro caso de verificacao)
+		if(exprLeft.getType() instanceof ClassDec && !(exprRight instanceof NilExpr) && flag == 0) {
+			error("Was expected to right expression inherit from the left, or a 'nil' assignment");
+		}
+
+		//Analise Semantica (terceiro caso de verificacao (fora))
+		if( ((exprLeft.getType() == Type.booleanType) 
+		   || (exprLeft.getType() == Type.intType)
+		   || (exprLeft.getType() == Type.stringType)) 
+		  && exprRight == null){
+			error("Right expression from assignment not found");
+		}
+		
 		return new AssignExpr(exprLeft, exprRight); 
 	}
 
@@ -755,9 +992,9 @@ public class Compiler {
 			next();
 			exprRight = simpleExpression();
 
-			//Analise Semantica (verifica a expressao dos dois lados)
+			//Analise Semantica
 			if (!checkRelExpr(exprLeft.getType(), exprRight.getType())) {
-				error("Tipo de expressões incompátiveis para relação");
+				error("Incompatible expressions type for relationship");
 			}
 			exprLeft = new CompositeExpr(exprLeft, relation, exprRight);
 		}
@@ -775,10 +1012,12 @@ public class Compiler {
 			next();
 			exprRight = sumSubExpression();
 
-			/*Analise Semantica*/
-			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
-				error("Tipo de expressões incompátiveis para relação");
-			}*/
+
+			//Analise Semantica
+			if ( (exprLeft.getType() != Type.intType && exprLeft.getType() != Type.stringType)
+			  || (exprRight.getType() != Type.intType && exprRight.getType() != Type.stringType)) {
+				error("Incompatible expressions type for relationship");
+			}
 
 			exprLeft = new CompositeExpr(exprLeft, token, exprRight);
 		}
@@ -796,10 +1035,16 @@ public class Compiler {
 			next();
 			exprRight = term();
 
-			/*Analise Semantica*/
-			/*if (!checkRelExpr(ExpEsq.getType(), ExpDir.getType())) {
-				error("Tipo de expressões incompátiveis para relação");
-			}*/
+			//Analise Semantica
+			if(Lowoperator == Token.OR) {
+				if (!checkRelExpr(exprLeft.getType(), exprRight.getType())) {
+					error("Incompatible expressions type for relationship");
+				}
+			} else {
+				if (!checkMathExpr(exprLeft.getType(), exprRight.getType())) {
+					error("'Int' expression type expected to perform this operation");
+				}
+			}
 			
 			exprLeft = new CompositeExpr(exprLeft, Lowoperator, exprRight);
 		}
@@ -817,10 +1062,17 @@ public class Compiler {
 			next();
 			exprRight = signalFactor();
 
-			/*Analise Semantica*/
-			/*if (!checkMathExpr(ExpEsq.getType(), ExpDir.getType())) {
-				error("Expression do tipo 'Int' esperada para realizar a operação");
-			}*/
+			//Analise Semantica
+			if(highOperator == Token.AND) {
+				if (!checkRelExpr(exprLeft.getType(), exprRight.getType())) {
+					error("Incompatible expressions type for relationship");
+				}
+			} else {
+				if (!checkMathExpr(exprLeft.getType(), exprRight.getType())) {
+					error("'Int' expression type expected to perform this operation");
+				}
+			}
+
 			exprLeft = new CompositeExpr(exprLeft, highOperator, exprRight);
 		}
 		
@@ -838,10 +1090,10 @@ public class Compiler {
 			next();
 			exprRight = factor();
 			
-			/*Analise Semantica*/
-			/*if (ExpDir.getType() != Type.integerType) {
-				error("Expressão do tipo 'Int' é esperada para a operação");
-			}*/
+			//Analise Semantica
+			if (exprRight.getType() != Type.intType) {
+				error("'Int' expression type expected to perform this operation");
+			}
 
 			expression = new CompositeExpr(exprRight, signal, exprRight);
 		}
@@ -945,20 +1197,18 @@ public class Compiler {
 							tipo = variavel.getType();
 						
 						} else if(symbolTable.getInLocalMethodFieldClass(name1) != null ){
-							error("Not allowed to use object methods or fields without use 'self', illegal access");
+							error("Not allowed to use object methods or fields without the use of 'self' qualifier, illegal access");
 						}
 
 						//Recupera a classe
 						classe = (ClassDec)symbolTable.getInGlobal(tipo.getCname());
-
-						System.out.println(classe.getCname());
 
 						//Recupera todos os metodos da propria class e dos parentes
 						checkMethodsSuperClasses(classe);
 
 						//Analise Semantica(verifica se existe na tabela de metodos da classe)
 						if(symbolTable.getInLocalMethodParents(name2) == null){
-							error("Method '" + name2 + "' not found in class");
+							error("Method '" + name2 + "' was not found in the public interface of '" + classe.getCname()  +  "' or ts superclasses");
 					
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
 						} else if(symbolTable.getInLocalMethodParents(name2) instanceof Variable) {
@@ -1007,11 +1257,11 @@ public class Compiler {
 						Id id = new Id(name2);
 
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null){
-							error("Method '" + name2 + "' not found in class");
+							error("Method '" + id.getName() + "' was not found in the public interface of '" + classe.getCname() +  "' or ts superclasses");
 						
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
 						} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
-							error("identifier '" + name2 + "' is a variable, but a method is expected (<parameters>)");
+							error("identifier '" + id.getName() + "' is a variable, but a method is expected");
 							
 						//Analise Semantica (verifica se e um metodo de uma variavel de instancia)
 						} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
@@ -1039,7 +1289,7 @@ public class Compiler {
 				membro1 = variavel = (Variable)symbolTable.getInLocalMethodVariablesClass(name1);
 			
 			} else if(symbolTable.getInLocalMethodFieldClass(name1) != null ){
-				error("Not allowed to use object methods or fields without use 'self', illegal access");
+				error("Not allowed to use object methods or fields without the use of 'self' qualifier, illegal access");
 			}
 
 			primexpr = new IdExpr(membro1, null, null);
@@ -1080,11 +1330,12 @@ public class Compiler {
 			
 					if(lexer.token == Token.ID) {
 						name1 = lexer.getStringValue();
+						id = new Id(name1);
 						next();
 
 						//Analise Semanica (verificacao se e uma palavra chave)
-						if(lexer.get_keywords(name1) != null) {
-							error("'" + name1 + "' is a keyword");
+						if(lexer.get_keywords(id.getName()) != null) {
+							error("'" + id.getName() + "' is a keyword");
 						}
 
 						//Recupera a superclasse da clase atual
@@ -1100,12 +1351,12 @@ public class Compiler {
 							checkMethodsSuperClasses(superclass);
 							
 							//Caso nao existir um metodo unario com esse nome
-							if(symbolTable.getInLocalMethodParents(name1) == null ) {
-								error("There is no method '" + name1 + "' in the superclasse of class '" + currentClass.getCname() + "'");
+							if(symbolTable.getInLocalMethodParents(id.getName()) == null ) {
+								error("There is no method '" + id.getName() + "' in the superclasse of class '" + currentClass.getCname() + "'");
 						
 							//Recupera o metodo correspondente
 							} else {
-								membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(name1);
+								membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(id.getName());
 
 								//Verifica se o metodo e unario
 								if(metodo.getNumParam() != 0) {
@@ -1147,7 +1398,7 @@ public class Compiler {
 
 						//Caso nao existir um metodo unario com esse nome
 						if(symbolTable.getInLocalMethodParents(id.getName()) == null) {
-							error("There is no method '" + name1 + "' in the superclasse of class '" + currentClass.getCname() + "'");
+							error("There is no method '" + id.getName() + "' in the superclasse of class '" + currentClass.getCname() + "'");
 					
 						//Recupera o metodo correspondente
 						} else {
@@ -1379,14 +1630,20 @@ public class Compiler {
 		Type tipo = type();
 		next();
 		IdList idlist = idList(tipo, true);
-
 		if(lexer.token == Token.ASSIGN) {
+			
 			next();
 			expressao = expression();
 			if(expressao == null) {
 				error("expression expected after the '='");
 			}
 		}
+
+		/*//Analise Semantica
+		if(tipo != expressao.getType()) {
+			error("'" + expressao.getType() + "' type expected to assign to each method variable location");
+		}*/
+
 		return new LocalDec(tipo, idlist, expressao);
 	}
 
@@ -1396,10 +1653,17 @@ public class Compiler {
 		check(Token.UNTIL, "missing keyword 'until'");
 		next();
 		Expr expressao = expression();
+
+		//Analise Semantica
+		if(!(checkWhileExpr(expressao.getType()))) {
+			error("'boolean' expression type expected to operation 'until'");
+		}
+
 		return new RepeatStat(statList, expressao);
 	}
 
 	private BreakStat breakStat() {
+		next();
 		return new BreakStat();
 	}
 
@@ -1413,6 +1677,12 @@ public class Compiler {
 
 		next();
 		Expr expressao = expression();
+
+		//Analise Semantica
+		if(!(checkWhileExpr(expressao.getType()))) {
+			error("'boolean' expression type expected to operation 'while'");
+		}
+
 		check(Token.LEFTCURBRACKET, "missing '{' after the 'while' expression");
 		next();
 		StatementList statList = statementList();
@@ -1423,28 +1693,74 @@ public class Compiler {
 
 	//Metodo para verificar a expressao no metodo WhileStat
 	private boolean checkWhileExpr(Type exprType) {
-		if (exprType == Type.undefinedType || exprType == Type.booleanType) {
+		if (exprType == Type.booleanType) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	//Metodo para verificar se duas classes sao do mesmo tipo
+	private boolean checkClasses(Type class1, Type class2) {	
+		
+		ClassDec classe = null;
+		classe = (ClassDec)symbolTable.getInGlobal(class2.getCname());
+
+		while((ClassDec)class1 != classe) {
+
+			if(classe.getSuperClass() != null && classe.getSuperClass().getOpen()){
+				classe = classe.getSuperClass();
+			} else if(classe.getSuperClass() == null){
+				break;
+			}
+		}
+
+		if(classe != null && (ClassDec)class1 == classe){
+			return true;
+		}
+
+		classe = (ClassDec)symbolTable.getInGlobal(class1.getCname());
+
+		while((ClassDec)class2 != classe) {
+
+			if(classe.getSuperClass() != null && classe.getSuperClass().getOpen()){
+				classe = classe.getSuperClass();
+			} else if(classe.getSuperClass() == null){
+				break;
+			}
+		}
+
+		if(classe != null && (ClassDec)class2 == classe){
+			return true;
+		}
+		return false;
+	}
+
 	//Metodo para verificar a expressao e booleana
 	private boolean checkRelExpr(Type left, Type right) {
-		if (left == Type.undefinedType || right == Type.undefinedType) {
+		
+		if(left instanceof ClassDec && right instanceof ClassDec) {
+			return checkClasses(left, right);
+		} else if (left == Type.undefinedType || right == Type.undefinedType) {
 			return true;
 		} else {
 			return left == right;
 		}
 	}
 
+	private boolean checkMathExpr(Type left, Type right) {
+		boolean orLeft = left == Type.intType|| left == Type.undefinedType;
+		boolean orRight = right == Type.intType || right == Type.undefinedType;
+		return (orLeft && orRight);
+	  }
+
 	//Metodo para verificar se dois metodos possuem a mesma descricao
-	private void checkDescMethods(MethodDec metodo, ExpressionList exprList){
+	private boolean checkDescMethods(MethodDec metodo, ExpressionList exprList){
 		
 		//Verifica se o numero de argumentos da lista de expressao é igual do metodo
 		if(metodo != null && (metodo.getNumParam() != exprList.getNumberExpr())) {
 			error("The number of parameters of the method call is" + metodo.getNumParam() + ", while the number of expressions is " + exprList.getNumberExpr());
+			return false;
 		
 		//Verifica se os tipos dos argumentos é igual da descricao do metodo 
 		} else {
@@ -1456,33 +1772,51 @@ public class Compiler {
 			Expr expr1 = null;
 			Type tipo = null;
 			ClassDec classe = null;
+			int flag = 1;
 
 			while(param.hasNext() && expr.hasNext()) {
 				param1 = param.next();
 				expr1 = expr.next();
 				if(expr1.getType() != param1.getType()) {
 					tipo = expr1.getType();
-					
+
 					if(symbolTable.getInGlobal(tipo.getCname()) != null) {
 						classe = (ClassDec)symbolTable.getInGlobal(tipo.getCname());
 						
+						if(classe.getSuperClass() == null) {
+							error("Expression type is a class and the same inherits no class with the same expression type");
+							return false;
+						}
+
 						while(classe.getSuperClass() != null) {
 							classe = classe.getSuperClass();
 
-							if(classe.getCname().equals(param1.getType().getCname())) {
-								break;
-							} else if(classe.getSuperClass() == null) {
+							if(classe == null) {
 								error("Expression type is a class and the same inherits no class with the same expression type"); 
+								return false;
+
+							} else if(classe.getCname().equals(param1.getType().getCname())) {
+								flag = 1;
 								break;
+							
+							} else if(classe.getSuperClass() == null) {
+								error("Expression type is a class and the same inherits no class with the same expression type");
+								return false;
 							} 
+						}
+
+						if(flag == 1) {
+							return true;
 						}
 					
 					} else {
 						error("Expression and parameter have distinct types");
-						break;
+						return false;
 					}
 				}
 			}
+
+			return true;
 		}
 	}
 
@@ -1504,8 +1838,6 @@ public class Compiler {
 				//Procura todos os metodos publicos da superclasse
 				for(Member s: membrosSuperClass) {
 					if(s instanceof MethodDec){
-
-						System.out.println(s.getName());
 
 						if(((MethodDec)s).getQualifier().equals("public")){
 
@@ -1551,6 +1883,16 @@ public class Compiler {
 		String printName = lexer.getStringValue();
 		next();
 		ExpressionList exprList = expressionList();
+
+		//Verifica se existe algum objeto nas expressoes
+		for(Expr s: exprList.getArrayList()) {
+
+			/*
+			//Erro
+			if(s.getType() instanceof ClassDec) {
+				error("'Write' does not accept objects");
+			}*/
+		}
 		return new WriteStat(exprList, printName);
 	}
 
@@ -1573,6 +1915,7 @@ public class Compiler {
 			return tipo;
 		
 		} else if(lexer.token == Token.ID) {
+
 			name = lexer.getStringValue();
 			id = new Id(name);
 
@@ -1582,7 +1925,7 @@ public class Compiler {
 			}
 
 			classe = (ClassDec)symbolTable.getInGlobal(name);
-			
+
 			if(classe == null) {
 				error("There is no class with name " + name);
 			} 

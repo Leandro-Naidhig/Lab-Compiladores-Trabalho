@@ -27,7 +27,11 @@ public class ReadExpr extends Expr{
 
     //Metodo que retorna o tipo
     public Type getType() {
-        return Type.undefinedType;
+        if(name.equals("readInt")) {
+            return Type.intType;
+        } else {
+            return Type.stringType;
+        }
     }
 
     //Atributos da classe

@@ -21,7 +21,7 @@ class Program {
    public void print() {
       System.out.print("" + this.a);
    }
-   public void set(A a) {
+   private void set(A a) {
       this.a = a;
    }
    public A get() {

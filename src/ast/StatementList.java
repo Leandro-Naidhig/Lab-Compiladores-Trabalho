@@ -27,6 +27,11 @@ public class StatementList {
       }
     }
 
+    //Metodo para retornar o array de statement
+    public ArrayList<Statement> getArray() {
+      return arrayStatement;
+    }
+
     //Atributos da classe
     private ArrayList<Statement> arrayStatement;
 }

@@ -48,7 +48,7 @@ public class SymbolTable {
 
 	//Recupera o valor localmente(metodo ou instancias da classe)
 	public Object getInLocalMethodFieldClass(Object key) {
-		return localTableMethodVariablesClass.get(key);
+		return localTableMethodFieldClass.get(key);
 	}
 
 	//Recupera o valor localmente(metodo)

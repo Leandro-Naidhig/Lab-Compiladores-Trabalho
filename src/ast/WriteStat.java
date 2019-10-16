@@ -28,7 +28,6 @@ public class WriteStat extends Statement {
                 
                 if((exprListArray.size()-1) != contador) {
                     
-                    System.out.println(s);
                     if(s instanceof SelfExpr) {
                         ((SelfExpr)s).genJava(pw, true);
                     

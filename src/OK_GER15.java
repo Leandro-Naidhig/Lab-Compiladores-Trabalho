@@ -10,10 +10,10 @@ class Scan {
 class A {
    private int i;
    private int j;
-   public void p() {
+   private void p() {
       System.out.print("" + this.i + " ");
    }
-   public void q() {
+   private void q() {
       System.out.print("" + this.j + " ");
    }
    public void init_A() {
@@ -36,25 +36,29 @@ class A {
 class B extends A {
    private int i;
    private int j;
-   public void p() {
+   private void p() {
       System.out.print("" + this.i + " ");
    }
-   public void q() {
+   private void q() {
       System.out.print("" + this.j + " ");
    }
    public void init_B() {
       this.i = 3;
       this.j = 4;
    }
+   @Override
    public void call_p() {
       this.p();
    }
+   @Override
    public void call_q() {
       this.q();
    }
+   @Override
    public void r() {
       System.out.print("" + this.i + " ");
    }
+   @Override
    public void s() {
       System.out.print("" + this.j + " ");
    }
@@ -62,25 +66,29 @@ class B extends A {
 class C extends A {
    private int i;
    private int j;
-   public void p() {
+   private void p() {
       System.out.print("" + this.i + " ");
    }
-   public void q() {
+   private void q() {
       System.out.print("" + this.j + " ");
    }
    public void init_C() {
       this.i = 5;
       this.j = 6;
    }
+   @Override
    public void call_p() {
       this.p();
    }
+   @Override
    public void call_q() {
       this.q();
    }
+   @Override
    public void r() {
       System.out.print("" + this.i + " ");
    }
+   @Override
    public void s() {
       System.out.print("" + this.j + " ");
    }

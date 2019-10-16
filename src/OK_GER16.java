@@ -27,10 +27,12 @@ class B extends A {
    public int get_B() {
       return this.k;
    }
+   @Override
    public void init() {
       super.init();
       this.k = 2;
    }
+   @Override
    public void print() {
       System.out.print("" + this.get_B() + " ");
       System.out.print("" + this.get_A() + " ");
@@ -38,6 +40,7 @@ class B extends A {
    }
 }
 class C extends A {
+   @Override
    public int get_A() {
       return 0;
    }

@@ -15,6 +15,16 @@ public class IfStat extends Statement {
         this.statElse = statElse;
     }
 
+    //metodo para retonar o statement do if
+    public ArrayList<Statement> getArrayIf() {
+        return statIf;
+    }
+
+    //metodo para retonar o statement do else
+    public ArrayList<Statement> getArrayElse() {
+        return statElse;
+    }
+
     //metodo para geracao do codigo em C
     public void genC(PW pw) {
         pw.print("if(");

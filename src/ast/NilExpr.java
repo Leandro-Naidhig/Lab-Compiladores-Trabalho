@@ -19,7 +19,6 @@ public class NilExpr extends Expr {
    
    //Retorna o tipo
    public Type getType() {
-      //# corrija
-      return null;
+      return Type.undefinedType;
    }
 }

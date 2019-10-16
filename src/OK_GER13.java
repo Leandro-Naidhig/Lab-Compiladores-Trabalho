@@ -9,14 +9,14 @@ class Scan {
 }
 class A {
    private int n;
-   public void p1() {
+   private void p1() {
       System.out.print("" + "999 ");
    }
    public void set(int pn) {
       System.out.print("" + 1 + " ");
       this.n = pn;
    }
-   public void p2() {
+   private void p2() {
       System.out.print("" + "888 ");
    }
    public int get() {
@@ -27,8 +27,9 @@ class A {
    }
 }
 class B extends A {
-   public void p2() {
+   private void p2() {
    }
+   @Override
    public void set(int pn) {
       System.out.print("" + pn + " ");
       super.set(pn);
@@ -36,6 +37,7 @@ class B extends A {
    public void p1() {
       System.out.print("" + 2 + " ");
    }
+   @Override
    public void print() {
       System.out.print("" + "B ");
    }
