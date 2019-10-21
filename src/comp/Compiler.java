@@ -1,4 +1,4 @@
-/**
+/*
     Integrantes:    Leandro Naidhig 726555
                     Gustavo Buoro Branco de Souza 726533
 
@@ -209,10 +209,7 @@ public class Compiler {
 			className = lexer.getStringValue();
 		}
 
-		//Analise Semanica (verificacao se e uma palavra chave)
-		if(lexer.get_keywords(className) != null) {
-			error("'" + className + "' is a keyword");
-		}
+		checkKeyWords(className);
 
 		//Analise Semanica (verificacao de existencia da classe)
 		if (symbolTable.getInGlobal(className) != null) {
@@ -398,7 +395,9 @@ public class Compiler {
 		MethodDec metodo = null;
 
 		if(lexer.token == Token.ID) {
+
 			name = lexer.getStringValue();
+			checkKeyWords(name);
 
 			//Analise Semanica (verificacao de existencia da funcao ou de uma variavel com o mesmo nome)
 			if(symbolTable.getInLocalMethodFieldClass(name) != null) {
@@ -455,11 +454,12 @@ public class Compiler {
 			next();
 
 		} else if(lexer.token == Token.IDCOLON) {
+			
 			name = lexer.getStringValue();
 			next();
 			formparaDec = formalParamDec();
-
 			id = new Id(name);
+			checkKeyWords(id.getName());
 
 			//Se a classe for program e o metodo run tiver parametros
 			if(id.getName().equals("run")) {
@@ -661,11 +661,9 @@ public class Compiler {
 			error("Identifier expected");
 		} else {
 
-			//Analise Semantica (verificacao se e uma palavra chave)
-			if(lexer.get_keywords(lexer.getStringValue()) != null) {
-				error("'" + lexer.getStringValue() + "' is a keyword");
+			checkKeyWords(lexer.getStringValue());
 
-			} else if(!varLocal) {
+			if(!varLocal) {
 
 				//Analise Semantica (verificacao se ja existe o identificador)
 				if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
@@ -714,14 +712,14 @@ public class Compiler {
 			next();
 			
 			if(lexer.token != Token.ID) {
+
 				error("Identifier expected");
+			
 			} else {
+
+				checkKeyWords(lexer.getStringValue());
 	
-				//Analise Semantica (verificacao se e uma palavra chave)
-				if(lexer.get_keywords(lexer.getStringValue()) != null) {
-					error("'"+ lexer.getStringValue() + "' is a keyword");
-	
-				} else if(!varLocal) {
+				if(!varLocal) {
 					
 					//Analise Semantica (verificacao se ja existe o identificador)
 					if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
@@ -786,14 +784,9 @@ public class Compiler {
 
 		if(lexer.token == Token.ID) {
 
-			//Analise Semantica (verificacao se e uma palavra chave)
-			if(lexer.get_keywords(lexer.getStringValue()) != null) {
-				error(lexer.getStringValue() + " is a keyword");
-			
-			} else {
-				name = new Variable(lexer.getStringValue(), tipo);
-				symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), name);
-			}
+			checkKeyWords(lexer.getStringValue());
+			name = new Variable(lexer.getStringValue(), tipo);
+			symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), name);
 
 		} else {
 			error("An identifier was expected after type");
@@ -1106,6 +1099,7 @@ public class Compiler {
 		Expr expressao = null;
 		String name1 = "";
 		String name2 = "";
+		Id id = null;
 		Type tipo = null;
 		Expr primexpr = null;
 		Member membro1 = null;
@@ -1155,7 +1149,9 @@ public class Compiler {
 			return new NotFactor(factor());
 			
 		} else if(lexer.token == Token.ID) {
+
 			name1 = lexer.getStringValue();
+			checkKeyWords(name1);
 			next();
 
 			if(lexer.token == Token.DOT) {
@@ -1185,7 +1181,9 @@ public class Compiler {
 				} else {
 					
 					if(lexer.token == Token.ID) {
+
 						name2 = lexer.getStringValue();
+						checkKeyWords(name2);
 						next();
 
 						//Analise Semantica (verifica se e um variavel local ou parametro)				
@@ -1231,10 +1229,11 @@ public class Compiler {
 					} else if(lexer.token == Token.IDCOLON) {
 						
 						name2 = lexer.getStringValue();
+						id = new Id(name2);
 						next();
 
 						//Analise Semantica (verifica se e um variavel local ou parametro)				
-						if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
+						if(symbolTable.getInLocalMethodVariablesClass(id.getName()) == null) {
 							error("Variable or Parameter '" + name1 + "' has not been declared in Method");
 						
 						} else if(symbolTable.getInLocalMethodVariablesClass(name1) != null){
@@ -1253,8 +1252,6 @@ public class Compiler {
 
 						//Recupera todos os metodos da superclasse e da propria
 						checkMethodsCurrentClass(classe);
-
-						Id id = new Id(name2);
 
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null){
 							error("Method '" + id.getName() + "' was not found in the public interface of '" + classe.getCname() +  "' or ts superclasses");
@@ -1329,14 +1326,11 @@ public class Compiler {
 				} else {
 			
 					if(lexer.token == Token.ID) {
+			
 						name1 = lexer.getStringValue();
 						id = new Id(name1);
 						next();
-
-						//Analise Semanica (verificacao se e uma palavra chave)
-						if(lexer.get_keywords(id.getName()) != null) {
-							error("'" + id.getName() + "' is a keyword");
-						}
+						checkKeyWords(id.getName());
 
 						//Recupera a superclasse da clase atual
 						superclass = currentClass.getSuperClass();
@@ -1371,13 +1365,11 @@ public class Compiler {
 						return new SuperExpr(membro1, null);
 			
 					} else if(lexer.token == Token.IDCOLON) {
+						
 						name1 = lexer.getStringValue();
+						id = new Id(name1);
 						next();
-
-						//Analise Semanica (verificacao se e uma palavra chave)
-						if(lexer.get_keywords(name1) != null) {
-							error("'" + name1 + "' is a keyword");
-						}
+						checkKeyWords(id.getName());
 
 						//Recupera a superclasse da clase atual
 						superclass = currentClass.getSuperClass();
@@ -1393,8 +1385,6 @@ public class Compiler {
 						}
 
 						exprList = expressionList();
-
-						id = new Id(name1);
 
 						//Caso nao existir um metodo unario com esse nome
 						if(symbolTable.getInLocalMethodParents(id.getName()) == null) {
@@ -1414,19 +1404,22 @@ public class Compiler {
 				break;
 			
 			case SELF:
+				
 				next();
 				
 				if(lexer.token == Token.DOT){
+
 					next();
 					
 					if(lexer.token == Token.ID) {
 						name1 = lexer.getStringValue();
+						id = new Id(name1);
+						checkKeyWords(id.getName());
 						next();
 
 						//Pega os metodos da class atual
 						checkMethodsCurrentClass(currentClass);
-						id = new Id(name1);
-
+						
 						//Analise Semantica (verificacao de existencia da variavel na classe)
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
 							
@@ -1456,10 +1449,14 @@ public class Compiler {
 						}
 
 						if(lexer.token == Token.DOT) {
+				
 							next();
 						
 							if(lexer.token == Token.ID) {
+
 								name2 = lexer.getStringValue();
+								id = new Id(name2);
+								checkKeyWords(id.getName());
 								next();
 
 								//Recupera a classe
@@ -1472,7 +1469,6 @@ public class Compiler {
 
 								//Pega os metodos da class atual
 								checkMethodsCurrentClass(classe);
-								id = new Id(name2);
 
 								//Analise Semantica (verificacao de existecia do metodo unario)
 								if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
@@ -1511,7 +1507,10 @@ public class Compiler {
 								return new SelfExpr(membro1, membro2, null);
 						
 							} else if(lexer.token == Token.IDCOLON) {
+
 								name2 = lexer.getStringValue();
+								id = new Id(name2);
+								checkKeyWords(id.getName());
 								next();
 
 								//Recupera a classe
@@ -1519,7 +1518,7 @@ public class Compiler {
 
 								//Pega os metodos da class atual
 								checkMethodsCurrentClass(classe);
-								id = new Id(name2);
+								
 
 								//Analise Semantica (verificacao de existecia do metodo unario)
 								if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
@@ -1558,12 +1557,14 @@ public class Compiler {
 						return new SelfExpr(membro1, null, null);
 
 					} else if(lexer.token == Token.IDCOLON) {
+						
 						name1 = lexer.getStringValue();
+						id = new Id(name1);
+						checkKeyWords(id.getName());
 						next();
 
 						//Pega os metodos da class atual
 						checkMethodsCurrentClass(currentClass);
-						id = new Id(name1);
 
 						//Analise Semantica (verificacao de existecia do metodo unario)*
 						if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
@@ -1610,14 +1611,13 @@ public class Compiler {
 		String name = "";
 		check(Token.DOT, "'.' expected after the 'In'");
 		next();
+		name = lexer.getStringValue();
+		checkKeyWords(name);
 
-		if(!(lexer.getStringValue().equals("readInt")) && 
-		   !(lexer.getStringValue().equals("readString"))) {
+		if(!(name.equals("readInt")) && 
+		   !(name.equals("readString"))) {
 			error("'readInt' or 'readString' expected after the '.'");
-		
-		} else {
-			name = lexer.getStringValue();
-		}
+		} 
 
 		next();
 		return new ReadExpr(name);
@@ -1630,10 +1630,12 @@ public class Compiler {
 		Type tipo = type();
 		next();
 		IdList idlist = idList(tipo, true);
+
 		if(lexer.token == Token.ASSIGN) {
 			
 			next();
 			expressao = expression();
+		
 			if(expressao == null) {
 				error("expression expected after the '='");
 			}
@@ -1648,6 +1650,7 @@ public class Compiler {
 	}
 
 	private RepeatStat repeatStat() {
+		
 		next();
 		StatementList statList = statementList();
 		check(Token.UNTIL, "missing keyword 'until'");
@@ -1663,11 +1666,13 @@ public class Compiler {
 	}
 
 	private BreakStat breakStat() {
+		
 		next();
 		return new BreakStat();
 	}
 
 	private ReturnStat returnStat() {
+
 		next();
 		Expr expressao = expression();
 		return new ReturnStat(expressao);
@@ -1693,6 +1698,7 @@ public class Compiler {
 
 	//Metodo para verificar a expressao no metodo WhileStat
 	private boolean checkWhileExpr(Type exprType) {
+
 		if (exprType == Type.booleanType) {
 			return true;
 		} else {
@@ -1748,11 +1754,13 @@ public class Compiler {
 		}
 	}
 
+	//Metodo para verificar a comparacao entre duas expressoes inteiras
 	private boolean checkMathExpr(Type left, Type right) {
+
 		boolean orLeft = left == Type.intType|| left == Type.undefinedType;
 		boolean orRight = right == Type.intType || right == Type.undefinedType;
 		return (orLeft && orRight);
-	  }
+	}
 
 	//Metodo para verificar se dois metodos possuem a mesma descricao
 	private boolean checkDescMethods(MethodDec metodo, ExpressionList exprList){
@@ -1764,6 +1772,7 @@ public class Compiler {
 		
 		//Verifica se os tipos dos argumentos é igual da descricao do metodo 
 		} else {
+
 			ArrayList<ParamDec> parametros = metodo.getParamDec().getParamDec();
 			ArrayList<Expr> expressoes = exprList.getArrayList();
 			Iterator<ParamDec> param = parametros.iterator();
@@ -1875,12 +1884,22 @@ public class Compiler {
 		}
 	}
 
+	//Metodo responsavel pela verificacao de ser uma palavra chave
+	private void checkKeyWords(String name) {
+
+		if(lexer.get_keywords(name) != null) {
+			error("'" + name + "' is a keyword");
+		}
+	}
+
 	private WriteStat writeStat() {
 		next();
 		check(Token.DOT, "'.' was expected after 'Out'");
 		next();
 		check(Token.IDCOLON, "'print:' or 'println:' was expected after 'Out.'");
 		String printName = lexer.getStringValue();
+		Id id = new Id(printName);
+		checkKeyWords(id.getName());
 		next();
 		ExpressionList exprList = expressionList();
 
@@ -1918,6 +1937,7 @@ public class Compiler {
 
 			name = lexer.getStringValue();
 			id = new Id(name);
+			checkKeyWords(id.getName());
 
 			if(currentClass.getName().equals(id.getName())){
 				classe = currentClass;
@@ -1961,16 +1981,7 @@ public class Compiler {
 		return new LiteralInt(value);
 	}
 
-	private static boolean startExpr(Token token) {
-
-		return token == Token.FALSE || token == Token.TRUE
-				|| token == Token.NOT || token == Token.SELF
-				|| token == Token.LITERALINT || token == Token.SUPER
-				|| token == Token.LEFTPAR || token == Token.NIL
-				|| token == Token.ID || token == Token.LITERALSTRING;
-
-	}
-
+	
 	private ClassDec		currentClass; //Atributo para a classe atual
 	private SymbolTable		symbolTable; //Atributo para as tabelas de simbolos
 	private Lexer			lexer; //Atributo para acessar o lexer
