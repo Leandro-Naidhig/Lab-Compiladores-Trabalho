@@ -19,7 +19,6 @@ public class AssignExpr extends Statement{
 		if (exprRight != null) {
             pw.print(" = ");
             exprRight.genC(pw);
-            pw.print(";");
         }
     }
 
@@ -30,7 +29,6 @@ public class AssignExpr extends Statement{
 		if (exprRight != null) {
             pw.print(" = ");
             exprRight.genJava(pw);
-            pw.println(";");
         }
         pw.printNotIdent("");
     }

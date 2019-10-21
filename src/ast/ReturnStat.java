@@ -16,14 +16,12 @@ public class ReturnStat extends Statement {
     public void genC(PW pw) {
         pw.printIdent("return ");
         expr.genC(pw);
-        pw.println(";");
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         pw.printIdent("return ");
         expr.genJava(pw);
-        pw.println(";");
     }
 
     //Atributos da classe

@@ -29,62 +29,19 @@ public class IdExpr extends Expr{
                 pw.print(id2.getName());
                 pw.print("(");
                 exprlist.genJava(pw);
-                pw.println(");");
+                pw.print(")");
                     
             } else {
                 pw.print(".");
                 pw.print(id2.getName());
                     
                 if(id2 instanceof MethodDec) {
-                    pw.println("();");
-                }
-            }
-
-            if(id1 instanceof MethodDec) {
-                pw.println("();");
-            }
-        }
-    }
-
-    //Metodo para geracao do codigo em java
-    public void genJava(PW pw, boolean print) {
-        
-        id1.genJava(pw);
-
-        if(id2 != null) {
-            if(exprlist != null) {
-                pw.print(".");
-                pw.print(id2.getName());
-                pw.print("(");
-                exprlist.genJava(pw);
-
-                if(print) {
-                    pw.print(")");
-                } else {
-                    pw.println(");");
-                }
-                    
-            } else {
-                pw.print(".");
-                pw.print(id2.getName());
-                    
-                if(id2 instanceof MethodDec) {
-                 
-                    if(print) {
-                        pw.print("()");
-                    } else {
-                        pw.println("();");
-                    }
-                }
-            }
-
-            if(id1 instanceof MethodDec) {
-                
-                if(print) {
                     pw.print("()");
-                } else {
-                    pw.println("();");
                 }
+            }
+
+            if(id1 instanceof MethodDec) {
+                pw.print("()");
             }
         }
     } 

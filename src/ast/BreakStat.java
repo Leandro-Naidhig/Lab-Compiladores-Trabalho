@@ -18,7 +18,7 @@ public class BreakStat extends Statement {
     
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.printlnIdent(name + ";");
+        pw.printlnIdent(name);
     }
 
     //Atributos da Classe

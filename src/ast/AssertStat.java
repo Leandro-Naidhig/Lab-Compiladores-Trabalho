@@ -21,7 +21,7 @@ public class AssertStat extends Statement{
     public void genJava(PW pw) {
         pw.printIdent("assert ");
         expr.genJava(pw);
-        pw.println(" : " + "\"" + str + "\";");
+        pw.println(" : " + "\"" + str + "\"");
     }
 
     //Atributos da Classe

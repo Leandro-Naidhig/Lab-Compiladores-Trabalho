@@ -24,6 +24,9 @@ public class StatementList {
     public void genJava(PW pw) {
       for(Statement s : arrayStatement) {
         s.genJava(pw);
+        if(!(s instanceof IfStat) && !(s instanceof WhileStat)) {
+          pw.println(";");
+        }
       }
     }
 

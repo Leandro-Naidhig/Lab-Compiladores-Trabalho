@@ -35,11 +35,9 @@ public class LocalDec extends Statement {
                     pw.print(", ");
                 }
             }
-            pw.print(";");
         
         } else {
             idList.genJava(pw);
-            pw.print(";");
         }
     }
 
@@ -61,7 +59,6 @@ public class LocalDec extends Statement {
                     pw.print(", ");
                 }
             }
-            pw.println(";");
         
         } else {
             ArrayList<Variable> ids = idList.getArray();
@@ -74,7 +71,6 @@ public class LocalDec extends Statement {
                     pw.print(", ");
                 }
             }
-            pw.println(";");
         }
     }
 

@@ -656,71 +656,22 @@ public class Compiler {
 		ArrayList<Variable> identifiers = new ArrayList<>();	
 		Variable id = null;
 		MethodDec metodo = null;
-		
-		if(lexer.token != Token.ID) {
-			error("Identifier expected");
-		} else {
 
-			checkKeyWords(lexer.getStringValue());
+		do{
 
-			if(!varLocal) {
+			//Condicao responsavel por pular a virgula para continuar o loop
+			if(lexer.token == Token.COMMA) {
+				next();
+			}
 
-				//Analise Semantica (verificacao se ja existe o identificador)
-				if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
-
-					//Caso for uma variavel
-					if(symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) instanceof Variable) {
-						error("Identifier '" + lexer.getStringValue() + "' has already been declared in class");
-
-					//Caso for um metodo
-					} else {
-
-						metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(lexer.getStringValue());
-
-						//Caso for um metodo unario
-						if(metodo.getNumParam() == 0) {
-							error("Cannot declare a unary method with the same name as instance variable");
-						}
-					}
-				
-				//Caso a variavel de instancia ainda nao foi declarada
-				} else {
-					id = new Variable(lexer.getStringValue(), tipo); 
-					identifiers.add(id);
-					symbolTable.putInLocalMethodFieldClass(lexer.getStringValue(), id);
-				}
-			
-			} else {
-				
-				//Analise Semantica (verificacao se ja existe o identificador)
-				if (symbolTable.getInLocalMethodVariablesClass(lexer.getStringValue()) != null) {
-					error("Identifier '" + lexer.getStringValue() + "' has already been declared in method");
-				
-				//Caso a variavel local ainda nao foi declarada
-				} else {
-					id = new Variable(lexer.getStringValue(), tipo); 
-					identifiers.add(id);
-					symbolTable.putInLocalMethodVariablesClass(lexer.getStringValue(), id);
-				}
-			}	
-		}
-
-		next();
-
-		while(lexer.token == Token.COMMA) {
-
-			next();
-			
 			if(lexer.token != Token.ID) {
-
 				error("Identifier expected");
-			
 			} else {
-
+	
 				checkKeyWords(lexer.getStringValue());
 	
 				if(!varLocal) {
-					
+	
 					//Analise Semantica (verificacao se ja existe o identificador)
 					if (symbolTable.getInLocalMethodFieldClass(lexer.getStringValue()) != null) {
 	
@@ -730,6 +681,7 @@ public class Compiler {
 	
 						//Caso for um metodo
 						} else {
+	
 							metodo = (MethodDec)symbolTable.getInLocalMethodFieldClass(lexer.getStringValue());
 	
 							//Caso for um metodo unario
@@ -759,8 +711,11 @@ public class Compiler {
 					}
 				}	
 			}
+	
 			next();
-		}
+
+		} while(lexer.token == Token.COMMA);
+		
 		return new IdList(identifiers);
 	}
 
@@ -1233,7 +1188,7 @@ public class Compiler {
 						next();
 
 						//Analise Semantica (verifica se e um variavel local ou parametro)				
-						if(symbolTable.getInLocalMethodVariablesClass(id.getName()) == null) {
+						if(symbolTable.getInLocalMethodVariablesClass(name1) == null) {
 							error("Variable or Parameter '" + name1 + "' has not been declared in Method");
 						
 						} else if(symbolTable.getInLocalMethodVariablesClass(name1) != null){

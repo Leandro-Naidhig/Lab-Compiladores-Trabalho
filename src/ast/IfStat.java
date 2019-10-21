@@ -61,6 +61,7 @@ public class IfStat extends Statement {
             pw.add();
             for(Statement s : statIf) {
                 s.genJava(pw);
+                pw.println(";");
             }
             pw.sub();    
         }
@@ -70,6 +71,7 @@ public class IfStat extends Statement {
             pw.add();
             for(Statement s : statElse) {
                 s.genJava(pw);
+                pw.println(";");
             }
             pw.sub();   
         }

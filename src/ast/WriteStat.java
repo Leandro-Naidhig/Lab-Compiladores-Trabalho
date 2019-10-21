@@ -27,39 +27,17 @@ public class WriteStat extends Statement {
             for(Expr s : exprListArray) {
                 
                 if((exprListArray.size()-1) != contador) {
-                    
-                    if(s instanceof SelfExpr) {
-                        ((SelfExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof SuperExpr) {
-                        ((SuperExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof IdExpr) {
-                        ((IdExpr)s).genJava(pw, true);
-
-                    } else {
-                        s.genJava(pw);
-                    }
-
+    
+                    s.genJava(pw);
                     pw.print(" + ");
                     contador++;
+
                 } else {
                     
-                    if(s instanceof SelfExpr) {
-                        ((SelfExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof SuperExpr) {
-                        ((SuperExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof IdExpr) {
-                        ((IdExpr)s).genJava(pw, true);
-                        
-                    } else {
-                        s.genJava(pw);
-                    }
+                    s.genJava(pw);
                 }
             }
-            pw.print(");");
+            pw.print(")");
         } else {
             pw.printIdent("System.out.println(\"\" + ");
             exprListArray = exprList.getArrayList();
@@ -67,40 +45,17 @@ public class WriteStat extends Statement {
             for(Expr s : exprListArray) {
                 if((exprListArray.size()-1) != contador) { 
                     
-                    if(s instanceof SelfExpr) {
-                        ((SelfExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof SuperExpr) {
-                        ((SuperExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof IdExpr) {
-                        ((IdExpr)s).genJava(pw, true);
-    
-                    } else {
-                        s.genJava(pw);
-                    }
-                    
+                    s.genJava(pw);
                     pw.print(" + ");
                     contador++;
-                } else {
-                    
-                    if(s instanceof SelfExpr) {
-                        ((SelfExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof SuperExpr) {
-                        ((SuperExpr)s).genJava(pw, true);
-                    
-                    } else if(s instanceof IdExpr) {
-                        ((IdExpr)s).genJava(pw, true);
 
-                    } else {
-                        s.genJava(pw);
-                    }
+                } else {
+
+                    s.genJava(pw);
                 }
             }
-            pw.print(");");
+            pw.print(")");
         }
-        pw.println();
     }
 
     // Atributos da classe

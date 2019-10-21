@@ -25,7 +25,7 @@ public class RepeatStat extends Statement{
         pw.sub();
         pw.printIdent("} while(");
         expr.genJava(pw);
-        pw.println(");");
+        pw.print(")");
     }
 
     //Atributos da classe
