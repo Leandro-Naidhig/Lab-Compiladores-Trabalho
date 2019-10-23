@@ -13,6 +13,7 @@ class Program {
       if(true) {
          while(false) { 
          }
+;
       }
    }
 }

@@ -12,12 +12,16 @@ class Program {
       while(false) { 
          while(false) { 
             while(false) { 
-               break;
+               break
+;
             }
-            break;
+            break
+;
          }
-         break;
+         break
+;
       }
-      break;
+      break
+;
    }
 }

@@ -200,9 +200,13 @@ public class Compiler {
 			next();
 		}
 
-		check(Token.CLASS, "'Class' expected");
-		next();
-		
+		if(lexer.token != Token.CLASS) {
+			next();
+			error("'class' expected");
+		} else {
+			next();
+		}
+
 		if (lexer.token != Token.ID) {
 			error("Identifier expected");
 		} else {
@@ -240,8 +244,12 @@ public class Compiler {
 		currentClass = new ClassDec(className, superclass, memberlist, isopen);
 		memberlist = memberList();
 
-		check(Token.END, "'end' expected");
-		next();
+		if(lexer.token != Token.END) {
+			next();
+			error("'end' expected");
+		} else {
+			next();
+		}
 
 		//Verifica se existe o metodo run na classe Program
 		if(currentClass.getCname().equals("Program")) {
@@ -562,8 +570,13 @@ public class Compiler {
 			next();
 		}
 
-		check(Token.LEFTCURBRACKET, "'{' expected");
-		next();
+		if(lexer.token != Token.LEFTCURBRACKET) {
+			next();
+			error("'{' expected");
+		} else {
+			next();
+		}
+
 		StatementList statlist = statementList();
 		check(Token.RIGHTCURBRACKET, "'}' expected");
 		next();
@@ -758,10 +771,22 @@ public class Compiler {
 		while(lexer.token == Token.IF || lexer.token == Token.WHILE || lexer.token == Token.RETURN 
 		   || lexer.token == Token.BREAK || lexer.token == Token.REPEAT || lexer.token == Token.ID
 		   || lexer.token == Token.VAR || lexer.token == Token.ASSERT || lexer.token == Token.SUPER 
-		   || lexer.token == Token.SELF || lexer.token == Token.SEMICOLON ||
-		   (lexer.token == Token.ID && lexer.getStringValue().equals("Out")) ) {
+		   || lexer.token == Token.SELF || lexer.token == Token.SEMICOLON
+		   || (lexer.token == Token.ID && lexer.getStringValue().equals("Out")) ) {
 			statement(statements);
 		}
+
+		if(lexer.token == Token.ELSE) {
+			next();
+			error("Statement expected");
+		
+		} else if((lexer.token == Token.IDCOLON && lexer.getStringValue().equals("println:")) ||
+				  (lexer.token == Token.IDCOLON && lexer.getStringValue().equals("print:"))) {
+			
+			next();
+			error("Missing 'Out.'");
+		}
+
 		return new StatementList(statements);
 	}
 
@@ -1093,8 +1118,7 @@ public class Compiler {
 			next();
 			return new ExpressionFactor(expressao);
 
-		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER 
-		|| lexer.token == Token.IN) {
+		} else if(lexer.token == Token.SELF || lexer.token == Token.SUPER) {
 
 			primexpr = primaryExpr();
 			return primexpr;
@@ -1108,6 +1132,11 @@ public class Compiler {
 			name1 = lexer.getStringValue();
 			checkKeyWords(name1);
 			next();
+
+			if(name1.equals("In")) {
+				Expr readexpr = readExpr();
+				return readexpr;
+			}
 
 			if(lexer.token == Token.DOT) {
 				next();
@@ -1551,10 +1580,6 @@ public class Compiler {
 					return new SelfExpr(null, null, null);
 				}
 				break;
-			case IN:
-				next();
-				Expr readexpr = readExpr();
-				return readexpr;
 			default:
 				break;
 		}
@@ -1568,13 +1593,13 @@ public class Compiler {
 		next();
 		name = lexer.getStringValue();
 		checkKeyWords(name);
+		next();
 
 		if(!(name.equals("readInt")) && 
 		   !(name.equals("readString"))) {
-			error("'readInt' or 'readString' expected after the '.'");
+			error("Command 'In.' without arguments");
 		} 
 
-		next();
 		return new ReadExpr(name);
 	}
 
@@ -1608,8 +1633,14 @@ public class Compiler {
 		
 		next();
 		StatementList statList = statementList();
-		check(Token.UNTIL, "missing keyword 'until'");
-		next();
+
+		if(lexer.token != Token.UNTIL) {
+			next();
+			error("missing keyword 'until'");	
+		} else {
+			next();
+		}
+
 		Expr expressao = expression();
 
 		//Analise Semantica
@@ -1925,13 +1956,10 @@ public class Compiler {
 		return new AssertStat(message, expressao);
 	}
 
+	//Metodo para recuperar um valor inteiro
 	private LiteralInt literalInt() {
 
 		LiteralInt e = null;
-
-		// the number value is stored in lexer.getToken().value as an object of
-		// Integer.
-		// Method intValue returns that value as an value of type int.
 		int value = lexer.getNumberValue();
 		return new LiteralInt(value);
 	}

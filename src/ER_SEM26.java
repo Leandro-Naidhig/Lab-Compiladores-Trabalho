@@ -9,6 +9,7 @@ class Scan {
 }
 class Program {
    public void run() {
-      break;
+      break
+;
    }
 }

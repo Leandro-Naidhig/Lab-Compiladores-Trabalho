@@ -12,7 +12,8 @@ class Program {
       int n = 10;
       do {
          if((n < 5)) {
-            break;
+            break
+;
          }
          n = (n - 1);
       } while((n == 0));

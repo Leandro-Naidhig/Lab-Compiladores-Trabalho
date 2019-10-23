@@ -69,8 +69,8 @@ class Program
       a = A.new;
       
       //Realiza a leitura da nota da prova e nota do trabalho
-      nprov = In.readInt;
-      ntrab = In.readInt;
+      //nprov = In.readInt;
+      //ntrab = In.readInt;
       
       //Calcula a nota
       ans = a.calculaNota: ntrab, nprov;

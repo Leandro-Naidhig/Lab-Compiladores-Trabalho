@@ -26,7 +26,6 @@ class Program {
       System.out.println("" + "The output should be :");
       System.out.println("" + "34");
       a = new A();
-      System.out.println("" + (a.fib(10);
-));
+      System.out.println("" + (a.fib(10)));
    }
 }

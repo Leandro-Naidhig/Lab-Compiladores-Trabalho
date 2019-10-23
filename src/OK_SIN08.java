@@ -16,7 +16,6 @@ class Program {
    public void run() {
       A a;
       a = new A();
-      System.out.println("" + (a.m(3, 4, true);
-));
+      System.out.println("" + (a.m(3, 4, true)));
    }
 }

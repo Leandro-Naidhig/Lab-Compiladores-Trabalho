@@ -17,6 +17,7 @@ class A {
             ans = (ans / 2);
             return ans;
          }
+;
       }
       return ans;
    }
@@ -47,21 +48,17 @@ class Program {
       System.out.println("" + "The output should be :");
       System.out.println("" + "0 <= x <= 10");
       a = new A();
-      nprov = Scan.imputValue.nextInt();
-      ntrab = Scan.imputValue.nextInt();
       ans = a.calculaNota(ntrab, nprov);
-;
       if((ans != 11)) {
          System.out.println("" + ans);
       } else { 
          if((((ans == 11)) && ((nprov < 6)))) {
             a = new B();
-            System.out.println("" + (a.calculaNotaB(ntrab, nprov);
-));
+            System.out.println("" + (a.calculaNotaB(ntrab, nprov)));
          } else { 
-            System.out.println("" + (a.calculaNotaB(ntrab, nprov);
-));
+            System.out.println("" + (a.calculaNotaB(ntrab, nprov)));
          }
+;
       }
    }
 }

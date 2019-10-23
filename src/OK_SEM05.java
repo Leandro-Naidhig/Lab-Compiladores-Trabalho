@@ -43,10 +43,7 @@ class Program {
       a = b;
       a.set(0);
       a = this.m(a);
-;
       b = this.m(b);
-;
       a = this.p(0);
-;
    }
 }

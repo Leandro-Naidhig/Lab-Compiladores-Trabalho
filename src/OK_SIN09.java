@@ -18,8 +18,7 @@ class A {
    }
    public int m() {
       this.m2(0);
-      return (this.m1();
- + this.k);
+      return (this.m1() + this.k);
    }
    public void init() {
       this.k = 1;
