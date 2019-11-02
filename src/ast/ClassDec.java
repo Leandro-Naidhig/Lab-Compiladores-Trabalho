@@ -5,6 +5,8 @@
  */
 package ast;
 
+import com.ibm.oti.reflect.Field;
+
 /** This class represents a metaobject annotation as <code>{@literal @}ce(...)</code> in <br>
  * <code>
  * @ce(5, "'class' expected") <br>
@@ -55,6 +57,38 @@ public class ClassDec extends Type{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+
+        //Estrutura da classe para declaracao de metodos e variaveis de instancia
+        pw.println("typedef _St_" + classname + " {");
+        pw.add();
+
+        //Caso existam membros na classe (metodos ou variaveis de instancia)
+        if(memberList != null) {
+            pw.printlnIdent("Func *vt");
+            
+            for(Member s: memberList.getArray()) {
+
+                //Verifica todas as instancias da classe
+                if(s instanceof FieldDec) {
+
+                    pw.print(s.getType().getCname());
+                    int contador = 0;
+
+                    for(Variable v: ((FieldDec)s).getIdList().getArray()) {
+
+                        pw.print(v.getName());
+                        contador++;
+
+                        if(((FieldDec)s).getIdList().getArray().size() != contador) {
+                            pw.print(", ");
+                        }
+                    }
+                    pw.println("");
+                }
+            }
+        }
+        pw.sub();
+        pw.println("} _class_" + classname);
     }
 
     //Metodo para geracao do codigo em Java

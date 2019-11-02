@@ -49,10 +49,29 @@ public class Program {
 	//Metodo responsavel pela geracao do codigo em C
 	public void genC(PW pw) {
 
-		//Bibliotecas utilizadas na geração do código em C
+		//Bibliotecas utilizadas na geracao do cedigo em C
 		pw.println("#include<malloc.h>");
 		pw.println("#include<stdlib.h>");
 		pw.println("#include<stdio.h>");	
+
+		//Metodo que define o tipo boolean
+		pw.println("typedef int boolean;"); 
+		pw.println("#define true 1");
+		pw.println("#define false 0");
+
+		//Cria funcoes readInt e readString
+		pw.println("int readInt() {");
+		pw.add();
+		pw.printlnIdent("int n;");
+		pw.println("char __s[512];");
+		pw.println("gets(__s);");
+		pw.println("sscanf(__s, %d, &_n);");
+		pw.println("return n;");
+		pw.sub();
+		pw.println("}");
+
+		//Define um tipo Func que e um ponteiro para funcao
+		pw.println("typedef void (*Func)();");
 	}
 
 	//Recupera o nome do teste que será executado o Program

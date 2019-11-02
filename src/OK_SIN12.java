@@ -7,3 +7,10 @@ public class OK_SIN12 {
 class Scan {
    public static Scanner imputValue = new Scanner(System.in);
 }
+class Program {
+   public void run() {
+      int a;
+      a = 1;
+      System.out.println("" + (-a));
+   }
+}

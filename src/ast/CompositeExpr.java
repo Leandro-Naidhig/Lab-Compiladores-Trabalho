@@ -21,8 +21,10 @@ public class CompositeExpr extends Expr {
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+
         
         if(exprLeft != null) {
+
             pw.print("(");
 			exprLeft.genJava(pw);
 
@@ -41,8 +43,17 @@ public class CompositeExpr extends Expr {
 			if(exprRight != null) {
 				exprRight.genJava(pw);
 				pw.print(")");
-			}
-		}
+            }
+            
+		} else if(Op != null) {
+            pw.print("(");
+            pw.print(Op.toString());
+
+            if(exprRight != null) {
+                exprRight.genJava(pw);
+            }
+            pw.print(")");
+        }
     }
 
     //Metodo para retornar o tipo da composicao da expressao

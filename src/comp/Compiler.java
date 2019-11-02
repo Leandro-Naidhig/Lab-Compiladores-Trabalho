@@ -578,8 +578,13 @@ public class Compiler {
 		}
 
 		StatementList statlist = statementList();
-		check(Token.RIGHTCURBRACKET, "'}' expected");
-		next();
+		
+		if(lexer.token != Token.RIGHTCURBRACKET){
+			next();
+			error("'}' expected");
+		} else {
+			next();
+		}
 
 		//Flag com indicacao permanente
 		int flagPermElse = 0;
@@ -949,6 +954,7 @@ public class Compiler {
 		while(lexer.token == Token.COMMA) {
 			next();
 			exprList.add(expression());
+			
 		}
 		return new ExpressionList(exprList);
 	}
@@ -1062,19 +1068,23 @@ public class Compiler {
 			signal = lexer.token;
 			next();
 			exprRight = factor();
-			
+
 			//Analise Semantica
 			if (exprRight.getType() != Type.intType) {
 				error("'Int' expression type expected to perform this operation");
 			}
 
-			expression = new CompositeExpr(exprRight, signal, exprRight);
+			expression = new CompositeExpr(null, signal, exprRight);
+			return expression;
 		}
+		
 		expression = factor();
 		return expression;
 	}
 
 	private Expr factor() {
+
+		System.out.println(lexer.token);
 
 		Expr expressao = null;
 		String name1 = "";
