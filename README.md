@@ -79,12 +79,12 @@ Para conversão de Cianeto para Java ou para C, acrescente ao comando acima -gen
 #### Verificação dos Testes
 
 - OK_GER01.ci -> OK, com GenJava e GenC
-- OK_GER02.ci -> OK, com GenJava
-- OK_GER03.ci -> Ok, com GenJava
-- OK_GER04.ci -> Ok, com GenJava
-- OK_GER05.ci -> Ok, com GenJava
-- OK_GER06.ci -> Ok, com GenJava
-- OK_GER07.ci -> Ok, com GenJava
+- OK_GER02.ci -> OK, com GenJava e GenC
+- OK_GER03.ci -> Ok, com GenJava e GenC
+- OK_GER04.ci -> Ok, com GenJava e GenC
+- OK_GER05.ci -> Ok, com GenJava e GenC
+- OK_GER06.ci -> Ok, com GenJava e Genc
+- OK_GER07.ci -> Ok, com GenJava e GenC
 - OK_GER08.ci -> Ok, com GenJava
 - OK_GER09.ci -> Ok, com GenJava
 - OK_GER10.ci -> Ok, com GenJava
