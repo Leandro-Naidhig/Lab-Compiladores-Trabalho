@@ -16,6 +16,41 @@ public class SelfExpr extends Expr{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
+        pw.printIdent("self");
+
+        if(id1 != null) {
+
+            if(id1 instanceof MethodDec) {
+                pw.print("->" + ((MethodDec)id1).getName());
+            } else {
+                pw.print("->" + ((Variable)id1).getName());
+            }
+
+            if(id2 != null) {
+                if(exprlist != null) {
+                    pw.print("->");
+                    pw.print(((MethodDec)id2).getName());
+                    pw.print("(");
+                    exprlist.genC(pw);
+                    pw.print(")");
+                    
+                } else {
+                    pw.print("->");
+                    pw.print(((MethodDec)id2).getName() + "()");
+                }
+            }
+
+            if(id1 instanceof MethodDec) {
+                if(exprlist != null) {
+                    pw.print("(");
+                    exprlist.genC(pw);
+                    pw.print(")");
+                } else {
+                    pw.print("()");
+                }
+                
+            }
+        }
     }
     
     //Metodo para geracao do codigo em java

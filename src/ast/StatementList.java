@@ -17,6 +17,9 @@ public class StatementList {
     public void genC(PW pw) {
       for(Statement s : arrayStatement) {
         s.genC(pw);
+        if(!(s instanceof IfStat) && !(s instanceof WhileStat)) {
+          pw.println(";");
+        }
       }
     }
     

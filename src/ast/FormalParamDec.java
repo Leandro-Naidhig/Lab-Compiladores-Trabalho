@@ -21,7 +21,7 @@ public class FormalParamDec {
             s.genC(pw);
             contador++;
             
-            if((paramDec.size()-1) != contador) {
+            if(paramDec.size() != contador) {
                 pw.print(", ");
             }
         }

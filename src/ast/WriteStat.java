@@ -16,6 +16,80 @@ public class WriteStat extends Statement {
 
     // Metodo para geracao do codigo em C
     public void genC(PW pw) {
+        if (mode.equals("print:")) {
+            pw.printIdent("printf(\"");
+            exprListArray = exprList.getArrayList();
+            int contador = 0;
+            
+            //Percorre o vetor verificando o tipo das expressoes
+            for(Expr s : exprListArray) {    
+                
+                if(s.getType().getCname().equals("int")) {
+                    pw.print("%d");
+                    contador++;
+                    
+                } else {
+                    pw.print("%s");
+                    contador++;
+                }
+            
+                if(exprListArray.size() != contador) {
+                    pw.print(", ");
+                }
+            }
+
+            pw.print("\", ");
+
+            contador = 0;
+            
+            //Percorre o vetor verificando o nome das expressoes
+            for(Expr s : exprListArray) {    
+                s.genC(pw);
+                contador++;
+            
+                if(exprListArray.size() != contador) {
+                    pw.print(", ");
+                }
+            }
+            pw.print(")");
+
+        } else {
+            pw.printIdent("printf(\"");
+            exprListArray = exprList.getArrayList();
+            int contador = 0;
+
+            //Percorre o vetor verificando o tipo das expressoes
+            for(Expr s : exprListArray) {    
+                
+                if(s.getType().getCname().equals("int")) {
+                    pw.print("%d");
+                    contador++;
+                    
+                } else {
+                    pw.print("%s");
+                    contador++;
+                }
+            
+                if(exprListArray.size() != contador) {
+                    pw.print(", ");
+                }
+            }
+
+            pw.print("\\n\", ");
+
+            contador = 0;
+            
+            //Percorre o vetor verificando o nome das expressoes
+            for(Expr s : exprListArray) {    
+                s.genC(pw);
+                contador++;
+            
+                if(exprListArray.size() != contador) {
+                    pw.print(", ");
+                }
+            }
+            pw.print(")");
+        }
     }
 
     // Metodo para geracao do codigo em Java
@@ -24,33 +98,31 @@ public class WriteStat extends Statement {
             pw.printIdent("System.out.print(\"\" + ");
             exprListArray = exprList.getArrayList();
             int contador = 0;
+
             for(Expr s : exprListArray) {
-                
                 if((exprListArray.size()-1) != contador) {
-    
                     s.genJava(pw);
                     pw.print(" + ");
                     contador++;
 
                 } else {
-                    
                     s.genJava(pw);
                 }
             }
             pw.print(")");
+        
         } else {
             pw.printIdent("System.out.println(\"\" + ");
             exprListArray = exprList.getArrayList();
             int contador = 0;
+        
             for(Expr s : exprListArray) {
-                if((exprListArray.size()-1) != contador) { 
-                    
+                if((exprListArray.size()-1) != contador) {             
                     s.genJava(pw);
                     pw.print(" + ");
                     contador++;
 
                 } else {
-
                     s.genJava(pw);
                 }
             }

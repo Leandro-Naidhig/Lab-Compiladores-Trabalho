@@ -16,4 +16,8 @@ public class TypeNull extends Type {
 		return "NULL";
 	}
 
+	public String getJavaname() {
+		return "NULL";
+	}
+
 }

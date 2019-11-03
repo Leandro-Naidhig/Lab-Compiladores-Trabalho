@@ -14,12 +14,21 @@ public class ParamDec {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        name.genJava(pw);
+
+        if(name.getType() instanceof ClassDec) {
+            pw.print("_class_" + name.getType().getCname() + " *" + name.getName());    
+
+        } else if(name.getType() instanceof TypeString){
+            pw.print(name.getType().getCname() + " " + name.getName() + "[]");
+        
+        } else {
+            pw.print(name.getType().getCname() + " " + name.getName());    
+        }
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-        pw.print(name.getType().getCname() + " " + name.getName());
+        pw.print(name.getType().getJavaname() + " " + name.getName());
     }
 
     //Metodo para retornar o tipo

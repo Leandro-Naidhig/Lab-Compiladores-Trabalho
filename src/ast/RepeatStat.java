@@ -15,6 +15,13 @@ public class RepeatStat extends Statement{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+        pw.printlnIdent("do {");
+        pw.add();
+        statementList.genC(pw);
+        pw.sub();
+        pw.printIdent("} while(");
+        expr.genC(pw);
+        pw.print(")");
     }
 
     //Metodo para geracao do codigo em Java

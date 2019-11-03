@@ -14,6 +14,11 @@ public class ReadExpr extends Expr{
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
+        if(name.equals("readInt")) {
+            pw.print("readInt()");
+        } else {
+            pw.print("readString()");
+        }
     }
 
     //Metodo para geracao do codigo em Java

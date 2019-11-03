@@ -15,7 +15,7 @@ public class NotFactor extends Expr{
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
       pw.print("!(");
-      factor.genJava(pw);
+      factor.genC(pw);
       pw.print(")");
     }
 

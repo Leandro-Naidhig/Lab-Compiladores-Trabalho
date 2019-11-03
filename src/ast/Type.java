@@ -27,6 +27,9 @@ abstract public class Type {
     //Metodo abstrato para retornar o nome em C do tipo
     abstract public String getCname();
 
+    //Metodo abstrato para retornar o nome em Java do tipo
+    abstract public String getJavaname();
+
     //Atributos da classe
     private String name;
 }

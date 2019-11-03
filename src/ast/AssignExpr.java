@@ -15,6 +15,7 @@ public class AssignExpr extends Statement{
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+        pw.printIdent("");
         exprLeft.genC(pw);
 		if (exprRight != null) {
             pw.print(" = ");

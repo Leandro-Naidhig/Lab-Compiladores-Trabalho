@@ -5,7 +5,7 @@
  */
 package ast;
 
-public class MethodDec extends Member{
+public class MethodDec extends Member {
 
     //Construtor da classe 
     public MethodDec(Id id_idColon, FormalParamDec formParDec, Type type, StatementList statementList, String qualifier) {
@@ -20,6 +20,36 @@ public class MethodDec extends Member{
     public void genC(PW pw) {
     }
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, String currentClass) {
+        if(type != null) {
+            pw.print(type.getName());
+        } else {
+            pw.print("void");
+        }
+
+        pw.print(" ");
+
+        if(formParDec == null) {
+            pw.print("_" + currentClass + "_");
+            id_idColon.genC(pw);
+            pw.print("(_class_"  +  currentClass + " *self)");
+        } else {
+            pw.print("_" + currentClass + "_");
+            id_idColon.genJava(pw);
+            pw.print("(");
+            pw.print("_class_" +  currentClass + " *self, ");
+            formParDec.genC(pw);
+            pw.print(")");
+        }
+        
+        pw.println(" {");
+        pw.add();
+        statementList.genC(pw);
+        pw.sub();
+        pw.printlnIdent("}");
+    }
+
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
         if(type != null) {
@@ -27,7 +57,9 @@ public class MethodDec extends Member{
         } else {
             pw.print("void");
         }
+        
         pw.print(" ");
+        
         if(formParDec == null) {
             id_idColon.genJava(pw);
             pw.print("()");
@@ -37,6 +69,7 @@ public class MethodDec extends Member{
             formParDec.genJava(pw);
             pw.print(")");
         }
+        
         pw.println(" {");
         pw.add();
         statementList.genJava(pw);

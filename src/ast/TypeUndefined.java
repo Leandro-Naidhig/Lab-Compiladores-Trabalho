@@ -13,5 +13,9 @@ public class TypeUndefined extends Type {
    public String getCname() {
       return "int";
    }
+
+   public String getJavaname() {
+      return "int";
+   }
    
 }

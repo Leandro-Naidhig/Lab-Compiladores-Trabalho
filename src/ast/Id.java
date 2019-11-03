@@ -19,7 +19,7 @@ public class Id {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.print(name);
+        pw.print("_" + name);
     }
 
     //Metodo para geracao do codigo em Java

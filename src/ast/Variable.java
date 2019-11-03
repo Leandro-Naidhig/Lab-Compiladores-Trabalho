@@ -40,7 +40,7 @@ public class Variable extends Member{
 
 	//Metodo para geracao do codigo em Java
 	public void genC(PW pw) {
-		pw.print(name);
+		pw.print("_" + name);
 	}
 
 	//Metodo para geracao do codigo em Java

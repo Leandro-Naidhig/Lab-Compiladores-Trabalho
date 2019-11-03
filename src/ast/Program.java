@@ -17,6 +17,68 @@ public class Program {
 		this.compilationErrorList = compilationErrorList;
 	}
 
+	//Metodo responsavel pela geracao do codigo em C
+	public void genC(PW pw) {
+
+		//Bibliotecas utilizadas na geracao do cedigo em C
+		pw.println("#include<malloc.h>");
+		pw.println("#include<stdlib.h>");
+		pw.println("#include<stdio.h>");
+		pw.println("#include<string.h>");
+		pw.println("");
+
+		//Metodo que define o tipo boolean
+		pw.println("typedef int boolean;"); 
+		pw.println("");	
+		pw.println("#define true 1");
+		pw.println("#define false 0");
+		pw.println("");
+
+		//Cria funcoes readInt e readString
+		//ReatInt
+		pw.println("int readInt() {");
+		pw.add();
+		pw.printlnIdent("int n;");
+		pw.printlnIdent("char __s[512];");
+		pw.printlnIdent("gets(__s);");
+		pw.printlnIdent("sscanf(__s, %d, &_n);");
+		pw.printlnIdent("return n;");
+		pw.sub();
+		pw.println("}");
+		pw.println("");
+
+		//ReadString
+		pw.println("char *readString() {");
+		pw.add();
+		pw.printlnIdent("char s[512];");
+		pw.printlnIdent("gets(s);");
+		pw.printlnIdent("char *ret = malloc(strlen(s) + 1);");
+		pw.printlnIdent("strcpy(ret, s);");
+		pw.printlnIdent("return ret;");
+		pw.sub();
+		pw.println("}");
+		pw.println("");
+
+
+
+		//Define um tipo Func que e um ponteiro para funcao
+		pw.println("typedef void (*Func)();");
+		pw.println("");
+
+		for(ClassDec s : classList) {
+			s.genC(pw);
+		}
+
+		pw.println("int main() {");
+		pw.add();
+		pw.printlnIdent("_class_Program *program;");  
+		pw.printlnIdent("program = new_Program();");
+		pw.printlnIdent("((void (*)(_class_Program*)) program->vt[0])(program);");
+		pw.printlnIdent("return 0;");
+		pw.sub();
+		pw.println("}");
+	}
+
 	//Metodo responsavel pela geracao do codigo em 	Java
 	public void genJava(PW pw) {
 
@@ -44,34 +106,6 @@ public class Program {
 			pw.print("class ");	
 			s.genJava(pw);
 		}
-	}
-
-	//Metodo responsavel pela geracao do codigo em C
-	public void genC(PW pw) {
-
-		//Bibliotecas utilizadas na geracao do cedigo em C
-		pw.println("#include<malloc.h>");
-		pw.println("#include<stdlib.h>");
-		pw.println("#include<stdio.h>");	
-
-		//Metodo que define o tipo boolean
-		pw.println("typedef int boolean;"); 
-		pw.println("#define true 1");
-		pw.println("#define false 0");
-
-		//Cria funcoes readInt e readString
-		pw.println("int readInt() {");
-		pw.add();
-		pw.printlnIdent("int n;");
-		pw.println("char __s[512];");
-		pw.println("gets(__s);");
-		pw.println("sscanf(__s, %d, &_n);");
-		pw.println("return n;");
-		pw.sub();
-		pw.println("}");
-
-		//Define um tipo Func que e um ponteiro para funcao
-		pw.println("typedef void (*Func)();");
 	}
 
 	//Recupera o nome do teste que será executado o Program

@@ -10,7 +10,7 @@ public class CompStatement {
 
     //Construtor da classe
     public CompStatement(ArrayList<Statement> arrayStatement) {
-		this.arrayStatement = arrayStatement;
+		  this.arrayStatement = arrayStatement;
     }
     
     //Metodo para geracao do codigo em C

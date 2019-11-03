@@ -15,4 +15,8 @@ public class TypeInt extends Type {
       return "int";
    }
 
+   public String getJavaname() {
+    return "int";
+ }
+
 }

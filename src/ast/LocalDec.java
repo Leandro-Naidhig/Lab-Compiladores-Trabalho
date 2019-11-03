@@ -19,9 +19,13 @@ public class LocalDec extends Statement {
     public void genC(PW pw) {
 
         int contador = 0;
-        tipo.getCname();
 
-        //Caso houver uma expressao
+        if(tipo instanceof ClassDec) {
+            pw.printIdent("_class_" + tipo.getName() + " ");
+        } else {
+            pw.printIdent(tipo.getName() + " ");
+        }
+    
         if(expr != null) {
             ArrayList<Variable> ids = idList.getArray();
 
@@ -31,18 +35,35 @@ public class LocalDec extends Statement {
                 expr.genC(pw);
                 contador++;
                 
-                if((ids.size()-1) != contador) {
+                if(ids.size() != contador) {
                     pw.print(", ");
                 }
             }
         
         } else {
-            idList.genJava(pw);
+            ArrayList<Variable> ids = idList.getArray();
+
+            for(Variable s : ids) {
+
+                if(s.getType() instanceof ClassDec) {
+                    pw.print("*");
+                    s.genC(pw);
+                    contador++;
+                } else {
+                    s.genC(pw);
+                    contador++;
+                }
+                
+                if(ids.size() != contador) {
+                    pw.print(", ");
+                }
+            }
         }
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
+        
         int contador = 0;
         pw.printIdent(tipo.getName() + " ");
     

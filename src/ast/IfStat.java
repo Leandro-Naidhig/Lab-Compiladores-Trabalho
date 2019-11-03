@@ -27,7 +27,8 @@ public class IfStat extends Statement {
 
     //metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.print("if(");
+       
+        pw.printIdent("if(");
         expr.genC(pw);
         pw.println(") {");
 
@@ -35,20 +36,21 @@ public class IfStat extends Statement {
             pw.add();
             for(Statement s : statIf) {
                 s.genC(pw);
-            }
-            pw.sub();
-        }
-
-        if(statElse != null) {
-            pw.print(" } else { ");
-            pw.add();    
-            for(Statement s : statElse) {
-                s.genC(pw);
+                pw.println(";");
             }
             pw.sub();    
         }
-        
-        pw.println("} ");
+
+        if(statElse != null) {
+            pw.printlnIdent("} else { ");
+            pw.add();
+            for(Statement s : statElse) {
+                s.genC(pw);
+                pw.println(";");
+            }
+            pw.sub();   
+        }
+        pw.printlnIdent("}");
     }
 
     //Metodo para geracao do codigo em Java

@@ -11,6 +11,10 @@ public class ObjectCreation extends Expr{
     public ObjectCreation(Variable var) {
       this.var = var;
     }
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+      pw.print("new_ " + var.getName() + "()");
+    }
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
@@ -18,8 +22,7 @@ public class ObjectCreation extends Expr{
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-      pw.print("new ");
-      pw.print(var.getName() + "()");
+      pw.print("new " + var.getName() + "()");
     }
 
     //Metodo que retorna o tipo da classe

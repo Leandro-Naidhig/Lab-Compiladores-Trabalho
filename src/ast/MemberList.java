@@ -17,10 +17,10 @@ public class MemberList {
     //Metodo para retornar o arraylist de membros
     public ArrayList<Member> getArray() {
       return member;
-    } 
-
+    }
+    
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw) {  
     }
 
     //Metodo para geracao do codigo em Java

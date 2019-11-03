@@ -17,11 +17,41 @@ public class CompositeExpr extends Expr {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
+       
+        if(exprLeft != null) {
+            pw.print("(");
+			exprLeft.genC(pw);
+
+			if(Op != null) {
+
+                if(Op.toString().equals("++")) {
+                    pw.print(" " + "+" + " ");
+                } else {
+                    pw.print(" "+ Op.toString() + " ");
+                }
+				
+			} else {
+				pw.print(")");
+            }
+            
+			if(exprRight != null) {
+				exprRight.genC(pw);
+				pw.print(")");
+            }
+            
+		} else if(Op != null) {
+            pw.print("(");
+            pw.print(Op.toString());
+
+            if(exprRight != null) {
+                exprRight.genC(pw);
+            }
+            pw.print(")");
+        }
     }
 
     //Metodo para geracao do codigo em Java
     public void genJava(PW pw) {
-
         
         if(exprLeft != null) {
 
