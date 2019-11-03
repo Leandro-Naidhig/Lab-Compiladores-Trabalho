@@ -74,6 +74,8 @@ No diretorio [Lab-Compiladores-Trabalho], execute o seguinte comando no terminal
 $java -cp src/ comp.Comp code-generation-tests/OK_GERXX.ci
 (execução do código em cima de um determinado teste)
 
+Para conversão de Cianeto para Java ou para C, acrescente ao comando acima -genJava ou -genC, em conjunto com o nome do diretório em que será gravado o código convertido e o relátorio de análise.
+
 #### Verificação dos Testes
 
 - OK_GER01.ci -> OK, com GenJava e GenC
