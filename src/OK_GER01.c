@@ -26,7 +26,7 @@ char *readString() {
 
 typedef void (*Func)();
 
-typedef struct  _St_A {
+typedef struct _St_A {
    Func *vt;
 }_class_A;
 
@@ -92,7 +92,7 @@ _class_A *new_A() {
    return t;
 }
 
-typedef struct  _St_Program {
+typedef struct _St_Program {
    Func *vt;
 }_class_Program;
 

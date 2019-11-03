@@ -43,11 +43,27 @@ public class IdExpr extends Expr {
 
                 pw.print("))");
                 id1.genC(pw);
-                pw.print("->vt[1]");
+                pw.print("->vt[");
 
-                //recuperar a posicao do metodo na lista
+                if(id1.getType() instanceof ClassDec) {
 
-                pw.print(")(");
+                    ClassDec classe = ((ClassDec)id1.getType());
+                    contador = 0;
+
+                    //recuperar a posicao do metodo na lista
+                    for(Member s: classe.getMembros().getArray()) {
+                        
+                        if(s instanceof MethodDec) { 
+                            if(((MethodDec)s).getName().equals(id2.getName())) {
+                                break;
+                            } else {
+                                contador++;
+                            }
+                        }
+                    }
+                }
+
+                pw.print(contador + "])(");
                 id1.genC(pw);
                 pw.print(",");
                 exprlist.genJava(pw);
@@ -56,11 +72,27 @@ public class IdExpr extends Expr {
             } else {
                 pw.print("))");
                 id1.genC(pw);
-                pw.print("->vt[0]");
+                pw.print("->vt[");
 
-                //recuperar a posicao do metodo na lista
+                if(id1.getType() instanceof ClassDec) {
 
-                pw.print(")(");
+                    ClassDec classe = ((ClassDec)id1.getType());
+                    contador = 0;
+
+                    //recuperar a posicao do metodo na lista
+                    for(Member s: classe.getMembros().getArray()) {
+                        
+                        if(s instanceof MethodDec) { 
+                            if(((MethodDec)s).getName().equals(id2.getName())) {
+                                break;
+                            } else {
+                                contador++;
+                            }
+                        }
+                    }
+                }
+
+                pw.print(contador + "])(");
                 id1.genC(pw);
                 pw.print(")");
             }
