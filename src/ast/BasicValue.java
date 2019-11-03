@@ -14,6 +14,26 @@ public class BasicValue extends Expr{
         this.BooleanValue = BooleanValue;
     }
 
+    //Metodo para recuperar o valor caso for um inteiro
+    public LiteralInt getValue() {
+        
+        if(IntValue != null) {
+            return IntValue;
+        } else {
+            return null;
+        }
+    }
+
+    //Metodo para recuperar a string caso for uma string
+    public LiteralString getString() {
+        
+        if(StringValue != null) {
+            return StringValue;
+        } else {
+            return null;
+        }
+    }
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean op) {
         if(StringValue != null) {

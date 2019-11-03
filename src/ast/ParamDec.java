@@ -19,10 +19,13 @@ public class ParamDec {
             pw.print("_class_" + name.getType().getCname() + " *" + name.getName());    
 
         } else if(name.getType() instanceof TypeString){
-            pw.print(name.getType().getCname() + " " + name.getName() + "[]");
+            pw.print(name.getType().getCname() + " "); 
+            name.genC(pw);
+            pw.print("[]");
         
         } else {
-            pw.print(name.getType().getCname() + " " + name.getName());    
+            pw.print(name.getType().getCname() + " ");
+            name.genC(pw);
         }
     }
 

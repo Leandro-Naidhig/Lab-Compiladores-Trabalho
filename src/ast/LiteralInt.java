@@ -8,7 +8,7 @@ package ast;
 public class LiteralInt extends Expr {
     
     //Construtor da classe
-    public LiteralInt( int value ) { 
+    public LiteralInt(int value) { 
         this.value = value;
     }
     

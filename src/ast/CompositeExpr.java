@@ -20,23 +20,53 @@ public class CompositeExpr extends Expr {
        
         if(exprLeft != null) {
             pw.print("(");
-			exprLeft.genC(pw);
-
-			if(Op != null) {
-
-                if(Op.toString().equals("++")) {
-                    pw.print(" " + "+" + " ");
-                } else {
-                    pw.print(" "+ Op.toString() + " ");
-                }
-				
-			} else {
-				pw.print(")");
-            }
             
-			if(exprRight != null) {
-				exprRight.genC(pw);
-				pw.print(")");
+            if(Op != null && Op.toString().equals("++")) {
+
+                String expr1 = "";
+                String expr2 = "";
+
+                if(exprLeft.getType() == Type.intType) {
+                    expr1 = String.valueOf(((BasicValue)exprLeft).getValue().getValue());
+
+                } else {
+                    expr1 = ((BasicValue)exprLeft).getString().getName();
+                }
+
+                if(exprRight != null) {
+                    
+                    if(exprRight.getType() == Type.intType) {
+                        
+                        if(exprRight instanceof IdExpr) {
+                            
+                            Member membro = ((IdExpr)exprRight).getMember1();
+                            //expr2 = String.valueOf(((Variable)exprRight).g
+
+                        } else if(exprRight instanceof BasicValue) {
+                            expr2 = String.valueOf(((BasicValue)exprRight).getValue().getValue());
+                        }
+                    
+                    } else {
+                        expr2 = ((BasicValue)exprRight).getString().getName();
+                    }
+                }
+
+                expr1 = expr1 + expr2;
+                pw.print(expr1 + ")");
+            
+            } else {
+                exprLeft.genC(pw);
+
+                if(Op != null) {
+                    pw.print(" " + Op.toString() + " ");	
+                } else {
+                    pw.print(")");
+                }
+                
+                if(exprRight != null) {
+                    exprRight.genC(pw);
+                    pw.print(")");
+                }
             }
             
 		} else if(Op != null) {

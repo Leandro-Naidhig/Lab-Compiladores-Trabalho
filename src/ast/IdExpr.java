@@ -15,6 +15,11 @@ public class IdExpr extends Expr {
         this.exprlist = exprlist;
     }
 
+    //Metodo para retornar o primeiro membro da expressao
+    public Member getMember1() {
+        return id1;
+    }
+
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
@@ -65,7 +70,7 @@ public class IdExpr extends Expr {
 
                 pw.print(contador + "])(");
                 id1.genC(pw);
-                pw.print(",");
+                pw.print(", ");
                 exprlist.genJava(pw);
                 pw.print(")");
             

@@ -36,7 +36,7 @@ public class MethodDec extends Member {
             pw.print("(_class_"  +  currentClass + " *self)");
         } else {
             pw.print("_" + currentClass);
-            id_idColon.genJava(pw);
+            id_idColon.genC(pw);
             pw.print("(");
             pw.print("_class_" +  currentClass + " *self, ");
             formParDec.genC(pw);
