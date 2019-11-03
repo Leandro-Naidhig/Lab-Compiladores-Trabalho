@@ -32,10 +32,6 @@ public class WriteStat extends Statement {
                     pw.print("%s");
                     contador++;
                 }
-            
-                if(exprListArray.size() != contador) {
-                    pw.print(", ");
-                }
             }
 
             pw.print("\", ");
@@ -68,10 +64,6 @@ public class WriteStat extends Statement {
                 } else {
                     pw.print("%s");
                     contador++;
-                }
-            
-                if(exprListArray.size() != contador) {
-                    pw.print(", ");
                 }
             }
 

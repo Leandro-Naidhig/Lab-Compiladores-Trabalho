@@ -38,11 +38,11 @@ public class Program {
 		//ReatInt
 		pw.println("int readInt() {");
 		pw.add();
-		pw.printlnIdent("int n;");
+		pw.printlnIdent("int _n;");
 		pw.printlnIdent("char __s[512];");
 		pw.printlnIdent("gets(__s);");
-		pw.printlnIdent("sscanf(__s, %d, &_n);");
-		pw.printlnIdent("return n;");
+		pw.printlnIdent("sscanf(__s, \"%d\", &_n);");
+		pw.printlnIdent("return _n;");
 		pw.sub();
 		pw.println("}");
 		pw.println("");

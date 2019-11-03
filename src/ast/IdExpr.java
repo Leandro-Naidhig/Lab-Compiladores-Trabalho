@@ -41,29 +41,28 @@ public class IdExpr extends Expr {
                     }
                 }
 
-                pw.print("))_");
+                pw.print("))");
                 id1.genC(pw);
-                pw.print("->vt[1] ");
+                pw.print("->vt[1]");
 
                 //recuperar a posicao do metodo na lista
 
-
-                pw.print(" )(_");
+                pw.print(")(");
                 id1.genC(pw);
                 pw.print(",");
                 exprlist.genJava(pw);
-                pw.println(");");
+                pw.print(")");
             
             } else {
-                pw.print("))_");
+                pw.print("))");
                 id1.genC(pw);
-                pw.print("->vt[1] ");
+                pw.print("->vt[0]");
 
                 //recuperar a posicao do metodo na lista
 
-                pw.print(" )(_");
+                pw.print(")(");
                 id1.genC(pw);
-                pw.println(");");
+                pw.print(")");
             }
         }
     }

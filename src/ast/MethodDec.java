@@ -31,11 +31,11 @@ public class MethodDec extends Member {
         pw.print(" ");
 
         if(formParDec == null) {
-            pw.print("_" + currentClass + "_");
+            pw.print("_" + currentClass);
             id_idColon.genC(pw);
             pw.print("(_class_"  +  currentClass + " *self)");
         } else {
-            pw.print("_" + currentClass + "_");
+            pw.print("_" + currentClass);
             id_idColon.genJava(pw);
             pw.print("(");
             pw.print("_class_" +  currentClass + " *self, ");

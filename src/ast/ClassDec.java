@@ -62,7 +62,7 @@ public class ClassDec extends Type{
     public void genC(PW pw) {
 
         //Estrutura da classe para declaracao de metodos e variaveis de instancia
-        pw.println("typedef struct  _St_" + classname + " {");
+        pw.println("typedef struct _St_" + classname + " {");
         pw.add();
         int contador = 0;
         int quantidade = 0;
