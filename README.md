@@ -76,24 +76,24 @@ $java -cp src/ comp.Comp code-generation-tests/OK_GERXX.ci
 
 #### Verificação dos Testes
 
-- OK_GER01.ci -> OK, com GenJava
+- OK_GER01.ci -> OK, com GenJava e GenC
 - OK_GER02.ci -> OK, com GenJava
 - OK_GER03.ci -> Ok, com GenJava
 - OK_GER04.ci -> Ok, com GenJava
-- OK_GER05.ci -> Ok, problemas com Scanner
+- OK_GER05.ci -> Ok, com GenJava
 - OK_GER06.ci -> Ok, com GenJava
 - OK_GER07.ci -> Ok, com GenJava
 - OK_GER08.ci -> Ok, com GenJava
-- OK_GER09.ci -> Ok, sem GenJava
-- OK_GER10.ci -> Ok, sem GenJava
-- OK_GER11.ci -> Ok, sem GenJava
-- OK_GER12.ci -> Ok, sem GenJava
-- OK_GER13.ci -> Ok, sem GenJava
-- OK_GER14.ci -> Ok, sem GenJava
-- OK_GER15.ci -> Ok, sem GenJava
-- OK_GER16.ci -> Ok, sem GenJava
-- OK_GER21.ci -> Ok, sem GenJava
-- OK_GER22.ci -> Ok, sem GenJava
+- OK_GER09.ci -> Ok, com GenJava
+- OK_GER10.ci -> Ok, com GenJava
+- OK_GER11.ci -> Ok, com GenJava
+- OK_GER12.ci -> Ok, com GenJava
+- OK_GER13.ci -> Ok, com GenJava
+- OK_GER14.ci -> Ok, com GenJava
+- OK_GER15.ci -> Ok, com GenJava
+- OK_GER16.ci -> Ok, com GenJava
+- OK_GER21.ci -> Ok, com GenJava
+- OK_GER22.ci -> Ok, com GenJava
 
 ----
 
