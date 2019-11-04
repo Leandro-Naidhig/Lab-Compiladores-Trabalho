@@ -92,24 +92,7 @@ class Program
         b.p1;
         a = self.p: 0;
         a.print;
-        a = self.p: 1;
-        a.print;
-    
-        a = nil;
-        b = nil;
-        a2 = A.new; 
-        if a == b {
-            Out.print: 0, " ";
-        }
-        if b == a    {
-            Out.print: 1, " ";
-        }
-        if a == a2 {
-            Out.print: 2, " ";
-        }
-    
-        self.program = Program.new;
-        self.program.print;
+       
     }
 end
 
