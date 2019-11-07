@@ -111,7 +111,9 @@ public class ClassDec extends Type{
         for(Member s: memberList.getArray()) {
             if(s instanceof MethodDec) {
                 ((MethodDec)s).genC(pw, classname);
-                quantidade++;
+                if(!((MethodDec)s).getQualifier().equals("private")) {
+                    quantidade++;
+                }
             }
         }
 
@@ -122,18 +124,42 @@ public class ClassDec extends Type{
         pw.add();
         contador = 0;
 
+        ClassDec classePai = superclassname;
+
+        //Geracao da tabela de metodos da classe pai
+        while(classePai != null)
+            for(Member s: classePai.getMembros().getArray()) {
+                if(s instanceof MethodDec) {
+                    if(!((MethodDec)s).getQualifier().equals("private")) {
+                        pw.printIdent("(void(*)())_" + classname + "_" + ((MethodDec)s).getName());
+                        contador++;
+
+                        if(contador != quantidade) {
+                            pw.println(",");
+                        
+                        } else {
+                            pw.println("");
+                        }           
+                    }
+                }       
+            }
+            classePai = classePai.getSuperClass();
+        }
+
+
         //Geracao da tabela de metodos da classe
         for(Member s: memberList.getArray()) {
             if(s instanceof MethodDec) {
-                pw.printIdent("(void(*)())_" + classname + "_" + ((MethodDec)s).getName());
-                contador++;
+                if(!((MethodDec)s).getQualifier().equals("private")) {
+                    pw.printIdent("(void(*)())_" + classname + "_" + ((MethodDec)s).getName());
+                    contador++;
 
-                if(contador != quantidade) {
-                    pw.println(",");
-                
-                } else {
-                    pw.println("");
-                }
+                    if(contador != quantidade) {
+                        pw.println(",");
+                    
+                    } else {
+                        pw.println("");
+                    }
             }
         }
 

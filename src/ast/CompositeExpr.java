@@ -23,35 +23,30 @@ public class CompositeExpr extends Expr {
             
             if(Op != null && Op.toString().equals("++")) {
 
-                String expr1 = "";
-                String expr2 = "";
-
                 if(exprLeft.getType() == Type.intType) {
-                    expr1 = String.valueOf(((BasicValue)exprLeft).getValue().getValue());
+
+                    pw.print("concatStrings(intToString(");
+                    exprLeft.genC(pw);
+                    pw.print(")");
 
                 } else {
-                    expr1 = ((BasicValue)exprLeft).getString().getName();
+                    pw.print("concatStrings(");
+                    exprLeft.genC(pw);
                 }
 
                 if(exprRight != null) {
                     
                     if(exprRight.getType() == Type.intType) {
-                        
-                        //Falta verificar o valor da variavel
-                        if(exprRight instanceof IdExpr) {
-                            expr1 = ((IdExpr)exprRight).getMember1().getName();
-
-                        } else if(exprRight instanceof BasicValue) {
-                            expr2 = String.valueOf(((BasicValue)exprRight).getValue().getValue());
-                        }
-                    
+                        pw.print(", intToString(");
+                        exprRight.genC(pw);
+                        pw.print(")");          
                     } else {
-                        expr2 = ((BasicValue)exprRight).getString().getName();
+                        pw.print(", ");
+                        exprRight.genC(pw);
                     }
                 }
 
-                expr1 = expr1 + expr2;
-                pw.print(expr1 + ")");
+                pw.print(")");
             
             } else {
                 exprLeft.genC(pw);
@@ -119,7 +114,11 @@ public class CompositeExpr extends Expr {
     public Type getType() {
         if(Op == Token.EQ || Op == Token.NEQ || Op == Token.LE || Op == Token.LT ||
 		   Op == Token.GE || Op == Token.GT || Op == Token.AND || Op == Token.OR ) {
-			return Type.booleanType;
+            return Type.booleanType;
+        
+        } else if(Op == Token.PLUSPLUS) {
+            return Type.stringType;
+           
 		} else {
 			return Type.intType;
 		}

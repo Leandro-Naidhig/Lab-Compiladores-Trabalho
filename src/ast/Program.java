@@ -59,6 +59,28 @@ public class Program {
 		pw.println("}");
 		pw.println("");
 
+		//Converte int para String
+		pw.println("char *intToString(int _n) {");
+		pw.add();
+		pw.printlnIdent("char *ret = malloc(512);");
+		pw.printlnIdent("sprintf(ret, \"%d\", _n);");
+		pw.printlnIdent("return ret;");
+		pw.sub();
+		pw.println("}");
+		pw.println("");
+
+
+		//Concatena duas strings
+		pw.println("char *concatStrings(char *string1[], char *string2[]) {");
+		pw.add();
+		pw.printlnIdent("char *ret = malloc(strlen(string1) + strlen(string2) + 1)");
+		pw.printlnIdent("stcpy(ret,string1);");
+		pw.printlnIdent("strcat(ret,string2);");
+		pw.printlnIdent("return ret;");
+		pw.sub();
+		pw.println("}");
+		pw.println("");
+
 		//Define um tipo Func que e um ponteiro para funcao
 		pw.println("typedef void (*Func)();");
 		pw.println("");
