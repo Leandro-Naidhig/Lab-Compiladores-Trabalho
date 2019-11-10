@@ -5,15 +5,21 @@
  */
 package ast;
 
-public class ObjectCreation extends Expr{
+import java.util.ArrayList;
+
+public class ObjectCreation extends Expr {
 
     //Construtor da classe
     public ObjectCreation(Variable var) {
       this.var = var;
     }
+
+    public void genC(PW pw, ArrayList<Member> membros){
+      pw.print("new_" + var.getName() + "()");
+    }
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-      pw.print("new_" + var.getName() + "()");
     }
 
     //Metodo para geracao do codigo em C

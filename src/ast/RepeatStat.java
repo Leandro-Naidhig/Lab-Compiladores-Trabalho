@@ -4,8 +4,9 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class RepeatStat extends Statement{
+public class RepeatStat extends Statement {
 
     //Construtor da classe
     public RepeatStat(StatementList statementList, Expr expr) {
@@ -13,15 +14,18 @@ public class RepeatStat extends Statement{
         this.expr = expr;
     }
 
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, ArrayList<Member> membros){
         pw.printlnIdent("do {");
         pw.add();
-        statementList.genC(pw);
+        statementList.genC(pw, membros);
         pw.sub();
         pw.printIdent("} while(");
-        expr.genC(pw);
+        expr.genC(pw, membros);
         pw.print(")");
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
     }
 
     //Metodo para geracao do codigo em Java

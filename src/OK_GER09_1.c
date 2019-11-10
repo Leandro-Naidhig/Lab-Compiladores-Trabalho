@@ -45,33 +45,85 @@ typedef struct _St_A {
 
 _class_A *new_A(void);
 
-void _A_m(_class_A *self) {
-   int _i, _j, _k;
-   printf("%d%s", 7, " ");
-   _i = 1;
-   _j = (_i + 1);
-   _k = (_j + 1);
-   printf("%d%s", _i, " ");
-   printf("%d%s", _j, " ");
-   printf("%d%s", _k, " ");
-   _i = (((((((((3 + 1)) * 3)) / 2)) / 2)) + 1);
-   printf("%d%s", _i, " ");
-   _i = (((((100 - 95)) * 2)) - 5);
-   printf("%d%s", _i, " ");
-   _i = (((100 - ((45 * 2)))) - 4);
-   printf("%d%s", _i, " ");
-   printf("%d%s", 7, " ");
+void _A_m1(_class_A *self, int _n) {
+   printf("%s%s", (concatStrings("1 ", intToString(_n))), " ");
 }
 
 Func VTclass_A[] = {
-   (void(*)())_A_m
+   (void(*)())_A_m1
 };
+
 
 _class_A *new_A() {
    _class_A *t;
    
    if((t = malloc(sizeof(_class_A))) != NULL) {
       t->vt = VTclass_A;
+   }
+   
+   return t;
+}
+
+typedef struct _St_B {
+   Func *vt;
+}_class_B;
+
+_class_B *new_B(void);
+
+void _B_m2(_class_B *self, int _n) {
+   ;
+   printf("%s%s", (concatStrings(" 2 ", intToString(_n))), " ");
+}
+
+Func VTclass_B[] = {
+   (void(*)())_A_m1,
+   (void(*)())_B_m2
+};
+
+
+void encPos(_class_A *a) {
+    
+    int tamanho = sizeof(VTclass_B)/sizeof(VTclass_B[0]);
+    printf("%d\n", tamanho);
+}
+
+_class_B *new_B() {
+   _class_B *t;
+   
+   if((t = malloc(sizeof(_class_B))) != NULL) {
+      t->vt = VTclass_B;
+   }
+   
+   return t;
+}
+
+typedef struct _St_C {
+   Func *vt;
+}_class_C;
+
+_class_C *new_C(void);
+
+void _C_m3(_class_C *self, int _n) {
+   _B_m2((_class_B *) self, 2);
+   printf("%s%s", (concatStrings(" 3 ", intToString(_n))), " ");
+}
+void _C_m4(_class_C *self, int _n) {
+   (self->vt[3])(self, 3);
+   printf("%s%s\n", (concatStrings(" 4 ", intToString(_n))), " ");
+}
+
+Func VTclass_C[] = {
+   (void(*)())_A_m1,
+   (void(*)())_B_m2,
+   (void(*)())_C_m4,
+   (void(*)())_C_m3
+};
+
+_class_C *new_C() {
+   _class_C *t;
+   
+   if((t = malloc(sizeof(_class_C))) != NULL) {
+      t->vt = VTclass_C;
    }
    
    return t;
@@ -84,10 +136,10 @@ typedef struct _St_Program {
 _class_Program *new_Program(void);
 
 void _Program_run(_class_Program *self) {
-   _class_A *_a;
-   printf("%s\n", "7 1 2 3 4 5 6 7");
-   _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[(sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 1 - 0])(_a);
+   _class_C *_c;
+   printf("%s\n", "1 1 2 2 3 3 4 4");
+   _c = new_C();
+   ((void (*)(_class_C* , int))_c->vt[2])(_c, 4);
 }
 
 Func VTclass_Program[] = {

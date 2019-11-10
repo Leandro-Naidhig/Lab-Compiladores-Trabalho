@@ -14,9 +14,8 @@ public class WriteStat extends Statement {
         this.mode = mode;
     }
 
-    // Metodo para geracao do codigo em C
-    public void genC(PW pw) {
-        if (mode.equals("print:")) {
+    public void genC(PW pw, ArrayList<Member> membros){
+        if(mode.equals("print:")) {
             pw.printIdent("printf(\"");
             exprListArray = exprList.getArrayList();
             int contador = 0;
@@ -41,7 +40,7 @@ public class WriteStat extends Statement {
             //Percorre o vetor verificando o nome das expressoes
             for(Expr s : exprListArray) {    
 
-                s.genC(pw);
+                s.genC(pw, membros);
                 contador++;
             
                 if(exprListArray.size() != contador) {
@@ -74,7 +73,7 @@ public class WriteStat extends Statement {
             
             //Percorre o vetor verificando o nome das expressoes
             for(Expr s : exprListArray) {    
-                s.genC(pw);
+                s.genC(pw, membros);
                 contador++;
             
                 if(exprListArray.size() != contador) {
@@ -83,6 +82,10 @@ public class WriteStat extends Statement {
             }
             pw.print(")");
         }
+    }
+
+    // Metodo para geracao do codigo em C
+    public void genC(PW pw) {
     }
 
     // Metodo para geracao do codigo em Java

@@ -24,6 +24,19 @@ char *readString() {
    return ret;
 }
 
+char *intToString(int _n) {
+   char *ret = malloc(512);
+   sprintf(ret, "%d", _n);
+   return ret;
+}
+
+char *concatStrings(char string1[], char string2[]) {
+   char *ret = malloc(strlen(string1) + strlen(string2) + 1);
+   strcpy(ret,string1);
+   strcat(ret,string2);
+   return ret;
+}
+
 typedef void (*Func)();
 
 typedef struct _St_A {
@@ -34,15 +47,15 @@ typedef struct _St_A {
 _class_A *new_A(void);
 
 void _A_set(_class_A *self, int _n) {
-      (self->_A_n) = _n;
+   (self->_A_n = _n;
 }
 int _A_get(_class_A *self) {
-   return  1;
+   return (self->_A_n;
 }
 
 Func VTclass_A[] = {
-   (void(*)())_A_set,
-   (void(*)())_A_get
+   (void(*)())_A_get,
+   (void(*)())_A_set
 };
 
 _class_A *new_A() {
@@ -57,20 +70,19 @@ _class_A *new_A() {
 
 typedef struct _St_Program {
    Func *vt;
-   _class_A *_Program_a;
+   struct _St_A *_Program_a;
 }_class_Program;
 
 _class_Program *new_Program(void);
 
 void _Program_print(_class_Program *self) {
-   printf("%d", ( (int(*)(_class_A *)) self->_Program_a->vt[1]) (self->_Program_a) );
+   printf("%d", (self->_Program_a->vt[1])(self->_A_a));
 }
-
 void _Program_set(_class_Program *self, _class_A *_a) {
-      self->_Program_a = _a;
+   (self->_Program_a = _a;
 }
 _class_A* _Program_get(_class_Program *self) {
-   return self->_Program_a;
+   return (self->_Program_a;
 }
 void _Program_run(_class_Program *self) {
    printf("%s\n", "0");
@@ -78,10 +90,9 @@ void _Program_run(_class_Program *self) {
 }
 
 Func VTclass_Program[] = {
-   (void(*)())_Program_print,
-   (void(*)())_Program_set,
+   (void(*)())_Program_run,
    (void(*)())_Program_get,
-   (void(*)())_Program_run
+   (void(*)())_Program_print
 };
 
 _class_Program *new_Program() {
@@ -97,6 +108,6 @@ _class_Program *new_Program() {
 int main() {
    _class_Program *program;
    program = new_Program();
-   ((void (*)(_class_Program*)) program->vt[0])(program);
+   ((void (*)(_class_Program*)) program->vt[3])(program);
    return 0;
 }

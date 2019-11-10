@@ -4,28 +4,32 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class WhileStat extends Statement{
+public class WhileStat extends Statement {
 
     //Construtor da classe WhileStat
     public WhileStat(StatementList statList, Expr expr) {
         this.statList = statList;
         this.expr = expr;
     }
-    
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
-		pw.printIdent("while(");
-		expr.genC(pw);
+
+    public void genC(PW pw, ArrayList<Member> membros){
+        pw.printIdent("while(");
+		expr.genC(pw, membros);
 		pw.println(") { ");
 
 		if (statList != null) {
             pw.add();
-			statList.genC(pw);
+			statList.genC(pw, membros);
             pw.sub();
         }
         
         pw.printlnIdent("}");
+    }
+    
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
     }
     
     //Metodo para geracao do codigo em Java

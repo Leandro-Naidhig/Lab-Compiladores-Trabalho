@@ -24,6 +24,19 @@ char *readString() {
    return ret;
 }
 
+char *intToString(int _n) {
+   char *ret = malloc(512);
+   sprintf(ret, "%d", _n);
+   return ret;
+}
+
+char *concatStrings(char string1[], char string2[]) {
+   char *ret = malloc(strlen(string1) + strlen(string2) + 1);
+   strcpy(ret,string1);
+   strcat(ret,string2);
+   return ret;
+}
+
 typedef void (*Func)();
 
 typedef struct _St_A {
@@ -72,7 +85,7 @@ void _Program_run(_class_Program *self) {
    _class_A *_a;
    printf("%s\n", "6 1 2 3 4 5 6");
    _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[0])(_a);
+   ((void (*)(_class_A* ))_a->vt[(sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 1 - 0])(_a);
 }
 
 Func VTclass_Program[] = {

@@ -5,11 +5,16 @@
  */
 package ast;
 
+import java.util.ArrayList;
+
 public class NilExpr extends Expr {
+
+   public void genC(PW pw, ArrayList<Member> membros){
+      pw.printIdent("null");
+   }
    
    //Metodo para geracao do codigo em C
    public void genC( PW pw, boolean putParenthesis ) {
-      pw.printIdent("null");
    }
 
    //Metodo para geracao do codigo em Java

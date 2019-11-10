@@ -10,13 +10,14 @@ public class StatementList {
 
     //Construtor da classe
     public StatementList(ArrayList<Statement> arrayStatement) {
-		this.arrayStatement = arrayStatement;
+		  this.arrayStatement = arrayStatement;
     }
+
     
     //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, ArrayList<Member> membros) {
       for(Statement s : arrayStatement) {
-        s.genC(pw);
+        s.genC(pw, membros);
         if(!(s instanceof IfStat) && !(s instanceof WhileStat)) {
           pw.println(";");
         }

@@ -4,12 +4,16 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
 public class LiteralBoolean extends Expr {
 
     //Construtor da classe
     public LiteralBoolean( boolean value ) {
         this.value = value;
+    }
+
+    public void genC(PW pw, ArrayList<Member> membros){
     }
 
     //Metodo para geracao do codigo em C

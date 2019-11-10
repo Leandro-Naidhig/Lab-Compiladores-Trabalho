@@ -4,6 +4,8 @@
 
  */
 package ast;
+import java.util.ArrayList;
+
 import lexer.Token;
 
 public class CompositeExpr extends Expr {
@@ -15,9 +17,7 @@ public class CompositeExpr extends Expr {
 		this.exprRight = exprRight;
     }
 
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
-       
+    public void genC(PW pw, ArrayList<Member> membros){
         if(exprLeft != null) {
             pw.print("(");
             
@@ -26,30 +26,30 @@ public class CompositeExpr extends Expr {
                 if(exprLeft.getType() == Type.intType) {
 
                     pw.print("concatStrings(intToString(");
-                    exprLeft.genC(pw);
+                    exprLeft.genC(pw, membros);
                     pw.print(")");
 
                 } else {
                     pw.print("concatStrings(");
-                    exprLeft.genC(pw);
+                    exprLeft.genC(pw, membros);
                 }
 
                 if(exprRight != null) {
                     
                     if(exprRight.getType() == Type.intType) {
                         pw.print(", intToString(");
-                        exprRight.genC(pw);
+                        exprRight.genC(pw, membros);
                         pw.print(")");          
                     } else {
                         pw.print(", ");
-                        exprRight.genC(pw);
+                        exprRight.genC(pw, membros);
                     }
                 }
 
-                pw.print(")");
+                pw.print("))");
             
             } else {
-                exprLeft.genC(pw);
+                exprLeft.genC(pw, membros);
 
                 if(Op != null) {
                     pw.print(" " + Op.toString() + " ");	
@@ -58,7 +58,7 @@ public class CompositeExpr extends Expr {
                 }
                 
                 if(exprRight != null) {
-                    exprRight.genC(pw);
+                    exprRight.genC(pw, membros);
                     pw.print(")");
                 }
             }
@@ -68,10 +68,14 @@ public class CompositeExpr extends Expr {
             pw.print(Op.toString());
 
             if(exprRight != null) {
-                exprRight.genC(pw);
+                exprRight.genC(pw, membros);
             }
             pw.print(")");
         }
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java

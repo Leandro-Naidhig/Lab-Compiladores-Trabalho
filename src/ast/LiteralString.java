@@ -5,11 +5,16 @@
  */
 package ast;
 
+import java.util.ArrayList;
+
 public class LiteralString extends Expr {
     
     //Construtor da classe
     public LiteralString( String literalString ) { 
         this.literalString = literalString;
+    }
+
+    public void genC(PW pw, ArrayList<Member> membros){
     }
     
     //Metodo para geracao do codigo em C

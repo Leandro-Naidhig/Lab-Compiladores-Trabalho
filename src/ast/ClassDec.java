@@ -5,6 +5,10 @@
  */
 package ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+
 /** This class represents a metaobject annotation as <code>{@literal @}ce(...)</code> in <br>
  * <code>
  * @ce(5, "'class' expected") <br>
@@ -64,8 +68,12 @@ public class ClassDec extends Type{
         //Estrutura da classe para declaracao de metodos e variaveis de instancia
         pw.println("typedef struct _St_" + classname + " {");
         pw.add();
+        
+        //Listas para montagem das funcoes da classe atual
+        ArrayList<Member> membros = new ArrayList<>();
+        ArrayList<String> nomeClasses = new ArrayList<>();
+
         int contador = 0;
-        int quantidade = 0;
 
         //Caso existam membros na classe (metodos ou variaveis de instancia)
         if(memberList != null) {
@@ -106,14 +114,73 @@ public class ClassDec extends Type{
         pw.println("_class_" + classname + " *new_" + classname + "(void);");
         pw.println("");
 
+        int flag = 0;
+        int quantidade = 0;
+        String classe = classname;
+        MemberList lista = this.getMembros();
+        ClassDec superclasse = this.getSuperClass();
+
+        //Recupera todos os metodos da superclasse
+        //Enquanto for encontrado uma superclasse
+        do {
+
+            boolean encontrado = false;
+
+            //Percorre todos os membros da superclasse
+            for(Member s: lista.getArray()) {
+
+                if(s instanceof MethodDec) {
+                    //Caso for um metodo e ele nao for privado
+                    if(!((MethodDec)s).getQualifier().equals("private")) {
+                        
+                        //Verifica se nao e um override da superclasse
+                        for(Member v: membros) {
+                            if(((MethodDec)v).getName().equals(((MethodDec)s).getName())){
+                                encontrado = true;
+                            }
+                        }
+
+                        if(!encontrado) {
+                            membros.add(s);
+                            nomeClasses.add(classe);
+                            quantidade++;
+                        }
+                    }
+                }       
+            }
+
+            if(flag == 1) {
+
+                if(superclasse.getSuperClass() != null) {
+                    superclasse = superclasse.getSuperClass();
+                    lista = superclasse.getMembros();
+                    classe = superclasse.getCname();
+
+                } else {
+                    superclasse = null;
+                }
+                    
+            } else {
+                
+                if(superclasse != null) {   
+                    System.out.println(this.getCname());
+                    lista = superclasse.getMembros();
+                    classe = superclasse.getCname();
+                    flag = 1;
+                }
+            }
+            
+        } while(superclasse != null);
+
+        //Inverte as duas listas, ja que se trata de uma hierarquia
+        Collections.reverse(membros);
+        Collections.reverse(nomeClasses);
+        contador = 0;
 
         //Geracao de todas os metodos
         for(Member s: memberList.getArray()) {
             if(s instanceof MethodDec) {
-                ((MethodDec)s).genC(pw, classname);
-                if(!((MethodDec)s).getQualifier().equals("private")) {
-                    quantidade++;
-                }
+                ((MethodDec)s).genC(pw, classname, membros);
             }
         }
 
@@ -122,46 +189,24 @@ public class ClassDec extends Type{
         //Criacao de uma tabela de metodos da classe
         pw.println("Func VTclass_" + classname + "[] = {");
         pw.add();
-        contador = 0;
 
-        ClassDec classePai = superclassname;
+        //Transforma em iteradores
+		Iterator<Member>parsMetodos = membros.iterator();
+		Iterator<String>parsNames = nomeClasses.iterator();
 
-        //Geracao da tabela de metodos da classe pai
-        while(classePai != null)
-            for(Member s: classePai.getMembros().getArray()) {
-                if(s instanceof MethodDec) {
-                    if(!((MethodDec)s).getQualifier().equals("private")) {
-                        pw.printIdent("(void(*)())_" + classname + "_" + ((MethodDec)s).getName());
-                        contador++;
+		//Percorre os dois vetores verificando se sao similares em seus tipos
+		while(parsMetodos.hasNext() && parsNames.hasNext()){
+            
+            pw.printIdent("(void(*)())_" + parsNames.next() + "_" + parsMetodos.next().getName());
+            contador++;
 
-                        if(contador != quantidade) {
-                            pw.println(",");
-                        
-                        } else {
-                            pw.println("");
-                        }           
-                    }
-                }       
-            }
-            classePai = classePai.getSuperClass();
-        }
-
-
-        //Geracao da tabela de metodos da classe
-        for(Member s: memberList.getArray()) {
-            if(s instanceof MethodDec) {
-                if(!((MethodDec)s).getQualifier().equals("private")) {
-                    pw.printIdent("(void(*)())_" + classname + "_" + ((MethodDec)s).getName());
-                    contador++;
-
-                    if(contador != quantidade) {
-                        pw.println(",");
+            if(contador != quantidade) {
+                pw.println(",");
                     
-                    } else {
-                        pw.println("");
-                    }
+            } else {
+                pw.println("");
             }
-        }
+		}
 
         pw.sub();
         pw.println("};");
@@ -203,7 +248,6 @@ public class ClassDec extends Type{
                     }
                 }
             } 
-
 
             pw.println(contador + "])(program);");
             pw.printlnIdent("return 0;");

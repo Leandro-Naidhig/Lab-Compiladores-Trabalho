@@ -23,6 +23,19 @@ public class ExpressionList {
         return exprList.size();
     }
 
+    public void genC(PW pw, ArrayList<Member> membros) {
+        int contador = 0;
+
+        for(Expr s : exprList) {
+            s.genC(pw, membros);
+            contador++;
+
+            if(exprList.size() != contador) {
+                pw.print(", ");
+            }
+        }
+    }
+
     //Metodo para geracao do codigo em Java
     public void genC(PW pw) {
         int contador = 0;

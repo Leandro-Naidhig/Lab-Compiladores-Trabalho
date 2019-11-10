@@ -4,6 +4,7 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
 public class MethodDec extends Member {
 
@@ -21,7 +22,7 @@ public class MethodDec extends Member {
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw, String currentClass) {
+    public void genC(PW pw, String currentClass, ArrayList<Member> membros) {
         if(type != null) {
 
             if(type instanceof ClassDec) {
@@ -49,7 +50,7 @@ public class MethodDec extends Member {
         
         pw.println(" {");
         pw.add();
-        statementList.genC(pw);
+        statementList.genC(pw, membros);
         pw.sub();
         pw.printlnIdent("}");
     }

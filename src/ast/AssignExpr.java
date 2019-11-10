@@ -4,7 +4,7 @@
 
  */
 package ast;
-
+import java.util.ArrayList;
 public class AssignExpr extends Statement{
 
     //Construtor da classe WhileStat
@@ -12,15 +12,18 @@ public class AssignExpr extends Statement{
         this.exprLeft = exprLeft;
         this.exprRight = exprRight;
     }
+
+    public void genC(PW pw, ArrayList<Member> membros){
+        pw.printIdent("");
+        exprLeft.genC(pw, membros);
+		if (exprRight != null) {
+            pw.print(" = ");
+            exprRight.genC(pw, membros);
+        }
+    }
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.printIdent("");
-        exprLeft.genC(pw);
-		if (exprRight != null) {
-            pw.print(" = ");
-            exprRight.genC(pw);
-        }
     }
 
     //Metodo para geracao do codigo em Java

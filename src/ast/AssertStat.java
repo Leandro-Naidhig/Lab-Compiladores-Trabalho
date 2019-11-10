@@ -4,8 +4,9 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class AssertStat extends Statement{
+public class AssertStat extends Statement {
 
     //Construtor da classe WhileStat
     public AssertStat(String str, Expr expr) {
@@ -15,6 +16,10 @@ public class AssertStat extends Statement{
     
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
     }
     
     //Metodo para geracao do codigo em Java

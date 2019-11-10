@@ -4,8 +4,10 @@
 
  */
 package ast;
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class SelfExpr extends Expr{
+public class SelfExpr extends Expr {
 
     //Construtor da classe
     public SelfExpr(Member id1,  Member id2, ExpressionList exprlist, ClassDec currentClass) {
@@ -15,65 +17,85 @@ public class SelfExpr extends Expr{
         this.currentClass = currentClass;
     }
 
+    public void genC(PW pw, boolean value){
+    }
+
     //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
+    public void genC(PW pw, ArrayList<Member> membros) {
         
         int contador = 0;
-        pw.printIdent("(self");
+        pw.print("(self");
 
-        if(id1 != null) {
+        if(id1 != null && id2 != null) {
 
             if(id1 instanceof MethodDec) {
                 pw.print("->_" + currentClass.getCname() + "_" + ((MethodDec)id1).getName());
             } else {
                 pw.print("->_" + currentClass.getCname() + "_" + ((Variable)id1).getName());
             }
-
-            if(id2 != null) {
-                if(exprlist != null) {
-                    pw.print("->_" + currentClass.getCname() + "_");
-                    pw.print(((MethodDec)id2).getName());
-                    pw.print("(");
-                    exprlist.genC(pw);
-                    pw.print(")");
+            
+            if(exprlist != null) {
+                pw.print("->_" + currentClass.getCname() + "_");
+                pw.print(((MethodDec)id2).getName());
+                pw.print("(");
+                exprlist.genC(pw, membros);
+                pw.print(")");
                     
-                } else {
-                    pw.print("->vt[");
+            } else {
+                
+                ClassDec classe = ((ClassDec)id1.getType());
+                pw.print("->vt[");
+                contador = 0;
 
-                    ClassDec classe = ((ClassDec)id1.getType());
-                    contador = 0;
-
-                    //recuperar a posicao do metodo na lista
-                    for(Member s: classe.getMembros().getArray()) {
-                        
-                        if(s instanceof MethodDec) { 
-                            if(((MethodDec)s).getName().equals(id2.getName())) {
-                                break;
-                            } else {
-                                contador++;
-                            }
+                //recuperar a posicao do metodo na lista
+                for(Member s: membros) {
+                    
+                    if(s instanceof MethodDec) { 
+                        if(((MethodDec)s).getName().equals(id2.getName())) {
+                            break;
+                        } else {
+                            contador++;
                         }
                     }
+                }
 
-                    pw.print(contador + "])(self->_" + classe.getCname());
-                    id1.genC(pw);
+                pw.print(contador + "])(self->_" + classe.getCname());
+                id1.genC(pw);
+                pw.print(")");
+
+                }
+        
+        } else if(id1 != null && id2 == null) {
+            
+            if(id1 instanceof MethodDec) {
+
+                pw.print("->vt[");
+                contador = 0;
+
+                //recuperar a posicao do metodo na lista
+                for(Member s: membros) {
+                    
+                    if(s instanceof MethodDec) { 
+                        if(((MethodDec)s).getName().equals(id1.getName())) {
+                            break;
+                        } else {
+                            contador++;
+                        }
+                    }
+                }
+
+                pw.print(contador + "])");
+
+                if(exprlist != null) {
+                    pw.print("(self, ");
+                    exprlist.genC(pw, membros);
                     pw.print(")");
-
+                } else {
+                    pw.print("(self)");
                 }
 
             } else {
-                pw.print(")");
-            }
-
-            if(id1 instanceof MethodDec) {
-                if(exprlist != null) {
-                    pw.print("(");
-                    exprlist.genC(pw);
-                    pw.print(")");
-                } else {
-                    pw.print("()");
-                }
-                
+                pw.print("->_" + currentClass.getCname() + "_" + ((Variable)id1).getName() + ")");
             }
         }
     }

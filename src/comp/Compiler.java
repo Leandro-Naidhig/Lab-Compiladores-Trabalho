@@ -1354,7 +1354,7 @@ public class Compiler {
 						//Limpeza da tabela de simbolos da superclasse
 						symbolTable.removeLocalIdentMethodParents();
 
-						return new SuperExpr(membro1, null);
+						return new SuperExpr(membro1, null, currentClass);
 			
 					} else if(lexer.token == Token.IDCOLON) {
 						
@@ -1390,7 +1390,7 @@ public class Compiler {
 
 						//Limpeza da tabela de simbolos da superclasse
 						symbolTable.removeLocalIdentMethodParents();
-						return new SuperExpr(membro1, exprList);
+						return new SuperExpr(membro1, exprList, currentClass);
 					}
 				}
 				break;

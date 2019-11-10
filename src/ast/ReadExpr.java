@@ -5,20 +5,25 @@
  */
 package ast;
 
-public class ReadExpr extends Expr{
+import java.util.ArrayList;
+
+public class ReadExpr extends Expr {
 
     //Construtor da classe
     public ReadExpr(String name) {
         this.name = name;
     }
 
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
+    public void genC(PW pw, ArrayList<Member> membros){
         if(name.equals("readInt")) {
             pw.print("readInt()");
         } else {
             pw.print("readString()");
         }
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java

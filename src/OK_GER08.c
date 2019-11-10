@@ -24,6 +24,19 @@ char *readString() {
    return ret;
 }
 
+char *intToString(int _n) {
+   char *ret = malloc(512);
+   sprintf(ret, "%d", _n);
+   return ret;
+}
+
+char *concatStrings(char string1[], char string2[]) {
+   char *ret = malloc(strlen(string1) + strlen(string2) + 1);
+   strcpy(ret,string1);
+   strcat(ret,string2);
+   return ret;
+}
+
 typedef void (*Func)();
 
 typedef struct _St_A {
@@ -47,16 +60,16 @@ void _A_m3(_class_A *self, int _n, int _p, char * _q[], int _r, int _falseBool) 
    printf("%s%s", _q, " ");
    printf("%d%s", _r, " ");
    if(_falseBool) {
-      printf("%d", (8 ));
+      printf("%s", (concatStrings(intToString(8), " ")));
    } else { 
-      printf("%d", (7 ));
+      printf("%s", (concatStrings(intToString(7), " ")));
    }
 }
 
 Func VTclass_A[] = {
-   (void(*)())_A_m1,
+   (void(*)())_A_m3,
    (void(*)())_A_m2,
-   (void(*)())_A_m3
+   (void(*)())_A_m1
 };
 
 _class_A *new_A() {
@@ -79,9 +92,9 @@ void _Program_run(_class_Program *self) {
    _class_A *_a;
    printf("%s\n", "1 1 2 2 3 3 4 5 6 7");
    _a = new_A();
-   ((void (*)(_class_A* , int))_a->vt[0])(_a, 1);
-   ((void (*)(_class_A* , int))_a->vt[1])(_a, 2);
-   ((void (*)(_class_A* , int, int, char *, int, int))_a->vt[2])(_a, 3, 4, "5", 6, false);
+   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 2)])(_a, 1);
+   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 1)])(_a, 2);
+   ((void (*)(_class_A* , int, int, char *, int, int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 0)])(_a, 3, 4, "5", 6, 0);
 }
 
 Func VTclass_Program[] = {

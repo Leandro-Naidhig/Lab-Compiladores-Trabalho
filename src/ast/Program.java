@@ -71,10 +71,10 @@ public class Program {
 
 
 		//Concatena duas strings
-		pw.println("char *concatStrings(char *string1[], char *string2[]) {");
+		pw.println("char *concatStrings(char string1[], char string2[]) {");
 		pw.add();
-		pw.printlnIdent("char *ret = malloc(strlen(string1) + strlen(string2) + 1)");
-		pw.printlnIdent("stcpy(ret,string1);");
+		pw.printlnIdent("char *ret = malloc(strlen(string1) + strlen(string2) + 1);");
+		pw.printlnIdent("strcpy(ret,string1);");
 		pw.printlnIdent("strcat(ret,string2);");
 		pw.printlnIdent("return ret;");
 		pw.sub();

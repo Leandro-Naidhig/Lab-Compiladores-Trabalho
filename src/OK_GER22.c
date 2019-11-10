@@ -24,6 +24,19 @@ char *readString() {
    return ret;
 }
 
+char *intToString(int _n) {
+   char *ret = malloc(512);
+   sprintf(ret, "%d", _n);
+   return ret;
+}
+
+char *concatStrings(char string1[], char string2[]) {
+   char *ret = malloc(strlen(string1) + strlen(string2) + 1);
+   strcpy(ret,string1);
+   strcat(ret,string2);
+   return ret;
+}
+
 typedef void (*Func)();
 
 typedef struct _St_Program {

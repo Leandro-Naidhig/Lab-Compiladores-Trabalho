@@ -16,6 +16,6 @@ abstract public class Member {
     //Metodo para retornar o tipo
     abstract public Type getType();
 
-    //Metodo para retornar o tipo
+    //Metodo para retornar o nome
     abstract public String getName();
 }

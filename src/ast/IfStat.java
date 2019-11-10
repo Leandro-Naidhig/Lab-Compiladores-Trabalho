@@ -25,17 +25,15 @@ public class IfStat extends Statement {
         return statElse;
     }
 
-    //metodo para geracao do codigo em C
-    public void genC(PW pw) {
-       
+    public void genC(PW pw, ArrayList<Member> membros){
         pw.printIdent("if(");
-        expr.genC(pw);
+        expr.genC(pw, membros);
         pw.println(") {");
 
         if(statIf != null) {
             pw.add();
             for(Statement s : statIf) {
-                s.genC(pw);
+                s.genC(pw, membros);
                 pw.println(";");
             }
             pw.sub();    
@@ -45,12 +43,16 @@ public class IfStat extends Statement {
             pw.printlnIdent("} else { ");
             pw.add();
             for(Statement s : statElse) {
-                s.genC(pw);
+                s.genC(pw, membros);
                 pw.println(";");
             }
             pw.sub();   
         }
         pw.printlnIdent("}");
+    }
+
+    //metodo para geracao do codigo em C
+    public void genC(PW pw) {
     }
 
     //Metodo para geracao do codigo em Java

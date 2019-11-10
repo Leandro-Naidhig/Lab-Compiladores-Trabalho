@@ -4,6 +4,7 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
 public class BreakStat extends Statement {
 
@@ -12,9 +13,12 @@ public class BreakStat extends Statement {
         this.name = "break";
     }
 
+    public void genC(PW pw, ArrayList<Member> membros){
+        pw.printlnIdent(name);
+    }
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.printlnIdent(name);
     }
     
     //Metodo para geracao do codigo em Java

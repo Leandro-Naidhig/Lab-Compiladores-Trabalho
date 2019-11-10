@@ -4,6 +4,7 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
 public class BasicValue extends Expr{
 
@@ -34,8 +35,7 @@ public class BasicValue extends Expr{
         }
     }
 
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean op) {
+    public void genC(PW pw, ArrayList<Member> membros){
         if(StringValue != null) {
             StringValue.genC(pw);
         } else if(BooleanValue != null) {
@@ -43,6 +43,11 @@ public class BasicValue extends Expr{
         } else {
             IntValue.genC(pw);
         }
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean op) {
+        
     }
 
     //Metodo para geracao do codigo em Java

@@ -5,6 +5,8 @@
  */
 package ast;
 
+import java.util.ArrayList;
+
 public class ReturnStat extends Statement {
 
     //Construtor da classe
@@ -12,10 +14,13 @@ public class ReturnStat extends Statement {
         this.expr = expr;
     }
 
+    public void genC(PW pw, ArrayList<Member> membros){
+        pw.printIdent("return ");
+        expr.genC(pw, membros);
+    }
+
     //metodo para geracao do codigo em C
     public void genC(PW pw) {
-        pw.printIdent("return ");
-        expr.genC(pw);
     }
 
     //Metodo para geracao do codigo em Java

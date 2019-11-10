@@ -45,26 +45,17 @@ typedef struct _St_A {
 
 _class_A *new_A(void);
 
-void _A_m(_class_A *self) {
-   int _i, _j, _k;
-   printf("%d%s", 7, " ");
-   _i = 1;
-   _j = (_i + 1);
-   _k = (_j + 1);
-   printf("%d%s", _i, " ");
-   printf("%d%s", _j, " ");
-   printf("%d%s", _k, " ");
-   _i = (((((((((3 + 1)) * 3)) / 2)) / 2)) + 1);
-   printf("%d%s", _i, " ");
-   _i = (((((100 - 95)) * 2)) - 5);
-   printf("%d%s", _i, " ");
-   _i = (((100 - ((45 * 2)))) - 4);
-   printf("%d%s", _i, " ");
-   printf("%d%s", 7, " ");
+void _A_m1(_class_A *self) {
+   printf("%s", " 2 ");
+}
+void _A_m2(_class_A *self, int _n) {
+   printf("%d%s", _n, " ");
+   (self->vt[1])(self);
 }
 
 Func VTclass_A[] = {
-   (void(*)())_A_m
+   (void(*)())_A_m2,
+   (void(*)())_A_m1
 };
 
 _class_A *new_A() {
@@ -72,6 +63,30 @@ _class_A *new_A() {
    
    if((t = malloc(sizeof(_class_A))) != NULL) {
       t->vt = VTclass_A;
+   }
+   
+   return t;
+}
+
+typedef struct _St_B {
+   Func *vt;
+}_class_B;
+
+_class_B *new_B(void);
+
+void _B_m1(_class_B *self) {
+   printf("%s\n", " 4 ");
+}
+
+Func VTclass_B[] = {
+   (void(*)())_B_m1
+};
+
+_class_B *new_B() {
+   _class_B *t;
+   
+   if((t = malloc(sizeof(_class_B))) != NULL) {
+      t->vt = VTclass_B;
    }
    
    return t;
@@ -85,9 +100,13 @@ _class_Program *new_Program(void);
 
 void _Program_run(_class_Program *self) {
    _class_A *_a;
-   printf("%s\n", "7 1 2 3 4 5 6 7");
+   _class_B *_b;
+   printf("%s\n", "4 1 2 3 4");
+   printf("%s", "4 ");
    _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[(sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 1 - 0])(_a);
+   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 2 - 0)])(_a, 1);
+   _a = new_B();
+   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 2 - 1)])(_a, 3);
 }
 
 Func VTclass_Program[] = {

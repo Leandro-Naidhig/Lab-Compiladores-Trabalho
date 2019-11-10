@@ -4,19 +4,23 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class ExpressionFactor extends Expr{
+public class ExpressionFactor extends Expr {
 
     //Construtor da classe
     public ExpressionFactor(Expr expr) {
         this.expr = expr;
     }
 
+    public void genC(PW pw, ArrayList<Member> membros){
+        pw.print("(");
+        expr.genC(pw, membros);
+        pw.print(")");
+    }
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw, boolean value) {
-        pw.print("(");
-        expr.genC(pw);
-        pw.print(")");
     }
 
     //Metodo para geracao do codigo em Java

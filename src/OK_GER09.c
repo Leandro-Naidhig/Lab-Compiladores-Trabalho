@@ -30,10 +30,10 @@ char *intToString(int _n) {
    return ret;
 }
 
-char *concatStrings(char *string1, char *string2) {
+char *concatStrings(char string1[], char string2[]) {
    char *ret = malloc(strlen(string1) + strlen(string2) + 1);
-   strcpy(ret, string1);
-   strcat(ret , string2);    
+   strcpy(ret,string1);
+   strcat(ret,string2);
    return ret;
 }
 
@@ -70,10 +70,12 @@ typedef struct _St_B {
 _class_B *new_B(void);
 
 void _B_m2(_class_B *self, int _n) {
+   _A_m1((_class_A *) self, 1);
    printf("%s%s", (concatStrings(" 2 ", intToString(_n))), " ");
 }
 
 Func VTclass_B[] = {
+   (void(*)())_A_m1,
    (void(*)())_B_m2
 };
 
@@ -94,16 +96,19 @@ typedef struct _St_C {
 _class_C *new_C(void);
 
 void _C_m3(_class_C *self, int _n) {
+   _B_m2((_class_B *) self, 2);
    printf("%s%s", (concatStrings(" 3 ", intToString(_n))), " ");
 }
 void _C_m4(_class_C *self, int _n) {
-   (self->vt[0])(self, 3);
+   (self->vt[3])(self, 3);
    printf("%s%s\n", (concatStrings(" 4 ", intToString(_n))), " ");
 }
 
 Func VTclass_C[] = {
-   (void(*)())_C_m3,
-   (void(*)())_C_m4
+   (void(*)())_A_m1,
+   (void(*)())_B_m2,
+   (void(*)())_C_m4,
+   (void(*)())_C_m3
 };
 
 _class_C *new_C() {
@@ -126,7 +131,7 @@ void _Program_run(_class_Program *self) {
    _class_C *_c;
    printf("%s\n", "1 1 2 2 3 3 4 4");
    _c = new_C();
-   ((void (*)(_class_C* , int))_c->vt[1])(_c, 4);
+   ((void (*)(_class_C* , int))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 2 - 0)])(_c, 4);
 }
 
 Func VTclass_Program[] = {

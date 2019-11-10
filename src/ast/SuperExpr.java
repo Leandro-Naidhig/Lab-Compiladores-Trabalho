@@ -4,13 +4,29 @@
 
  */
 package ast;
+import java.util.ArrayList;
 
-public class SuperExpr extends Expr{
+public class SuperExpr extends Expr {
 
     //Construtor da classe
-    public SuperExpr(Member id1, ExpressionList exprlist) {
+    public SuperExpr(Member id1, ExpressionList exprlist, ClassDec currentClass) {
         this.id1 = id1;
         this.exprlist = exprlist;
+        this.currentClass = currentClass;
+    }
+
+    public void genC(PW pw, ArrayList<Member> membros){
+        ClassDec classePai = currentClass.getSuperClass();
+        pw.print("_" + classePai.getCname() + "_" + ((MethodDec)id1).getName() + "((_class_" + classePai.getCname() + " *) self");
+        
+        if(exprlist != null) {
+            pw.print(", ");
+            exprlist.genC(pw, membros);
+            pw.print(")");
+                    
+        } else {
+            pw.print(")");
+        }
     }
 
     //Metodo para geracao do codigo em C
@@ -40,4 +56,5 @@ public class SuperExpr extends Expr{
     //Atributos da classe
     private Member id1;
     private ExpressionList exprlist;
+    private ClassDec currentClass;
 }
