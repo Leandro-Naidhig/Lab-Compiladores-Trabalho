@@ -4,7 +4,6 @@
 
  */
 package ast;
-
 import java.util.ArrayList;
 
 public class ReadExpr extends Expr {
@@ -14,16 +13,17 @@ public class ReadExpr extends Expr {
         this.name = name;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         if(name.equals("readInt")) {
             pw.print("readInt()");
         } else {
             pw.print("readString()");
         }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java

@@ -15,9 +15,36 @@ public class SuperExpr extends Expr {
         this.currentClass = currentClass;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         ClassDec classePai = currentClass.getSuperClass();
-        pw.print("_" + classePai.getCname() + "_" + ((MethodDec)id1).getName() + "((_class_" + classePai.getCname() + " *) self");
+        String classe = "";
+        int flag = 0;
+
+        do{
+            for(Member s : classePai.getMembros().getArray()){
+                if(s instanceof MethodDec) { 
+                    if(((MethodDec)s).getName().equals(id1.getName())) {
+                        classe = classePai.getCname();
+                        flag = 1;
+                    }
+                }
+            }
+
+            if(flag == 1) {
+                break;
+            }
+
+            classePai = classePai.getSuperClass();
+        
+        } while(classePai != null);
+
+        //Nem sempre pegamos o pai de cima
+        pw.print("_" + classe + "_" + ((MethodDec)id1).getName() + "((_class_" + classePai.getCname() + " *) self");
         
         if(exprlist != null) {
             pw.print(", ");
@@ -27,10 +54,6 @@ public class SuperExpr extends Expr {
         } else {
             pw.print(")");
         }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
     }
     
     //Metodo para geracao do codigo em java

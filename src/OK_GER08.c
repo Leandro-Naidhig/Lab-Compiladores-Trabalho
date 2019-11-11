@@ -92,9 +92,9 @@ void _Program_run(_class_Program *self) {
    _class_A *_a;
    printf("%s\n", "1 1 2 2 3 3 4 5 6 7");
    _a = new_A();
-   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 2)])(_a, 1);
-   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 1)])(_a, 2);
-   ((void (*)(_class_A* , int, int, char *, int, int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 3 - 0)])(_a, 3, 4, "5", 6, 0);
+   ((void (*)(_class_A* , int))_a->vt[2])(_a, 1);
+   ((void (*)(_class_A* , int))_a->vt[1])(_a, 2);
+   ((void (*)(_class_A* , int, int, char *, int, int))_a->vt[0])(_a, 3, 4, "5", 6, 0);
 }
 
 Func VTclass_Program[] = {

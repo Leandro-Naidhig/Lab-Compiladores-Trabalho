@@ -5,7 +5,6 @@
  */
 package ast;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class SelfExpr extends Expr {
 
@@ -17,28 +16,28 @@ public class SelfExpr extends Expr {
         this.currentClass = currentClass;
     }
 
-    public void genC(PW pw, boolean value){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
     }
-
+    
     //Metodo para geracao do codigo em C
     public void genC(PW pw, ArrayList<Member> membros) {
         
         int contador = 0;
-        pw.print("(self");
 
         if(id1 != null && id2 != null) {
 
             if(id1 instanceof MethodDec) {
-                pw.print("->_" + currentClass.getCname() + "_" + ((MethodDec)id1).getName());
+                pw.print("(self->_" + currentClass.getCname() + "_" + ((MethodDec)id1).getName());
             } else {
-                pw.print("->_" + currentClass.getCname() + "_" + ((Variable)id1).getName());
+                pw.print("((" + ((MethodDec)id2).getType().getCname() + " (*)(_class_" + currentClass.getCname() + " *))" + "self->_" + currentClass.getCname() + "_" + ((Variable)id1).getName());
             }
             
             if(exprlist != null) {
                 pw.print("->_" + currentClass.getCname() + "_");
                 pw.print(((MethodDec)id2).getName());
                 pw.print("(");
-                exprlist.genC(pw, membros);
+                exprlist.genC(pw);
                 pw.print(")");
                     
             } else {
@@ -48,8 +47,7 @@ public class SelfExpr extends Expr {
                 contador = 0;
 
                 //recuperar a posicao do metodo na lista
-                for(Member s: membros) {
-                    
+                for(Member s: classe.getMembersVT()) {
                     if(s instanceof MethodDec) { 
                         if(((MethodDec)s).getName().equals(id2.getName())) {
                             break;
@@ -59,43 +57,59 @@ public class SelfExpr extends Expr {
                     }
                 }
 
-                pw.print(contador + "])(self->_" + classe.getCname());
+                pw.print(contador + "])(self->_" + currentClass.getCname());
                 id1.genC(pw);
                 pw.print(")");
 
                 }
         
         } else if(id1 != null && id2 == null) {
-            
+
             if(id1 instanceof MethodDec) {
 
-                pw.print("->vt[");
-                contador = 0;
+                if(((MethodDec)id1).getQualifier().equals("private")) {
 
-                //recuperar a posicao do metodo na lista
-                for(Member s: membros) {
+                    pw.print("_" + currentClass.getCname() + "_" + ((MethodDec)id1).getName());
+
+                    if(exprlist != null) {
+                        pw.print("(self, ");
+                        exprlist.genC(pw);
+                        pw.print(")");
+                    } else {
+                        pw.print("(self)");
+                    }
+
+                } else {
                     
-                    if(s instanceof MethodDec) { 
-                        if(((MethodDec)s).getName().equals(id1.getName())) {
-                            break;
-                        } else {
-                            contador++;
+                    contador = 0;
+
+                    //recuperar a posicao do metodo na lista
+                    for(Member s: membros) {
+                        if(s instanceof MethodDec) { 
+                            if(((MethodDec)s).getName().equals(id1.getName())) {
+                                break;
+                            } else {
+                                contador++;
+                            }
                         }
+                    }
+
+                    pw.print("(self->vt[" + contador + "])");
+
+                    if(exprlist != null) {
+                        pw.print("(self, ");
+                        exprlist.genC(pw, membros);
+                        pw.print(")");
+                    } else {
+                        pw.print("(self)");
                     }
                 }
 
-                pw.print(contador + "])");
-
-                if(exprlist != null) {
-                    pw.print("(self, ");
-                    exprlist.genC(pw, membros);
-                    pw.print(")");
-                } else {
-                    pw.print("(self)");
-                }
 
             } else {
-                pw.print("->_" + currentClass.getCname() + "_" + ((Variable)id1).getName() + ")");
+
+                pw.print("(self->_" + currentClass.getCname() + "_" + ((Variable)id1).getName() + ")");
+
             }
         }
     }

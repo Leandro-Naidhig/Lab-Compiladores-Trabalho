@@ -5,8 +5,6 @@
  */
 package ast;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 public class IdExpr extends Expr {
 
@@ -22,8 +20,12 @@ public class IdExpr extends Expr {
         return id1;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
+    }
 
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         if(id1 != null && id2 == null) {
             id1.genC(pw);
         
@@ -32,8 +34,6 @@ public class IdExpr extends Expr {
             pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
             int contador = 0;
             ClassDec classe = ((ClassDec)id1.getType());
-            ArrayList<Member> membrosClasse = classe.getMembros().getArray();
-            Collections.reverse(membrosClasse);
 
             if(exprlist != null) {
 
@@ -51,14 +51,10 @@ public class IdExpr extends Expr {
 
                 pw.print("))");
                 id1.genC(pw);
-
-                
-
-                pw.print("->vt[abs((sizeof(VTclass_" + classe.getCname() + ")/sizeof(VTclass_" + classe.getCname() + "[0])) - " + membrosClasse.size() + " - ");
                 contador = 0;
 
                 //recuperar a posicao do metodo na lista
-                for(Member s : membrosClasse) {
+                for(Member s : classe.getMembersVT()) {
                     if(s instanceof MethodDec) { 
                         if(((MethodDec)s).getName().equals(id2.getName())) {
                             break;
@@ -67,21 +63,21 @@ public class IdExpr extends Expr {
                         }
                     }
                 }
-               
-                pw.print(contador + ")])(");
+                
+                pw.print("->vt[" + contador + "])(");
                 id1.genC(pw);
                 pw.print(", ");
                 exprlist.genC(pw, membros);
                 pw.print(")");
             
             } else {
+                
                 pw.print("))");
                 id1.genC(pw);
-                pw.print("->vt[abs((sizeof(VTclass_" + classe.getCname() + ")/sizeof(VTclass_" + classe.getCname() + "[0])) - " + membrosClasse.size() + " - ");
                 contador = 0;
 
                 //recuperar a posicao do metodo na lista
-                for(Member s : membrosClasse) {
+                for(Member s : classe.getMembersVT()) {
                     if(s instanceof MethodDec) { 
                         if(((MethodDec)s).getName().equals(id2.getName())) {
                             break;
@@ -91,15 +87,11 @@ public class IdExpr extends Expr {
                     }
                 }
 
-                pw.print(contador + ")])(");
+                pw.print("->vt[" + contador + "])(");
                 id1.genC(pw);
                 pw.print(")");
             }
         }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
     }
     
     //Metodo para geracao do codigo em java

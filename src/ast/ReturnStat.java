@@ -4,7 +4,6 @@
 
  */
 package ast;
-
 import java.util.ArrayList;
 
 public class ReturnStat extends Statement {
@@ -14,13 +13,14 @@ public class ReturnStat extends Statement {
         this.expr = expr;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
-        pw.printIdent("return ");
-        expr.genC(pw, membros);
+    //metodo para geracao do codigo em C
+    public void genC(PW pw) {
     }
 
     //metodo para geracao do codigo em C
-    public void genC(PW pw) {
+    public void genC(PW pw, ArrayList<Member> membros) {
+        pw.printIdent("return ");
+        expr.genC(pw, membros);
     }
 
     //Metodo para geracao do codigo em Java

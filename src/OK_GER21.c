@@ -47,10 +47,10 @@ typedef struct _St_A {
 _class_A *new_A(void);
 
 void _A_set(_class_A *self, int _n) {
-   (self->_A_n = _n;
+   (self->_A_n) = _n;
 }
 int _A_get(_class_A *self) {
-   return (self->_A_n;
+   return (self->_A_n);
 }
 
 Func VTclass_A[] = {
@@ -76,13 +76,13 @@ typedef struct _St_Program {
 _class_Program *new_Program(void);
 
 void _Program_print(_class_Program *self) {
-   printf("%d", (self->_Program_a->vt[1])(self->_A_a));
+   printf("%d", ((int (*)(_class_Program *))self->_Program_a->vt[0])(self->_Program_a));
 }
 void _Program_set(_class_Program *self, _class_A *_a) {
-   (self->_Program_a = _a;
+   (self->_Program_a) = _a;
 }
 _class_A* _Program_get(_class_Program *self) {
-   return (self->_Program_a;
+   return (self->_Program_a);
 }
 void _Program_run(_class_Program *self) {
    printf("%s\n", "0");
@@ -108,6 +108,6 @@ _class_Program *new_Program() {
 int main() {
    _class_Program *program;
    program = new_Program();
-   ((void (*)(_class_Program*)) program->vt[3])(program);
+   ((void (*)(_class_Program*)) program->vt[0])(program);
    return 0;
 }

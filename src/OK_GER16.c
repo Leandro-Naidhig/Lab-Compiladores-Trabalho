@@ -47,10 +47,10 @@ typedef struct _St_A {
 _class_A *new_A(void);
 
 int _A_get_A(_class_A *self) {
-   return (self->_A_k;
+   return (self->_A_k);
 }
 void _A_set(_class_A *self, int _k) {
-   (self->_A_k = _k;
+   (self->_A_k) = _k;
 }
 void _A_print(_class_A *self) {
    printf("%d%s", (self->vt[3])(self), " ");
@@ -78,17 +78,18 @@ _class_A *new_A() {
 
 typedef struct _St_B {
    Func *vt;
+   int _A_k;
    int _B_k;
 }_class_B;
 
 _class_B *new_B(void);
 
 int _B_get_B(_class_B *self) {
-   return (self->_B_k;
+   return (self->_B_k);
 }
 void _B_init(_class_B *self) {
    _A_init((_class_A *) self);
-   (self->_B_k = 2;
+   (self->_B_k) = 2;
 }
 void _B_print(_class_B *self) {
    printf("%d%s", (self->vt[4])(self), " ");
@@ -116,6 +117,7 @@ _class_B *new_B() {
 
 typedef struct _St_C {
    Func *vt;
+   int _A_k;
 }_class_C;
 
 _class_C *new_C(void);
@@ -150,21 +152,21 @@ void _Program_run(_class_Program *self) {
    _class_C *_c;
    printf("%s\n", "2 2 0 0 2 0 0 0 0 0 0");
    _b = new_B();
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 4 - 1)])(_b);
+   ((void (*)(_class_B* ))_b->vt[3])(_b);
    _c = new_C();
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 1 - 1)])(_c);
-   printf("%d%s", ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 4 - 0)])(_b), " ");
+   ((void (*)(_class_C* ))_c->vt[1])(_c);
+   printf("%d%s", ((void (*)(_class_B* ))_b->vt[4])(_b), " ");
    _a = _b;
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 5 - 1)])(_a);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 4 - 0)])(_b);
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 5 - 3)])(_a);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 4 - 1)])(_b);
-   printf("%d%s", ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 5 - 3)])(_a), " ");
-   printf("%d%s", ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 4 - 3)])(_b), " ");
+   ((void (*)(_class_A* ))_a->vt[1])(_a);
+   ((void (*)(_class_B* ))_b->vt[2])(_b);
+   ((void (*)(_class_A* ))_a->vt[0])(_a);
+   ((void (*)(_class_B* ))_b->vt[3])(_b);
+   printf("%d%s", ((void (*)(_class_A* ))_a->vt[3])(_a), " ");
+   printf("%d%s", ((void (*)(_class_B* ))_b->vt[1])(_b), " ");
    _a = _c;
-   printf("%d%s", ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 5 - 0)])(_a), " ");
+   printf("%d%s", ((void (*)(_class_A* ))_a->vt[3])(_a), " ");
    _c = new_C();
-   printf("%d%s", ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 1 - 0)])(_c), " ");
+   printf("%d%s", ((void (*)(_class_C* ))_c->vt[0])(_c), " ");
 }
 
 Func VTclass_Program[] = {

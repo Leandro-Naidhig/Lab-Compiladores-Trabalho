@@ -4,6 +4,7 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 
 import lexer.Token;
@@ -17,7 +18,12 @@ public class CompositeExpr extends Expr {
 		this.exprRight = exprRight;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean op) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         if(exprLeft != null) {
             pw.print("(");
             
@@ -72,10 +78,6 @@ public class CompositeExpr extends Expr {
             }
             pw.print(")");
         }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em Java

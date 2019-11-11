@@ -100,7 +100,7 @@ typedef struct _St_C {
 _class_C *new_C(void);
 
 void _C_m1(_class_C *self) {
-   _B_m1((_class_B *) self);
+   _A_m1((_class_A *) self);
    printf("%d%s", 2, " ");
 }
 void _C_m3(_class_C *self) {
@@ -137,10 +137,10 @@ void _Program_run(_class_Program *self) {
    _class_C *_c;
    printf("%s\n", "1 2 1 2 1 2 1 2");
    _b = new_B();
-   ((void (*)(_class_B* , int))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 1 - 0)])(_b, 1);
+   ((void (*)(_class_B* , int))_b->vt[1])(_b, 1);
    _c = new_C();
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 2 - 1)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 2 - 1)])(_c);
+   ((void (*)(_class_C* ))_c->vt[2])(_c);
+   ((void (*)(_class_C* ))_c->vt[1])(_c);
 }
 
 Func VTclass_Program[] = {

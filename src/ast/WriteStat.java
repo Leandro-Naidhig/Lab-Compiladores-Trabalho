@@ -14,7 +14,12 @@ public class WriteStat extends Statement {
         this.mode = mode;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    // Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    // Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         if(mode.equals("print:")) {
             pw.printIdent("printf(\"");
             exprListArray = exprList.getArrayList();
@@ -82,10 +87,6 @@ public class WriteStat extends Statement {
             }
             pw.print(")");
         }
-    }
-
-    // Metodo para geracao do codigo em C
-    public void genC(PW pw) {
     }
 
     // Metodo para geracao do codigo em Java

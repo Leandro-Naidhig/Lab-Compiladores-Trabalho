@@ -62,6 +62,17 @@ public class ClassDec extends Type{
         this.memberList = memberList;
     }
 
+    //Metodo que retorna os membros do vetor em C
+    public ArrayList<Member> getMembersVT() {
+        return membrosVT;
+    }
+
+    //Metodo que retorna os membros do vetor em C
+    public void setMembersVT(ArrayList<Member> membros) {
+        this.membrosVT = membros;
+    }
+
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
 
@@ -72,40 +83,82 @@ public class ClassDec extends Type{
         //Listas para montagem das funcoes da classe atual
         ArrayList<Member> membros = new ArrayList<>();
         ArrayList<String> nomeClasses = new ArrayList<>();
-
+        ArrayList<String> tipos = new ArrayList<>();
+        ArrayList<String> variaveis = new ArrayList<>();
         int contador = 0;
+        String classe = classname;
+        MemberList lista = this.getMembros();
+        ClassDec superclasse = this.getSuperClass();
+        int flag = 0;
+        int quantidade = 0;
 
-        //Caso existam membros na classe (metodos ou variaveis de instancia)
-        if(memberList != null) {
-            pw.printlnIdent("Func *vt;");
-            
-            for(Member s: memberList.getArray()) {
+        pw.printlnIdent("Func *vt;");
+
+        //Recupera todos as variaveis de instancia da superclasse e da propria classe
+        do {
+
+            for(Member s: lista.getArray()) {
 
                 //Verifica todas as instancias da classe
                 if(s instanceof FieldDec) {
 
                     if(s.getType() instanceof ClassDec) {
-                        pw.printIdent("struct _St_" + s.getType().getCname() + " *");
-                    
+                        tipos.add("struct _St_" + s.getType().getCname() + " *");
                     } else {
-                        pw.printIdent(s.getType().getCname() + " ");
+                        tipos.add(s.getType().getCname() + " ");
                     }
 
                     contador = 0;
+                    String nomes = "";
 
                     for(Variable v: ((FieldDec)s).getIdList().getArray()) {
 
-                        pw.print("_" + classname + "_" + v.getName());
+                        nomes = nomes + ("_" + classe + "_" + v.getName()) ;
                         contador++;
 
                         if(((FieldDec)s).getIdList().getArray().size() != contador) {
-                            pw.print(", ");
+                            nomes = nomes + (", ");
                         }
                     }
-                    pw.println(";");
+                    nomes = nomes + (";");
+                    variaveis.add(nomes);
                 }
             }
-        }
+
+            if(flag == 1) {
+
+                if(superclasse.getSuperClass() != null) {
+                    superclasse = superclasse.getSuperClass();
+                    lista = superclasse.getMembros();
+                    classe = superclasse.getCname();
+                } else {
+                    superclasse = null;
+                }
+                    
+            } else {
+                
+                if(superclasse != null) {   
+                    lista = superclasse.getMembros();
+                    classe = superclasse.getCname();
+                    flag = 1;
+                }
+            }
+            
+        } while(superclasse != null);
+
+        Collections.reverse(tipos);
+        Collections.reverse(variaveis);
+
+
+        //Transforma em iteradores
+		Iterator<String>parsTipos = tipos.iterator();
+		Iterator<String>parsVariaveis = variaveis.iterator();
+
+		//imprime todas as variaveis de instancia da classe
+		while(parsTipos.hasNext() && parsVariaveis.hasNext()){
+            pw.printlnIdent(parsTipos.next() + parsVariaveis.next());
+		}
+
         pw.sub();
         pw.println("}_class_" + classname + ";");
         pw.println("");
@@ -114,11 +167,11 @@ public class ClassDec extends Type{
         pw.println("_class_" + classname + " *new_" + classname + "(void);");
         pw.println("");
 
-        int flag = 0;
-        int quantidade = 0;
-        String classe = classname;
-        MemberList lista = this.getMembros();
-        ClassDec superclasse = this.getSuperClass();
+        flag = 0;
+        quantidade = 0;
+        classe = classname;
+        lista = this.getMembros();
+        superclasse = this.getSuperClass();
 
         //Recupera todos os metodos da superclasse
         //Enquanto for encontrado uma superclasse
@@ -163,7 +216,6 @@ public class ClassDec extends Type{
             } else {
                 
                 if(superclasse != null) {   
-                    System.out.println(this.getCname());
                     lista = superclasse.getMembros();
                     classe = superclasse.getCname();
                     flag = 1;
@@ -175,7 +227,11 @@ public class ClassDec extends Type{
         //Inverte as duas listas, ja que se trata de uma hierarquia
         Collections.reverse(membros);
         Collections.reverse(nomeClasses);
+        setMembersVT(membros);
         contador = 0;
+
+        //ClassDec classeEx = 
+
 
         //Geracao de todas os metodos
         for(Member s: memberList.getArray()) {
@@ -239,7 +295,7 @@ public class ClassDec extends Type{
             contador = 0;
             
             //Verificar a posicao do metodo run
-            for(Member s: memberList.getArray()) {
+            for(Member s: membrosVT) {
                 if(s instanceof MethodDec) {
                     if(((MethodDec)s).getName().equals("run")) {
                         break;
@@ -276,5 +332,6 @@ public class ClassDec extends Type{
     private ClassDec superclassname;
     private MemberList memberList;
     private Boolean isOpen;
+    private ArrayList<Member> membrosVT;
 
 }

@@ -15,7 +15,12 @@ public class LocalDec extends Statement {
         this.expr = expr;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         int contador = 0;
 
         if(tipo instanceof ClassDec) {
@@ -57,10 +62,6 @@ public class LocalDec extends Statement {
                 }
             }
         }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
     }
 
     //Metodo para geracao do codigo em Java

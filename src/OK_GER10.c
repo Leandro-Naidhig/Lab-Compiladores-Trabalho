@@ -67,6 +67,7 @@ _class_A *new_A() {
 
 typedef struct _St_B {
    Func *vt;
+   int _A_k;
    int _B_k;
 }_class_B;
 
@@ -95,6 +96,8 @@ _class_B *new_B() {
 
 typedef struct _St_C {
    Func *vt;
+   int _A_k;
+   int _B_k;
 }_class_C;
 
 _class_C *new_C(void);
@@ -135,7 +138,7 @@ void _Program_run(_class_Program *self) {
    _class_C *_c;
    printf("%s\n", "1 1 2 2 3 3 4 4");
    _c = new_C();
-   ((void (*)(_class_C* , int))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 2 - 0)])(_c, 4);
+   ((void (*)(_class_C* , int))_c->vt[2])(_c, 4);
 }
 
 Func VTclass_Program[] = {

@@ -73,7 +73,7 @@ void _Program_run(_class_Program *self) {
    _class_A *_a;
    printf("%s\n", "0");
    _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 1 - 0)])(_a);
+   ((void (*)(_class_A* ))_a->vt[0])(_a);
 }
 
 Func VTclass_Program[] = {

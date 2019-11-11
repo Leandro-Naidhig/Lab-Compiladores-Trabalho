@@ -11,7 +11,6 @@ public class FieldDec extends Member{
     public FieldDec(Type type, IdList idList, Boolean isSemiColon, String qualifier) {
         this.type = type;
         this.idList = idList;
-        this.isSemiColon = isSemiColon;
         this.qualifier = qualifier;
     }
 
@@ -53,7 +52,6 @@ public class FieldDec extends Member{
     }
 
     //Atributos da classe
-    private Boolean isSemiColon;
     private Type type;
     private IdList idList;
     private String qualifier;

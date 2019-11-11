@@ -56,7 +56,10 @@ void _Program_run(_class_Program *self) {
    do {
       _n = (_n + 1);
    } while((0));
-;
+   if(((_n == 11)) == 0) {
+      printf("'repeat-until' statement with 'false' as expression'");
+      return 0;
+   }
    _n = 10;
    int _sum;
    _sum = 0;
@@ -69,7 +72,10 @@ void _Program_run(_class_Program *self) {
       _j = (_j + 1);
    } while((_j < _n));
    printf("%d\n", _sum);
-;
+   if(((_sum == 100)) == 0) {
+      printf("Nested 'repeat-until' statement with two indexes");
+      return 0;
+   }
 }
 
 Func VTclass_Program[] = {

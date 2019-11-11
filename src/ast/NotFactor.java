@@ -14,14 +14,15 @@ public class NotFactor extends Expr {
       this.factor = factor;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
-      pw.print("!(");
-      factor.genC(pw, membros);
-      pw.print(")");
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean value) {
     }
 
     //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean value) {
+    public void genC(PW pw, ArrayList<Member> membros) {
+      pw.print("!(");
+      factor.genC(pw, membros);
+      pw.print(")");
     }
 
     //Metodo para geracao do codigo em Java

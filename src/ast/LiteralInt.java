@@ -4,6 +4,7 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 
 public class LiteralInt extends Expr {
@@ -18,7 +19,8 @@ public class LiteralInt extends Expr {
         return value;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
     }
 
     //Metodo para geracao do codigo em C

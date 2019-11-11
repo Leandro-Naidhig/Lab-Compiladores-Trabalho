@@ -4,10 +4,11 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 
 abstract public class Expr extends Statement {
-  
+
     //Metodo abstrato para geracao do codigo em C
     abstract public void genC( PW pw, ArrayList<Member> membros);
 

@@ -13,7 +13,8 @@ public class LiteralBoolean extends Expr {
         this.value = value;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
     }
 
     //Metodo para geracao do codigo em C

@@ -6,7 +6,7 @@
 package ast;
 import java.util.ArrayList;
 
-public class BasicValue extends Expr{
+public class BasicValue extends Expr {
 
     //Construtor da classe
     public BasicValue(LiteralString StringValue, LiteralInt IntValue, LiteralBoolean BooleanValue) {
@@ -35,19 +35,19 @@ public class BasicValue extends Expr{
         }
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, boolean Op) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         if(StringValue != null) {
             StringValue.genC(pw);
         } else if(BooleanValue != null) {
             BooleanValue.genC(pw);
         } else {
             IntValue.genC(pw);
-        }
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw, boolean op) {
-        
+        }        
     }
 
     //Metodo para geracao do codigo em Java

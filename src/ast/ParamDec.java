@@ -14,7 +14,6 @@ public class ParamDec {
 
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
-
         if(name.getType() instanceof ClassDec) {
             pw.print("_class_" + name.getType().getCname() + " *_" + name.getName());    
 

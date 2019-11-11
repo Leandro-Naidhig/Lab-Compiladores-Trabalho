@@ -14,7 +14,12 @@ public class RepeatStat extends Statement {
         this.expr = expr;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         pw.printlnIdent("do {");
         pw.add();
         statementList.genC(pw, membros);
@@ -22,10 +27,6 @@ public class RepeatStat extends Statement {
         pw.printIdent("} while(");
         expr.genC(pw, membros);
         pw.print(")");
-    }
-
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
     }
 
     //Metodo para geracao do codigo em Java

@@ -88,7 +88,7 @@ void _Program_run(_class_Program *self) {
    printf("%s\n", "The output should be what you give as input.");
    printf("%s\n", "Type in six numbers");
    _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[(sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 1 - 0])(_a);
+   ((void (*)(_class_A* ))_a->vt[0])(_a);
 }
 
 Func VTclass_Program[] = {

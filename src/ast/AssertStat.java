@@ -13,13 +13,21 @@ public class AssertStat extends Statement {
         this.str = str;
         this.expr = expr;
     }
-    
+
     //Metodo para geracao do codigo em C
     public void genC(PW pw) {
     }
-
+    
     //Metodo para geracao do codigo em C
     public void genC(PW pw, ArrayList<Member> membros) {
+        pw.printIdent("if((");
+        expr.genC(pw, membros);
+        pw.println(") == 0) {");
+        pw.add();
+        pw.printlnIdent("printf(\"" + str + "\");");
+        pw.printlnIdent("return 0;");
+        pw.sub();
+        pw.printlnIdent("}");
     }
     
     //Metodo para geracao do codigo em Java

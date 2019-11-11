@@ -41,33 +41,33 @@ typedef void (*Func)();
 
 typedef struct _St_A {
    Func *vt;
-   int _A_i;
    int _A_j;
+   int _A_i;
 }_class_A;
 
 _class_A *new_A(void);
 
 void _A_p(_class_A *self) {
-   printf("%d%s", (self->_A_i, " ");
+   printf("%d%s", (self->_A_i), " ");
 }
 void _A_q(_class_A *self) {
-   printf("%d%s", (self->_A_j, " ");
+   printf("%d%s", (self->_A_j), " ");
 }
 void _A_init_A(_class_A *self) {
-   (self->_A_i = 1;
-   (self->_A_j = 2;
+   (self->_A_i) = 1;
+   (self->_A_j) = 2;
 }
 void _A_call_p(_class_A *self) {
-   (self->vt[5])(self);
+   _A_p(self);
 }
 void _A_call_q(_class_A *self) {
-   (self->vt[5])(self);
+   _A_q(self);
 }
 void _A_r(_class_A *self) {
-   printf("%d%s", (self->_A_i, " ");
+   printf("%d%s", (self->_A_i), " ");
 }
 void _A_s(_class_A *self) {
-   printf("%d%s", (self->_A_j, " ");
+   printf("%d%s", (self->_A_j), " ");
 }
 
 Func VTclass_A[] = {
@@ -90,33 +90,35 @@ _class_A *new_A() {
 
 typedef struct _St_B {
    Func *vt;
-   int _B_i;
+   int _A_j;
+   int _A_i;
    int _B_j;
+   int _B_i;
 }_class_B;
 
 _class_B *new_B(void);
 
 void _B_p(_class_B *self) {
-   printf("%d%s", (self->_B_i, " ");
+   printf("%d%s", (self->_B_i), " ");
 }
 void _B_q(_class_B *self) {
-   printf("%d%s", (self->_B_j, " ");
+   printf("%d%s", (self->_B_j), " ");
 }
 void _B_init_B(_class_B *self) {
-   (self->_B_i = 3;
-   (self->_B_j = 4;
+   (self->_B_i) = 3;
+   (self->_B_j) = 4;
 }
 void _B_call_p(_class_B *self) {
-   (self->vt[6])(self);
+   _B_p(self);
 }
 void _B_call_q(_class_B *self) {
-   (self->vt[6])(self);
+   _B_q(self);
 }
 void _B_r(_class_B *self) {
-   printf("%d%s", (self->_B_i, " ");
+   printf("%d%s", (self->_B_i), " ");
 }
 void _B_s(_class_B *self) {
-   printf("%d%s", (self->_B_j, " ");
+   printf("%d%s", (self->_B_j), " ");
 }
 
 Func VTclass_B[] = {
@@ -140,33 +142,35 @@ _class_B *new_B() {
 
 typedef struct _St_C {
    Func *vt;
-   int _C_i;
+   int _A_j;
+   int _A_i;
    int _C_j;
+   int _C_i;
 }_class_C;
 
 _class_C *new_C(void);
 
 void _C_p(_class_C *self) {
-   printf("%d%s", (self->_C_i, " ");
+   printf("%d%s", (self->_C_i), " ");
 }
 void _C_q(_class_C *self) {
-   printf("%d%s", (self->_C_j, " ");
+   printf("%d%s", (self->_C_j), " ");
 }
 void _C_init_C(_class_C *self) {
-   (self->_C_i = 5;
-   (self->_C_j = 6;
+   (self->_C_i) = 5;
+   (self->_C_j) = 6;
 }
 void _C_call_p(_class_C *self) {
-   (self->vt[6])(self);
+   _C_p(self);
 }
 void _C_call_q(_class_C *self) {
-   (self->vt[6])(self);
+   _C_q(self);
 }
 void _C_r(_class_C *self) {
-   printf("%d%s", (self->_C_i, " ");
+   printf("%d%s", (self->_C_i), " ");
 }
 void _C_s(_class_C *self) {
-   printf("%d%s", (self->_C_j, " ");
+   printf("%d%s", (self->_C_j), " ");
 }
 
 Func VTclass_C[] = {
@@ -200,26 +204,26 @@ void _Program_run(_class_Program *self) {
    _class_C *_c;
    printf("%s\n", "1 2 1 2 3 4 3 4 5 6 5 6");
    _a = new_A();
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 9 - 4)])(_a);
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 9 - 3)])(_a);
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 9 - 2)])(_a);
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 9 - 5)])(_a);
-   ((void (*)(_class_A* ))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 9 - 0)])(_a);
+   ((void (*)(_class_A* ))_a->vt[4])(_a);
+   ((void (*)(_class_A* ))_a->vt[3])(_a);
+   ((void (*)(_class_A* ))_a->vt[2])(_a);
+   ((void (*)(_class_A* ))_a->vt[1])(_a);
+   ((void (*)(_class_A* ))_a->vt[0])(_a);
    _b = new_B();
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 4)])(_b);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 7)])(_b);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 3)])(_b);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 4)])(_b);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 1)])(_b);
-   ((void (*)(_class_B* ))_b->vt[abs((sizeof(VTclass_B)/sizeof(VTclass_B[0])) - 9 - 6)])(_b);
+   ((void (*)(_class_B* ))_b->vt[5])(_b);
+   ((void (*)(_class_B* ))_b->vt[0])(_b);
+   ((void (*)(_class_B* ))_b->vt[4])(_b);
+   ((void (*)(_class_B* ))_b->vt[3])(_b);
+   ((void (*)(_class_B* ))_b->vt[2])(_b);
+   ((void (*)(_class_B* ))_b->vt[1])(_b);
    _c = new_C();
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 4)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 7)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 4)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 3)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 2)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 5)])(_c);
-   ((void (*)(_class_C* ))_c->vt[abs((sizeof(VTclass_C)/sizeof(VTclass_C[0])) - 9 - 0)])(_c);
+   ((void (*)(_class_C* ))_c->vt[5])(_c);
+   ((void (*)(_class_C* ))_c->vt[0])(_c);
+   ((void (*)(_class_C* ))_c->vt[5])(_c);
+   ((void (*)(_class_C* ))_c->vt[4])(_c);
+   ((void (*)(_class_C* ))_c->vt[3])(_c);
+   ((void (*)(_class_C* ))_c->vt[2])(_c);
+   ((void (*)(_class_C* ))_c->vt[1])(_c);
 }
 
 Func VTclass_Program[] = {

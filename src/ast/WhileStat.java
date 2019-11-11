@@ -4,6 +4,7 @@
 
  */
 package ast;
+
 import java.util.ArrayList;
 
 public class WhileStat extends Statement {
@@ -14,7 +15,12 @@ public class WhileStat extends Statement {
         this.expr = expr;
     }
 
-    public void genC(PW pw, ArrayList<Member> membros){
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw) {
+    }
+    
+    //Metodo para geracao do codigo em C
+    public void genC(PW pw, ArrayList<Member> membros) {
         pw.printIdent("while(");
 		expr.genC(pw, membros);
 		pw.println(") { ");
@@ -26,10 +32,6 @@ public class WhileStat extends Statement {
         }
         
         pw.printlnIdent("}");
-    }
-    
-    //Metodo para geracao do codigo em C
-    public void genC(PW pw) {
     }
     
     //Metodo para geracao do codigo em Java

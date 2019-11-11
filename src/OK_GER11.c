@@ -104,9 +104,9 @@ void _Program_run(_class_Program *self) {
    printf("%s\n", "4 1 2 3 4");
    printf("%s", "4 ");
    _a = new_A();
-   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 2 - 0)])(_a, 1);
+   ((void (*)(_class_A* , int))_a->vt[0])(_a, 1);
    _a = new_B();
-   ((void (*)(_class_A* , int))_a->vt[abs((sizeof(VTclass_A)/sizeof(VTclass_A[0])) - 2 - 1)])(_a, 3);
+   ((void (*)(_class_A* , int))_a->vt[0])(_a, 3);
 }
 
 Func VTclass_Program[] = {
