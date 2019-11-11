@@ -94,7 +94,7 @@ Para conversão de Cianeto para Java ou para C, acrescente ao comando acima -gen
 - OK_GER14.ci -> Ok, com GenJava e sem GenC
 - OK_GER15.ci -> Ok, com GenJava e GenC
 - OK_GER16.ci -> Ok, com GenJava e sem GenC
-- OK_GER21.ci -> Ok, com GenJava e sem GenC
+- OK_GER21.ci -> Ok, com GenJava e GenC
 - OK_GER22.ci -> Ok, com GenJava e GenC
 
 ----
