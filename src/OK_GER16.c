@@ -53,7 +53,7 @@ void _A_set(_class_A *self, int _k) {
    (self->_A_k) = _k;
 }
 void _A_print(_class_A *self) {
-   printf("%d%s", (self->vt[3])(self), " ");
+   printf("%d%s", ((int (*)(_class_A *) self->vt[3])( (_class_A *) self) ), " ");
 }
 void _A_init(_class_A *self) {
    (self->vt[2])(self, 0);
@@ -155,18 +155,18 @@ void _Program_run(_class_Program *self) {
    ((void (*)(_class_B* ))_b->vt[3])(_b);
    _c = new_C();
    ((void (*)(_class_C* ))_c->vt[1])(_c);
-   printf("%d%s", ((void (*)(_class_B* ))_b->vt[4])(_b), " ");
+   printf("%d%s", ((int (*)(_class_B* ))_b->vt[4])(_b), " ");
    _a = _b;
    ((void (*)(_class_A* ))_a->vt[1])(_a);
    ((void (*)(_class_B* ))_b->vt[2])(_b);
    ((void (*)(_class_A* ))_a->vt[0])(_a);
    ((void (*)(_class_B* ))_b->vt[3])(_b);
-   printf("%d%s", ((void (*)(_class_A* ))_a->vt[3])(_a), " ");
-   printf("%d%s", ((void (*)(_class_B* ))_b->vt[1])(_b), " ");
+   printf("%d%s", ((int (*)(_class_A* ))_a->vt[3])(_a), " ");
+   printf("%d%s", ((int (*)(_class_B* ))_b->vt[1])(_b), " ");
    _a = _c;
-   printf("%d%s", ((void (*)(_class_A* ))_a->vt[3])(_a), " ");
+   printf("%d%s", ((int (*)(_class_A* ))_a->vt[3])(_a), " ");
    _c = new_C();
-   printf("%d%s", ((void (*)(_class_C* ))_c->vt[0])(_c), " ");
+   printf("%d%s", ((int (*)(_class_C* ))_c->vt[0])(_c), " ");
 }
 
 Func VTclass_Program[] = {

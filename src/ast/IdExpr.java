@@ -31,7 +31,26 @@ public class IdExpr extends Expr {
         
         } else if(id1 != null && id2 != null) {
 
-            pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
+            if(id2 instanceof MethodDec) {
+                
+                MethodDec metodo = ((MethodDec)id2);
+
+                if(metodo.getType() != null) {
+                    pw.print("((" + id2.getType().getCname() + " (*)(_class_" + id1.getType().getCname() + "* ");
+
+                } else {
+                    pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
+                }
+
+            } else {
+                pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
+            }
+            
+            
+            
+            //System.out.println(tipo.getCname());
+
+            
             int contador = 0;
             ClassDec classe = ((ClassDec)id1.getType());
 

@@ -46,8 +46,12 @@ typedef struct _St_A {
 
 _class_A *new_A(void);
 
+int _A_get_A(_class_A *self);
+void _A_init(_class_A *self); 
+
 int _A_get_A(_class_A *self) {
-   return (self->_A_k);
+   // printf("%d\n", self->_A_k);
+   return (int)(self->_A_k);
 }
 void _A_init(_class_A *self) {
    (self->_A_k) = 1;
@@ -76,8 +80,12 @@ typedef struct _St_B {
 
 _class_B *new_B(void);
 
+int _B_get_B(_class_B *self);
+void _B_init(_class_B *self);
+
 int _B_get_B(_class_B *self) {
-   return (self->_B_k);
+    printf("%d\n", self->_B_k);
+    return (int)(self->_B_k);
 }
 void _B_init(_class_B *self) {
    _A_init((_class_A *) self);
@@ -85,9 +93,9 @@ void _B_init(_class_B *self) {
 }
 
 Func VTclass_B[] = {
-   (void(*)())_B_init, 
-   (void(*)())_A_get_A,
-   (void(*)())_B_get_B
+   (void(*)(_class_A ))_A_get_A,
+   (void(*)(_class_B ))_B_init,
+   (void(*)(_class_B ))_B_get_B
 };
 
 _class_B *new_B() {
@@ -108,9 +116,12 @@ typedef struct _St_C {
 }_class_C;
 
 _class_C *new_C(void);
+int _C_get_C(_class_C *self);
+void _C_init(_class_C *self);
 
 int _C_get_C(_class_C *self) {
-   return (self->_C_k);
+    //printf("%d\n", self->_C_k);
+   return (int)(self->_C_k);
 }
 void _C_init(_class_C *self) {
    _B_init((_class_B *) self);
@@ -118,10 +129,10 @@ void _C_init(_class_C *self) {
 }
 
 Func VTclass_C[] = {
-   (void(*)())_C_init,
-   (void(*)())_A_get_A,
-   (void(*)())_B_get_B,
-   (void(*)())_C_get_C
+   (void(*)(_class_A ))_A_get_A,
+   (void(*)(_class_B ))_B_get_B,
+   (void(*)(_class_C ))_C_init,
+   (void(*)(_class_C ))_C_get_C
 };
 
 _class_C *new_C() {
@@ -145,7 +156,8 @@ typedef struct _St_D {
 _class_D *new_D(void);
 
 int _D_get_D(_class_D *self) {
-   return (self->_D_k);
+    //printf("%d\n", self->_D_k);
+   return (int)(self->_D_k);
 }
 void _D_init(_class_D *self) {
    _C_init((_class_C *) self);
@@ -153,11 +165,11 @@ void _D_init(_class_D *self) {
 }
 
 Func VTclass_D[] = {
-   (void(*)())_D_init,
-   (void(*)())_A_get_A,
-   (void(*)())_B_get_B,
-   (void(*)())_C_get_C,
-   (void(*)())_D_get_D
+   (void(*)(_class_A ))_A_get_A,
+   (void(*)(_class_B ))_B_get_B,
+   (void(*)(_class_C ))_C_get_C,
+   (void(*)(_class_D ))_D_init,
+   (void(*)(_class_D ))_D_get_D
 };
 
 _class_D *new_D() {
@@ -183,14 +195,14 @@ void _Program_run(_class_Program *self) {
    _class_D *_d;
    printf("%s\n", "4 3 2 1");
    _d = new_D();
-   ((void (*)(_class_D* ))_d->vt[0])(_d);
+   ((void (*)(_class_D* ))_d->vt[3])(_d);
    printf("%d%s", ((int (*)(_class_D* ))_d->vt[4])(_d), " ");
-   _c = _d;
+   _c =  (_class_C* ) _d;
    printf("%d%s", ((int (*)(_class_C* ))_c->vt[3])(_c), " ");
-   _b = _c;
+   _b =  (_class_B* ) _c;
    printf("%d%s", ((int (*)(_class_B* ))_b->vt[2])(_b), " ");
-   _a = _b;
-   printf("%d%s", ((int (*)(_class_A* ))_a->vt[1])(_a), " ");
+   _a = (_class_A* ) _b;
+   printf("%d%s", ((int (*)(_class_A* ))_a->vt[0])(_a), " ");
 }
 
 Func VTclass_Program[] = {
