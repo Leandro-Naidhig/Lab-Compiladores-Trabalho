@@ -101,7 +101,7 @@ void _B_print(_class_B *self) {
 
 Func VTclass_B[] = {
    (void(*)())_B_print,
-   (void(*)())_B_p1,
+   (void(*)())_A_get,
    (void(*)())_B_set
 };
 
@@ -144,10 +144,11 @@ void _Program_run(_class_Program *self) {
    _b = new_B();
    _a = _b;
    ((void (*)(_class_A* , int))_a->vt[2])(_a, 0);
-   _a = (self->vt[2])(self, _a);
-   _b = (self->vt[2])(self, _b);
-   ((void (*)(_class_B* ))_b->vt[1])(_b);
-   _a = (self->vt[1])(self, 0);
+
+   _a = (( _class_A* (*)(_class_B *, _class_A*))self->vt[2])(self, _a);
+   _b = (( _class_B* (*)(_class_B *, _class_B*))self->vt[2])(self, _b);
+   ((void (*)(_class_B* ))_b->vt[3])(_b);
+   _a = (( _class_B* (*)(_class_B *, int))self->vt[1])(self, 0);
    ((void (*)(_class_A* ))_a->vt[0])(_a);
 }
 

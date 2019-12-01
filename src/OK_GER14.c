@@ -85,7 +85,7 @@ void _B_init(_class_B *self) {
 }
 
 Func VTclass_B[] = {
-   (void(*)())_B_init, 
+   (void(*)())_B_init,
    (void(*)())_A_get_A,
    (void(*)())_B_get_B
 };

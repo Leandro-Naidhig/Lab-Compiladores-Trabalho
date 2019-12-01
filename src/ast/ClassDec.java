@@ -178,6 +178,7 @@ public class ClassDec extends Type{
         do {
 
             boolean encontrado = false;
+            int pos = 0;
 
             //Percorre todos os membros da superclasse
             for(Member s: lista.getArray()) {
@@ -189,11 +190,19 @@ public class ClassDec extends Type{
                         //Verifica se nao e um override da superclasse
                         for(Member v: membros) {
                             if(((MethodDec)v).getName().equals(((MethodDec)s).getName())){
+                                pos = membros.lastIndexOf(v);
+                                classe = nomeClasses.get(pos);
                                 encontrado = true;
-                            }
+                            }   
                         }
 
-                        if(!encontrado) {
+                        if(encontrado) {
+                            membros.remove(pos);
+                            nomeClasses.remove(pos);
+                            membros.add(s);
+                            nomeClasses.add(classe);
+
+                        } else {
                             membros.add(s);
                             nomeClasses.add(classe);
                             quantidade++;
@@ -228,9 +237,7 @@ public class ClassDec extends Type{
         Collections.reverse(membros);
         Collections.reverse(nomeClasses);
         setMembersVT(membros);
-        contador = 0;
-
-        //ClassDec classeEx = 
+        contador = 0; 
 
 
         //Geracao de todas os metodos
