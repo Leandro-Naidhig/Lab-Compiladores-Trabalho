@@ -1457,67 +1457,34 @@ public class Compiler {
 
 								//Caso uma variavel de instancia seja uma classe
 								membro1 = (Variable)symbolTable.getInLocalTableMethodCurrentClass(name1);
-								classe = (ClassDec)symbolTable.getInGlobal(membro1.getType().getCname());
 
-								//Verifica se existe o metodo na classe referente
-								if(membro1 != null) {
-									
-									//Pega os metodos da class referente
-									checkMethodsCurrentClass(classe);
-									
-									if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
-										error("Access the attribute in class '" + name1 + "' is not allowed (private access)");
-
-									} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
-										membro2 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
-										
-										//Verifica se o metodo e unario
-										if(metodo.getNumParam() != 0) {
-											error("Method '" + metodo.getName() + "' have a different description previously declared");				
-										}
-									}
-
-									//Limpeza da tabela de simbolos da classe
-									symbolTable.removeLocalIdentMethodCurrentClass();
-									symbolTable.removeLocalIdentMethodParents();
-									return new SelfExpr(membro1, membro2, null, currentClass);
+								if(membro1.getType().getCname().equals(currentClass.getCname())) {
+									classe = currentClass;
 								
-								}
-
-								//Analise Semantica (verificacao de existecia do metodo unario)
-								if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) == null) {
-
-									//Se herdar de alguma classe, verifica a superclasse
-									if(classe.getSuperClass() != null) {
-										
-										checkMethodsSuperClasses(classe);
-
-										if(symbolTable.getInLocalMethodParents(id.getName()) != null) {
-											membro1 = metodo = (MethodDec)symbolTable.getInLocalMethodParents(id.getName());
-
-										} else {
-											error("method '" + id.getName() + "' has not being declared in class " + name1 + " or method has not being declared in superclass");
-										}
-									}
 								} else {
+									classe = (ClassDec)symbolTable.getInGlobal(membro1.getType().getCname());
+								}
 
-									if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
-										error("Access the attribute in class '" + name1 + "' is not allowed (private access)");
+								//Pega os metodos da class referente
+								checkMethodsCurrentClass(classe);
+	
+								if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof Variable) {
+									error("Access the attribute in class '" + name1 + "' is not allowed (private access)");
 
-									} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
-										membro2 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
+								} else if(symbolTable.getInLocalTableMethodCurrentClass(id.getName()) instanceof MethodDec) {
+									membro2 = metodo = (MethodDec)symbolTable.getInLocalTableMethodCurrentClass(id.getName());
 										
-										//Verifica se o metodo e unario
-										if(metodo.getNumParam() != 0) {
-											error("Method '" + metodo.getName() + "' have a different description previously declared");				
-										}
+									//Verifica se o metodo e unario
+									if(metodo.getNumParam() != 0) {
+										error("Method '" + metodo.getName() + "' have a different description previously declared");				
 									}
 								}
-								
+
 								//Limpeza da tabela de simbolos da classe
 								symbolTable.removeLocalIdentMethodCurrentClass();
 								symbolTable.removeLocalIdentMethodParents();
 								return new SelfExpr(membro1, membro2, null, currentClass);
+								
 						
 							} else if(lexer.token == Token.IDCOLON) {
 

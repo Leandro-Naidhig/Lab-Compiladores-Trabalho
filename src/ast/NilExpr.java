@@ -14,7 +14,7 @@ public class NilExpr extends Expr {
 
    //Metodo para geracao do codigo em C
    public void genC( PW pw, ArrayList<Member> membros) {
-      pw.printIdent("null");
+      pw.print("NULL");
    }
 
    //Metodo para geracao do codigo em Java

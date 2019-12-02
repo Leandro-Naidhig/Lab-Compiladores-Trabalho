@@ -27,14 +27,37 @@ public class SelfExpr extends Expr {
 
         if(id1 != null && id2 != null) {
 
-            if(id1 instanceof MethodDec) {
-                pw.print("(self->_" + currentClass.getCname() + "_" + ((MethodDec)id1).getName());
+            if(id2 instanceof MethodDec) {
+                
+                ClassDec classe = null;
+                MethodDec metodo = ((MethodDec)id2);
+
+                if(metodo.getType() != null) {
+
+                    //Caso o tipo corresponde a uma classe
+                    if(metodo.getType() instanceof ClassDec) {
+                        classe = ((ClassDec)metodo.getType());
+                    } else {
+                        classe = null;
+                    }
+
+                    //Caso seja uma classe
+                    if(classe != null) {
+                        pw.print("(( _class_ " + id2.getType().getCname() + "* " + " (*)(_class_" + id1.getType().getCname() + "* ");
+                    } else {
+                        pw.print("((" + id2.getType().getCname() + " (*)(_class_" + id1.getType().getCname() + "* ");
+                    }
+
+                } else {
+                    pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
+                }
+
             } else {
-                pw.print("((" + ((MethodDec)id2).getType().getCname() + " (*)(_class_" + currentClass.getCname() + " *))" + "self->_" + currentClass.getCname() + "_" + ((Variable)id1).getName());
+                pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
             }
             
             if(exprlist != null) {
-                pw.print("->_" + currentClass.getCname() + "_");
+                pw.print("))self->_" + currentClass.getCname() + "_");
                 pw.print(((MethodDec)id2).getName());
                 pw.print("(");
                 exprlist.genC(pw);
@@ -43,16 +66,30 @@ public class SelfExpr extends Expr {
             } else {
                 
                 ClassDec classe = ((ClassDec)id1.getType());
-                pw.print("->vt[");
+                pw.print(")) self->vt[");
                 contador = 0;
 
-                //recuperar a posicao do metodo na lista
-                for(Member s: classe.getMembersVT()) {
-                    if(s instanceof MethodDec) { 
-                        if(((MethodDec)s).getName().equals(id2.getName())) {
-                            break;
-                        } else {
-                            contador++;
+                if(classe.getCname().equals(currentClass.getCname())){
+                    //recuperar a posicao do metodo na lista
+                    for(Member s: membros) {
+                        if(s instanceof MethodDec) { 
+                            if(((MethodDec)s).getName().equals(id2.getName())) {
+                                break;
+                            } else {
+                                contador++;
+                            }
+                        }
+                    }
+
+                } else {
+                    //recuperar a posicao do metodo na lista
+                    for(Member s: classe.getMembersVT()) {
+                        if(s instanceof MethodDec) { 
+                            if(((MethodDec)s).getName().equals(id2.getName())) {
+                                break;
+                            } else {
+                                contador++;
+                            }
                         }
                     }
                 }
@@ -80,27 +117,93 @@ public class SelfExpr extends Expr {
                     }
 
                 } else {
-                    
-                    contador = 0;
 
-                    //recuperar a posicao do metodo na lista
-                    for(Member s: membros) {
-                        if(s instanceof MethodDec) { 
-                            if(((MethodDec)s).getName().equals(id1.getName())) {
-                                break;
-                            } else {
-                                contador++;
-                            }
+                    ClassDec classe = null;
+                    MethodDec metodo = ((MethodDec)id1);
+
+                    if(metodo.getType() != null) {
+
+                        //Verifica se o tipo corresponde a uma classe
+                        if(metodo.getType() instanceof ClassDec) {
+                            classe = ((ClassDec)metodo.getType());
+                        } else {
+                            classe = null;
                         }
+
+                        //Caso for uma classe
+                        if(classe != null) {
+                            pw.print("(( _class_" + id1.getType().getCname() + "* " + " (*)(_class_" + currentClass.getCname() + "* ");
+                        } else {
+                            pw.print("((" + id1.getType().getCname() + " (*)(_class_" + currentClass.getCname() + "* ");
+                        }
+
+                    } else {
+                        pw.print("((void (*)(_class_" + currentClass.getCname() + "* ");
                     }
 
-                    pw.print("(self->vt[" + contador + "])");
-
                     if(exprlist != null) {
+
+                        ArrayList<Expr> exprListArray = exprlist.getArrayList();
+                        pw.print(", ");
+
+                        for(Expr s: exprListArray) {
+
+                            //Verifica se o tipo corresponde a uma classe
+                            if(s.getType() instanceof ClassDec) {
+                                classe = ((ClassDec)s.getType());
+                            } else {
+                                classe = null;
+                            }
+
+                            //Caso for uma classe
+                            if(classe != null) {
+                                pw.print("_class_" + s.getType().getCname() + "* ");
+                                contador++;
+                            } else {
+                                pw.print(s.getType().getCname());
+                                contador++;
+                            }
+
+                            if(exprListArray.size() != contador) {
+                                pw.print(", ");
+                            }
+                        }
+
+                        pw.print("))");
+                        contador = 0;
+
+                         //recuperar a posicao do metodo na lista
+                        for(Member s: membros) {
+                            if(s instanceof MethodDec) { 
+                                if(((MethodDec)s).getName().equals(id1.getName())) {
+                                    break;
+                                } else {
+                                    contador++;
+                                }
+                            }
+                        }
+
+                        pw.print("self->vt[" + contador + "])");
                         pw.print("(self, ");
                         exprlist.genC(pw, membros);
                         pw.print(")");
+                    
                     } else {
+                        
+                        pw.print("))");
+                        contador = 0;
+
+                         //recuperar a posicao do metodo na lista
+                        for(Member s: membros) {
+                            if(s instanceof MethodDec) { 
+                                if(((MethodDec)s).getName().equals(id1.getName())) {
+                                    break;
+                                } else {
+                                    contador++;
+                                }
+                            }
+                        }
+                        pw.print("self->vt[" + contador + "])");
                         pw.print("(self)");
                     }
                 }

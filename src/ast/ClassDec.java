@@ -179,6 +179,7 @@ public class ClassDec extends Type{
 
             boolean encontrado = false;
             int pos = 0;
+            String classtemp = "";
 
             //Percorre todos os membros da superclasse
             for(Member s: lista.getArray()) {
@@ -191,7 +192,7 @@ public class ClassDec extends Type{
                         for(Member v: membros) {
                             if(((MethodDec)v).getName().equals(((MethodDec)s).getName())){
                                 pos = membros.lastIndexOf(v);
-                                classe = nomeClasses.get(pos);
+                                classtemp = nomeClasses.get(pos);
                                 encontrado = true;
                             }   
                         }
@@ -200,7 +201,8 @@ public class ClassDec extends Type{
                             membros.remove(pos);
                             nomeClasses.remove(pos);
                             membros.add(s);
-                            nomeClasses.add(classe);
+                            nomeClasses.add(classtemp);
+                            encontrado = false;
 
                         } else {
                             membros.add(s);

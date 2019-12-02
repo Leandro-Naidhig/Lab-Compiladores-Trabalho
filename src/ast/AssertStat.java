@@ -25,7 +25,7 @@ public class AssertStat extends Statement {
         pw.println(") == 0) {");
         pw.add();
         pw.printlnIdent("printf(\"" + str + "\");");
-        pw.printlnIdent("return 0;");
+        pw.printlnIdent("exit(0);");
         pw.sub();
         pw.printlnIdent("}");
     }

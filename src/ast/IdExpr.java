@@ -45,10 +45,6 @@ public class IdExpr extends Expr {
             } else {
                 pw.print("((void (*)(_class_" + id1.getType().getCname() + "* ");
             }
-            
-            
-            
-            //System.out.println(tipo.getCname());
 
             
             int contador = 0;
